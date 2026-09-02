@@ -1,79 +1,582 @@
-window.selectStatus = async function(status) {
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  if (!zone || !zones[zone]) {
-    alert("Zone information could not be found.");
-    return;
-  }
+  <title>Zone Safety Check-In</title>
 
-  const savingMessage = document.getElementById("savingMessage");
-  const result = document.getElementById("result");
-  const resultMessage = document.getElementById("resultMessage");
-  const resultTime = document.getElementById("resultTime");
-
-  savingMessage.style.display = "block";
-  result.style.display = "none";
-
-  try {
-
-    await addDoc(
-      collection(db, "checkins"),
-      {
-        zone: zone,
-        status: status,
-        lead: zones[zone].lead,
-        deputy: zones[zone].deputy,
-        checkedAt: serverTimestamp()
-      }
-    );
-
-    savingMessage.style.display = "none";
-    result.style.display = "block";
-
-    const now = new Date();
-    const time = now.toLocaleString();
-
-    resultTime.textContent = "Checked at: " + time;
-
-    if (status === "ALL SAFE") {
-
-      result.className = "result safe-result";
-
-      resultMessage.innerHTML =
-        "✓ Zone is Secure<br>" +
-        "<span style='font-size:16px;font-weight:normal'>" +
-        "All personnel and students are accounted for." +
-        "</span>";
-
-    } else if (status === "MISSING") {
-
-      result.className = "result missing-result";
-
-      resultMessage.innerHTML =
-        "⚠ Missing Person / Student<br>" +
-        "<span style='font-size:16px;font-weight:normal'>" +
-        "Please report the missing person to the appropriate team immediately." +
-        "</span>";
-
-    } else if (status === "NOT SAFE") {
-
-      result.className = "result unsafe-result";
-
-      resultMessage.innerHTML =
-        "✕ Zone is NOT SAFE<br>" +
-        "<span style='font-size:16px;font-weight:normal'>" +
-        "Please follow the emergency procedure and notify Security / SLT." +
-        "</span>";
+  <style>
+    * {
+      box-sizing: border-box;
     }
 
-  } catch (error) {
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f7fb;
+      color: #1f2937;
+    }
 
-    console.error(error);
+    .header {
+      background: #17365d;
+      color: white;
+      padding: 25px 20px;
+      text-align: center;
+    }
 
-    savingMessage.style.display = "none";
+    .header h1 {
+      margin: 0;
+      font-size: 28px;
+    }
 
-    alert(
-      "Unable to save the check-in. Please check your Firebase configuration and Firestore rules."
-    );
-  }
+    .header p {
+      margin: 8px 0 0;
+      font-size: 15px;
+    }
 
-};
+    .container {
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    .zone-card {
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+    }
+
+    .zone-name {
+      font-size: 36px;
+      font-weight: bold;
+      color: #17365d;
+      margin-bottom: 15px;
+    }
+
+    .zone-info {
+      font-size: 17px;
+      line-height: 1.8;
+      color: #4b5563;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin-top: 30px;
+    }
+
+    .status-button {
+      border: none;
+      border-radius: 12px;
+      padding: 25px 10px;
+      font-size: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      color: white;
+      min-height: 110px;
+    }
+
+    .status-button:hover {
+      opacity: 0.88;
+    }
+
+    .safe {
+      background: #198754;
+    }
+
+    .missing {
+      background: #f0ad00;
+      color: #111827;
+    }
+
+    .unsafe {
+      background: #dc3545;
+    }
+
+    .saving {
+      display: none;
+      text-align: center;
+      margin-top: 20px;
+      font-size: 16px;
+      color: #555;
+    }
+
+    .result {
+      display: none;
+      margin-top: 25px;
+      padding: 25px;
+      border-radius: 12px;
+      text-align: center;
+      font-size: 21px;
+      font-weight: bold;
+    }
+
+    .safe-result {
+      background: #d1e7dd;
+      color: #0f5132;
+    }
+
+    .missing-result {
+      background: #fff3cd;
+      color: #664d03;
+    }
+
+    .unsafe-result {
+      background: #f8d7da;
+      color: #842029;
+    }
+
+    .time {
+      display: block;
+      margin-top: 12px;
+      font-size: 14px;
+      font-weight: normal;
+    }
+
+    .back-button {
+      display: inline-block;
+      margin-top: 25px;
+      padding: 12px 20px;
+      background: #17365d;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+    }
+
+    .back-button:hover {
+      opacity: 0.9;
+    }
+
+    @media (max-width: 700px) {
+
+      .buttons {
+        grid-template-columns: 1fr;
+      }
+
+      .zone-name {
+        font-size: 28px;
+      }
+
+      .status-button {
+        min-height: 90px;
+      }
+
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="header">
+    <h1>Zone Safety Check-In</h1>
+    <p>Please confirm the current safety status of your assigned area</p>
+  </div>
+
+  <div class="container">
+
+    <div class="zone-card">
+
+      <div id="zoneName" class="zone-name">
+        Loading...
+      </div>
+
+      <div id="zoneInfo" class="zone-info">
+        Loading zone information...
+      </div>
+
+      <div class="buttons">
+
+        <button
+          type="button"
+          class="status-button safe"
+          id="safeButton">
+          ✓<br>
+          ALL SAFE
+        </button>
+
+        <button
+          type="button"
+          class="status-button missing"
+          id="missingButton">
+          ⚠<br>
+          MISSING
+        </button>
+
+        <button
+          type="button"
+          class="status-button unsafe"
+          id="unsafeButton">
+          ✕<br>
+          NOT SAFE
+        </button>
+
+      </div>
+
+      <div id="savingMessage" class="saving">
+        Saving check-in...
+      </div>
+
+      <div id="result" class="result">
+
+        <div id="resultMessage"></div>
+
+        <span id="resultTime" class="time"></span>
+
+      </div>
+
+      <a href="zones.html" class="back-button">
+        ← Back to Zones
+      </a>
+
+    </div>
+
+  </div>
+
+
+  <!-- FIREBASE -->
+
+  <script type="module">
+
+    import { initializeApp }
+      from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+
+    import {
+      getFirestore,
+      collection,
+      addDoc,
+      serverTimestamp
+    }
+      from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+
+    // ==========================================================
+    // FIREBASE CONFIGURATION
+    // ==========================================================
+
+    const firebaseConfig = {
+
+      apiKey: "AIzaSyB0--wrOqeid_iVGJkqDwJAWBefPyI4HPw",
+
+      authDomain: "fps-zone-safety.firebaseapp.com",
+
+      projectId: "fps-zone-safety",
+
+      storageBucket: "fps-zone-safety.firebasestorage.app",
+
+      messagingSenderId: "96363004027",
+
+      appId: "1:96363004027:web:101c3b8ba1fde53655e2de",
+
+      measurementId: "G-WEK1MZ48M2"
+
+    };
+
+
+    // Start Firebase
+
+    const app = initializeApp(firebaseConfig);
+
+    const db = getFirestore(app);
+
+
+    // ==========================================================
+    // ZONE INFORMATION
+    // ==========================================================
+
+    const zones = {
+
+      "AG": {
+        lead: "Vishnu",
+        deputy: "Grace"
+      },
+
+      "A1": {
+        lead: "Manoj",
+        deputy: "Pukar"
+      },
+
+      "A2": {
+        lead: "Rhys",
+        deputy: "Laura Nulty"
+      },
+
+      "BG & B1": {
+        lead: "Abdul",
+        deputy: "Salu"
+      },
+
+      "CG": {
+        lead: "Danielle Bishay",
+        deputy: "Claire Nami"
+      },
+
+      "C1": {
+        lead: "Hannah Jones",
+        deputy: "Amy Jones"
+      },
+
+      "C2": {
+        lead: "Emily Griffin",
+        deputy: "Rachael Gabel"
+      },
+
+      "C3": {
+        lead: "Regan",
+        deputy: "Olivia Radford"
+      },
+
+      "DG": {
+        lead: "Gavin",
+        deputy: "Gemma Harris"
+      },
+
+      "D1": {
+        lead: "Asif",
+        deputy: "Rachel Forrest"
+      },
+
+      "D2": {
+        lead: "Lily",
+        deputy: "Anthea"
+      },
+
+      "EG": {
+        lead: "Emily Gallone",
+        deputy: "Roxanne"
+      },
+
+      "E1": {
+        lead: "Isabel",
+        deputy: "Shaimaa"
+      },
+
+      "E2": {
+        lead: "Danielle Jolosa",
+        deputy: "Hanan"
+      },
+
+      "E3": {
+        lead: "Erika",
+        deputy: "Sarah Barr"
+      },
+
+      "AG (Parents)": {
+        lead: "Aisha",
+        deputy: "Conference Room A"
+      }
+
+    };
+
+
+    // ==========================================================
+    // GET ZONE FROM URL
+    // ==========================================================
+
+    const urlParams =
+      new URLSearchParams(window.location.search);
+
+    const zone =
+      urlParams.get("zone");
+
+
+    // ==========================================================
+    // DISPLAY ZONE
+    // ==========================================================
+
+    const zoneName =
+      document.getElementById("zoneName");
+
+    const zoneInfo =
+      document.getElementById("zoneInfo");
+
+
+    if (zone && zones[zone]) {
+
+      zoneName.textContent = zone;
+
+      zoneInfo.innerHTML =
+        "<strong>Lead:</strong> " +
+        zones[zone].lead +
+        "<br>" +
+        "<strong>Deputy / Location:</strong> " +
+        zones[zone].deputy;
+
+    } else {
+
+      zoneName.textContent =
+        "Zone Not Found";
+
+      zoneInfo.textContent =
+        "Please return to the Zones page and select an area.";
+
+    }
+
+
+    // ==========================================================
+    // SAVE STATUS
+    // ==========================================================
+
+    async function saveStatus(status) {
+
+      if (!zone || !zones[zone]) {
+
+        alert("Zone information could not be found.");
+
+        return;
+
+      }
+
+
+      const savingMessage =
+        document.getElementById("savingMessage");
+
+      const result =
+        document.getElementById("result");
+
+      const resultMessage =
+        document.getElementById("resultMessage");
+
+      const resultTime =
+        document.getElementById("resultTime");
+
+
+      savingMessage.style.display = "block";
+
+      result.style.display = "none";
+
+
+      try {
+
+        // Save to Firestore
+
+        await addDoc(
+          collection(db, "checkins"),
+          {
+
+            zone: zone,
+
+            status: status,
+
+            lead: zones[zone].lead,
+
+            deputy: zones[zone].deputy,
+
+            checkedAt: serverTimestamp()
+
+          }
+        );
+
+
+        // Show result
+
+        savingMessage.style.display = "none";
+
+        result.style.display = "block";
+
+
+        const now =
+          new Date();
+
+        resultTime.textContent =
+          "Checked at: " +
+          now.toLocaleString();
+
+
+        if (status === "ALL SAFE") {
+
+          result.className =
+            "result safe-result";
+
+          resultMessage.innerHTML =
+            "✓ Zone is Secure<br>" +
+            "<span style='font-size:16px;font-weight:normal'>" +
+            "All personnel and students are accounted for." +
+            "</span>";
+
+        }
+
+
+        else if (status === "MISSING") {
+
+          result.className =
+            "result missing-result";
+
+          resultMessage.innerHTML =
+            "⚠ Missing Person / Student<br>" +
+            "<span style='font-size:16px;font-weight:normal'>" +
+            "Please report the missing person to the appropriate team immediately." +
+            "</span>";
+
+        }
+
+
+        else if (status === "NOT SAFE") {
+
+          result.className =
+            "result unsafe-result";
+
+          resultMessage.innerHTML =
+            "✕ Zone is NOT SAFE<br>" +
+            "<span style='font-size:16px;font-weight:normal'>" +
+            "Please follow the emergency procedure and notify Security / SLT." +
+            "</span>";
+
+        }
+
+      }
+
+      catch (error) {
+
+        console.error(error);
+
+        savingMessage.style.display = "none";
+
+        alert(
+          "Unable to save the check-in. Please check your Firestore settings."
+        );
+
+      }
+
+    }
+
+
+    // ==========================================================
+    // BUTTONS
+    // ==========================================================
+
+    document
+      .getElementById("safeButton")
+      .addEventListener(
+        "click",
+        function() {
+          saveStatus("ALL SAFE");
+        }
+      );
+
+
+    document
+      .getElementById("missingButton")
+      .addEventListener(
+        "click",
+        function() {
+          saveStatus("MISSING");
+        }
+      );
+
+
+    document
+      .getElementById("unsafeButton")
+      .addEventListener(
+        "click",
+        function() {
+          saveStatus("NOT SAFE");
+        }
+      );
+
+  </script>
+
+</body>
+</html>
