@@ -201,6 +201,13 @@
       font-weight: bold;
     }
 
+    .loading {
+      text-align: center;
+      color: #64748b;
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
   </style>
 </head>
 
@@ -220,23 +227,30 @@
 
       <div id="zonePeople" class="zone-people"></div>
 
+      <div id="loginStatus" class="loading">
+        Checking login...
+      </div>
+
       <div class="status-buttons">
 
         <button
           id="safeButton"
-          class="status-button safe-button">
+          class="status-button safe-button"
+          disabled>
           ALL SAFE
         </button>
 
         <button
           id="missingButton"
-          class="status-button missing-button">
+          class="status-button missing-button"
+          disabled>
           MISSING
         </button>
 
         <button
           id="unsafeButton"
-          class="status-button unsafe-button">
+          class="status-button unsafe-button"
+          disabled>
           NOT SAFE
         </button>
 
@@ -366,6 +380,7 @@
 
   </div>
 
+
   <!-- FIREBASE -->
 
   <script type="module">
@@ -385,9 +400,13 @@
 
     import {
       getAuth,
-      onAuthStateChanged
+      onAuthStateChanged,
+      setPersistence,
+      browserLocalPersistence
     } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
+
+    /* FIREBASE CONFIG */
 
     const firebaseConfig = {
 
@@ -429,9 +448,7 @@
     let loggedInUser = null;
 
 
-    /*
-      ZONE ASSIGNMENTS
-    */
+    /* ZONE ASSIGNMENTS */
 
     const zonePeople = {
 
@@ -470,9 +487,7 @@
     };
 
 
-    /*
-      GET ZONE
-    */
+    /* GET ZONE FROM URL */
 
     const params =
       new URLSearchParams(
@@ -502,7 +517,6 @@
       ).textContent =
         zone;
 
-
       document.getElementById(
         "zonePeople"
       ).innerHTML =
@@ -517,6 +531,8 @@
 
     }
 
+
+    /* BUTTONS */
 
     const safeButton =
       document.getElementById(
@@ -548,85 +564,82 @@
         "result"
       );
 
-
-    /*
-      LOGIN + LOAD SESSION
-    */
-
-    onAuthStateChanged(
-      auth,
-      async function(user) {
-
-        if (!user) {
-
-          window.location.href =
-            "login.html";
-
-          return;
-
-        }
+    const loginStatus =
+      document.getElementById(
+        "loginStatus"
+      );
 
 
-        loggedInUser =
-          user;
+    /* ENABLE BUTTONS */
+
+    function enableButtons() {
+
+      safeButton.disabled = false;
+      missingButton.disabled = false;
+      unsafeButton.disabled = false;
+
+      loginStatus.textContent =
+        "Logged in successfully.";
+
+      loginStatus.style.color =
+        "#166534";
+
+    }
 
 
-        try {
+    /* GET CURRENT SESSION */
 
-          const sessionRef =
-            doc(
-              db,
-              "system",
-              "currentSession"
-            );
+    async function getCurrentSession() {
 
+      const sessionRef =
+        doc(
+          db,
+          "system",
+          "currentSession"
+        );
 
-          const sessionSnap =
-            await getDoc(
-              sessionRef
-            );
-
-
-          if (
-            !sessionSnap.exists()
-          ) {
-
-            alert(
-              "No active safety session found. Please open the Dashboard and start a new session."
-            );
-
-            return;
-
-          }
+      const sessionSnap =
+        await getDoc(
+          sessionRef
+        );
 
 
-          const sessionData =
-            sessionSnap.data();
+      if (
+        !sessionSnap.exists()
+      ) {
 
-
-          currentSessionId =
-            sessionData.sessionId;
-
-
-        }
-
-        catch (error) {
-
-          console.error(error);
-
-          alert(
-            "Unable to load the current safety session."
-          );
-
-        }
+        throw new Error(
+          "No active safety session found."
+        );
 
       }
-    );
 
 
-    /*
-      SHOW RESULT
-    */
+      const sessionData =
+        sessionSnap.data();
+
+
+      if (
+        !sessionData.sessionId
+      ) {
+
+        throw new Error(
+          "Current safety session ID is missing."
+        );
+
+      }
+
+
+      currentSessionId =
+        sessionData.sessionId;
+
+
+      return currentSessionId;
+
+    }
+
+
+    /* SHOW RESULT */
 
     function showResult(
       message,
@@ -655,16 +668,14 @@
     }
 
 
-    /*
-      SAVE SIMPLE STATUS
-    */
+    /* SAVE SIMPLE STATUS */
 
     async function saveStatus(status) {
 
-      if (!currentSessionId) {
+      if (!loggedInUser) {
 
         alert(
-          "No active safety session. Please return to the Dashboard and start a session."
+          "You are not logged in. Please return to the login page."
         );
 
         return;
@@ -673,6 +684,11 @@
 
 
       try {
+
+        /* Always get the latest session */
+
+        await getCurrentSession();
+
 
         await addDoc(
 
@@ -702,9 +718,7 @@
               serverTimestamp(),
 
             submittedBy:
-              loggedInUser
-                ? loggedInUser.email
-                : ""
+              loggedInUser.email
 
           }
 
@@ -719,8 +733,7 @@
 
 
         if (
-          status ===
-          "safe"
+          status === "safe"
         ) {
 
           showResult(
@@ -749,25 +762,19 @@
     }
 
 
-    /*
-      ALL SAFE
-    */
+    /* ALL SAFE */
 
     safeButton.addEventListener(
       "click",
       function() {
 
-        saveStatus(
-          "safe"
-        );
+        saveStatus("safe");
 
       }
     );
 
 
-    /*
-      MISSING
-    */
+    /* MISSING */
 
     missingButton.addEventListener(
       "click",
@@ -792,9 +799,7 @@
     );
 
 
-    /*
-      SAVE MISSING
-    */
+    /* SAVE MISSING */
 
     document
       .getElementById(
@@ -804,51 +809,10 @@
         "click",
         async function() {
 
-          if (!currentSessionId) {
+          if (!loggedInUser) {
 
             alert(
-              "No active safety session. Please return to the Dashboard."
-            );
-
-            return;
-
-          }
-
-
-          const personName =
-            document
-              .getElementById(
-                "personName"
-              )
-              .value
-              .trim();
-
-
-          const lastLocation =
-            document
-              .getElementById(
-                "lastLocation"
-              )
-              .value
-              .trim();
-
-
-          const missingDetails =
-            document
-              .getElementById(
-                "missingDetails"
-              )
-              .value
-              .trim();
-
-
-          if (
-            !personName ||
-            !lastLocation
-          ) {
-
-            alert(
-              "Please enter the person's name and last known location."
+              "You are not logged in. Please return to the login page."
             );
 
             return;
@@ -857,6 +821,50 @@
 
 
           try {
+
+            await getCurrentSession();
+
+
+            const personName =
+              document
+                .getElementById(
+                  "personName"
+                )
+                .value
+                .trim();
+
+
+            const lastLocation =
+              document
+                .getElementById(
+                  "lastLocation"
+                )
+                .value
+                .trim();
+
+
+            const missingDetails =
+              document
+                .getElementById(
+                  "missingDetails"
+                )
+                .value
+                .trim();
+
+
+            if (
+              !personName ||
+              !lastLocation
+            ) {
+
+              alert(
+                "Please enter the person's name and last known location."
+              );
+
+              return;
+
+            }
+
 
             await addDoc(
 
@@ -895,9 +903,7 @@
                   serverTimestamp(),
 
                 submittedBy:
-                  loggedInUser
-                    ? loggedInUser.email
-                    : ""
+                  loggedInUser.email
 
               }
 
@@ -955,9 +961,7 @@
       );
 
 
-    /*
-      CANCEL MISSING
-    */
+    /* CANCEL MISSING */
 
     document
       .getElementById(
@@ -974,9 +978,7 @@
       );
 
 
-    /*
-      NOT SAFE
-    */
+    /* NOT SAFE */
 
     unsafeButton.addEventListener(
       "click",
@@ -1001,9 +1003,7 @@
     );
 
 
-    /*
-      SAVE NOT SAFE
-    */
+    /* SAVE NOT SAFE */
 
     document
       .getElementById(
@@ -1013,60 +1013,10 @@
         "click",
         async function() {
 
-          if (!currentSessionId) {
+          if (!loggedInUser) {
 
             alert(
-              "No active safety session. Please return to the Dashboard."
-            );
-
-            return;
-
-          }
-
-
-          const safetyConcern =
-            document
-              .getElementById(
-                "safetyConcern"
-              )
-              .value
-              .trim();
-
-
-          const issueLocation =
-            document
-              .getElementById(
-                "issueLocation"
-              )
-              .value
-              .trim();
-
-
-          const unsafeDetails =
-            document
-              .getElementById(
-                "unsafeDetails"
-              )
-              .value
-              .trim();
-
-
-          const immediateAssistance =
-            document
-              .getElementById(
-                "immediateAssistance"
-              )
-              .value;
-
-
-          if (
-            !safetyConcern ||
-            !issueLocation ||
-            !immediateAssistance
-          ) {
-
-            alert(
-              "Please complete the safety concern, location and immediate assistance fields."
+              "You are not logged in. Please return to the login page."
             );
 
             return;
@@ -1075,6 +1025,59 @@
 
 
           try {
+
+            await getCurrentSession();
+
+
+            const safetyConcern =
+              document
+                .getElementById(
+                  "safetyConcern"
+                )
+                .value
+                .trim();
+
+
+            const issueLocation =
+              document
+                .getElementById(
+                  "issueLocation"
+                )
+                .value
+                .trim();
+
+
+            const unsafeDetails =
+              document
+                .getElementById(
+                  "unsafeDetails"
+                )
+                .value
+                .trim();
+
+
+            const immediateAssistance =
+              document
+                .getElementById(
+                  "immediateAssistance"
+                )
+                .value;
+
+
+            if (
+              !safetyConcern ||
+              !issueLocation ||
+              !immediateAssistance
+            ) {
+
+              alert(
+                "Please complete the safety concern, location and immediate assistance fields."
+              );
+
+              return;
+
+            }
+
 
             await addDoc(
 
@@ -1116,9 +1119,7 @@
                   serverTimestamp(),
 
                 submittedBy:
-                  loggedInUser
-                    ? loggedInUser.email
-                    : ""
+                  loggedInUser.email
 
               }
 
@@ -1183,9 +1184,7 @@
       );
 
 
-    /*
-      CANCEL NOT SAFE
-    */
+    /* CANCEL NOT SAFE */
 
     document
       .getElementById(
@@ -1200,6 +1199,91 @@
 
         }
       );
+
+
+    /*
+      FIREBASE LOGIN PERSISTENCE
+
+      This keeps the user signed in when
+      moving between Dashboard, Zones,
+      Reports and Zone Check-In.
+    */
+
+    setPersistence(
+      auth,
+      browserLocalPersistence
+    )
+    .then(function() {
+
+      onAuthStateChanged(
+        auth,
+        async function(user) {
+
+          if (!user) {
+
+            loginStatus.textContent =
+              "Login required.";
+
+            loginStatus.style.color =
+              "#dc2626";
+
+            /*
+              Small delay gives Firebase time
+              to restore the saved login session.
+            */
+
+            setTimeout(function() {
+
+              if (!loggedInUser) {
+
+                window.location.href =
+                  "login.html";
+
+              }
+
+            }, 1000);
+
+            return;
+
+          }
+
+
+          loggedInUser =
+            user;
+
+
+          enableButtons();
+
+
+          try {
+
+            await getCurrentSession();
+
+          }
+
+          catch (error) {
+
+            console.error(error);
+
+            alert(
+              "Unable to load the current safety session. Please return to the Dashboard and start a new session."
+            );
+
+          }
+
+        }
+      );
+
+    })
+    .catch(function(error) {
+
+      console.error(error);
+
+      alert(
+        "Unable to initialize the login session."
+      );
+
+    });
 
   </script>
 
