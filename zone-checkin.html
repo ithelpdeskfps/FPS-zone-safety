@@ -7,65 +7,55 @@
   <title>Zone Safety Check-In</title>
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
     body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
       margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: #f4f7fb;
-      color: #1e293b;
+      padding: 20px;
+      color: #222;
     }
 
-    header {
+    .header {
       background: #17365d;
       color: white;
-      padding: 25px 30px;
+      padding: 18px;
+      text-align: center;
+      border-radius: 10px;
+      margin-bottom: 20px;
     }
 
-    header h1 {
+    .header h1 {
       margin: 0;
-      font-size: 28px;
+      font-size: 26px;
     }
 
-    header p {
-      margin: 6px 0 0;
-      opacity: 0.9;
-    }
-
-    main {
-      max-width: 700px;
+    .container {
+      max-width: 600px;
       margin: auto;
-      padding: 35px 20px;
     }
 
     .zone-card {
       background: white;
-      border-radius: 16px;
-      padding: 30px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+      text-align: center;
     }
 
     .zone-title {
-      text-align: center;
-      margin-bottom: 25px;
-    }
-
-    .zone-title h2 {
-      margin: 0;
-      font-size: 32px;
+      font-size: 30px;
+      font-weight: bold;
+      margin-bottom: 10px;
       color: #17365d;
     }
 
-    .zone-title p {
-      color: #64748b;
-      margin-top: 12px;
+    .zone-people {
+      font-size: 16px;
       line-height: 1.7;
-      font-size: 15px;
+      margin-bottom: 20px;
     }
 
-    /* STATUS BUTTONS */
+    /* Status buttons */
 
     .status-buttons {
       display: flex;
@@ -91,105 +81,104 @@
       background: #16a34a;
     }
 
-    .safe-button:hover {
-      background: #15803d;
-    }
-
     .missing-button {
       background: #f59e0b;
-    }
-
-    .missing-button:hover {
-      background: #d97706;
     }
 
     .unsafe-button {
       background: #dc2626;
     }
 
-    .unsafe-button:hover {
-      background: #b91c1c;
+    .status-button:hover {
+      opacity: 0.9;
     }
 
-    /* MISSING FORM */
+    /* Forms */
 
     .form-box {
       display: none;
       margin-top: 25px;
-      padding: 25px;
-      background: #fff7ed;
-      border: 1px solid #fed7aa;
-      border-radius: 12px;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: left;
+    }
+
+    .missing-form {
+      background: #fff7e6;
+      border: 1px solid #f59e0b;
+    }
+
+    .unsafe-form {
+      background: #fff0f0;
+      border: 1px solid #dc2626;
     }
 
     .form-box h3 {
       margin-top: 0;
-      color: #92400e;
-      font-size: 20px;
+      text-align: center;
     }
 
-    label {
+    .form-box label {
       display: block;
       font-weight: bold;
-      margin-top: 15px;
-      margin-bottom: 7px;
+      margin-top: 14px;
+      margin-bottom: 5px;
     }
 
-    input,
-    textarea {
+    .form-box input,
+    .form-box textarea,
+    .form-box select {
       width: 100%;
-      padding: 12px;
-      border: 1px solid #cbd5e1;
-      border-radius: 8px;
+      box-sizing: border-box;
+      padding: 11px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
       font-size: 15px;
-      font-family: inherit;
     }
 
-    textarea {
-      min-height: 100px;
+    .form-box textarea {
+      min-height: 90px;
       resize: vertical;
     }
 
     .save-button {
-      margin-top: 20px;
       width: 100%;
-      padding: 14px;
-      background: #2563eb;
-      color: white;
+      margin-top: 18px;
+      padding: 12px;
       border: none;
-      border-radius: 8px;
+      border-radius: 7px;
+      background: #17365d;
+      color: white;
       font-size: 16px;
       font-weight: bold;
       cursor: pointer;
     }
 
     .save-button:hover {
-      background: #1d4ed8;
+      opacity: 0.9;
     }
 
     .cancel-button {
-      margin-top: 10px;
       width: 100%;
-      padding: 12px;
-      background: #e2e8f0;
-      color: #334155;
-      border: none;
-      border-radius: 8px;
+      margin-top: 8px;
+      padding: 10px;
+      border: 1px solid #aaa;
+      border-radius: 7px;
+      background: white;
+      color: #333;
       font-size: 15px;
-      font-weight: bold;
       cursor: pointer;
     }
 
-    /* RESULT MESSAGE */
+    /* Result */
 
     .result {
       display: none;
       margin-top: 25px;
-      padding: 20px;
+      padding: 18px;
       border-radius: 10px;
       text-align: center;
       font-weight: bold;
-      line-height: 1.6;
     }
 
     .result.safe {
@@ -207,368 +196,326 @@
       color: #991b1b;
     }
 
-    /* BACK LINK */
-
-    .back-link {
+    .back-button {
       display: block;
+      width: 220px;
+      margin: 25px auto 0;
+      padding: 12px;
       text-align: center;
-      margin-top: 25px;
-      color: #2563eb;
+      background: #17365d;
+      color: white;
       text-decoration: none;
+      border-radius: 8px;
       font-weight: bold;
     }
-
-    /* MOBILE */
-
-    @media (max-width: 600px) {
-
-      header {
-        padding: 20px;
-      }
-
-      header h1 {
-        font-size: 23px;
-      }
-
-      main {
-        padding: 20px 15px;
-      }
-
-      .zone-card {
-        padding: 22px;
-      }
-
-      .zone-title h2 {
-        font-size: 28px;
-      }
-
-      .status-button {
-        width: 200px;
-        height: 58px;
-        font-size: 17px;
-      }
-    }
-
   </style>
 </head>
 
 <body>
 
-<header>
-  <h1>Zone Safety Check-In</h1>
-  <p>Emergency Coverage & Safety Management</p>
-</header>
+  <div class="header">
+    <h1>Zone Safety Check-In</h1>
+  </div>
 
-<main>
+  <div class="container">
 
-  <div class="zone-card">
+    <div class="zone-card">
 
-    <div class="zone-title">
+      <div id="zoneTitle" class="zone-title">
+        Zone
+      </div>
 
-      <h2 id="zoneName">Zone</h2>
+      <div id="zonePeople" class="zone-people">
+      </div>
 
-      <p id="zonePeople"></p>
+      <!-- STATUS BUTTONS -->
+
+      <div class="status-buttons">
+
+        <button
+          id="safeButton"
+          class="status-button safe-button">
+          ALL SAFE
+        </button>
+
+        <button
+          id="missingButton"
+          class="status-button missing-button">
+          MISSING
+        </button>
+
+        <button
+          id="unsafeButton"
+          class="status-button unsafe-button">
+          NOT SAFE
+        </button>
+
+      </div>
+
+
+      <!-- MISSING FORM -->
+
+      <div id="missingForm" class="form-box missing-form">
+
+        <h3>Missing Person Details</h3>
+
+        <label for="personName">
+          Person's Name
+        </label>
+
+        <input
+          type="text"
+          id="personName"
+          placeholder="Enter person's name"
+        >
+
+        <label for="lastLocation">
+          Last Known Location
+        </label>
+
+        <input
+          type="text"
+          id="lastLocation"
+          placeholder="Example: Classroom C2"
+        >
+
+        <label for="missingDetails">
+          Additional Details
+        </label>
+
+        <textarea
+          id="missingDetails"
+          placeholder="Enter any additional information">
+        </textarea>
+
+        <button
+          id="saveMissingButton"
+          class="save-button">
+          Save Missing Report
+        </button>
+
+        <button
+          id="cancelMissingButton"
+          class="cancel-button">
+          Cancel
+        </button>
+
+      </div>
+
+
+      <!-- NOT SAFE FORM -->
+
+      <div id="unsafeForm" class="form-box unsafe-form">
+
+        <h3>Safety Concern Details</h3>
+
+        <label for="safetyConcern">
+          What is the safety concern?
+        </label>
+
+        <input
+          type="text"
+          id="safetyConcern"
+          placeholder="Example: Fire, smoke, damaged area"
+        >
+
+        <label for="issueLocation">
+          Where is the issue?
+        </label>
+
+        <input
+          type="text"
+          id="issueLocation"
+          placeholder="Example: Corridor outside C2"
+        >
+
+        <label for="unsafeDetails">
+          Additional Details
+        </label>
+
+        <textarea
+          id="unsafeDetails"
+          placeholder="Enter any additional information">
+        </textarea>
+
+        <label for="immediateAssistance">
+          Is immediate assistance required?
+        </label>
+
+        <select id="immediateAssistance">
+          <option value="">Please select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+
+        <button
+          id="saveUnsafeButton"
+          class="save-button">
+          Save Safety Report
+        </button>
+
+        <button
+          id="cancelUnsafeButton"
+          class="cancel-button">
+          Cancel
+        </button>
+
+      </div>
+
+
+      <!-- RESULT -->
+
+      <div id="result" class="result"></div>
+
+      <a href="zones.html" class="back-button">
+        Back to Zones
+      </a>
 
     </div>
-
-
-    <!-- STATUS BUTTONS -->
-
-    <div class="status-buttons">
-
-      <button
-        id="safeButton"
-        class="status-button safe-button">
-        ALL SAFE
-      </button>
-
-      <button
-        id="missingButton"
-        class="status-button missing-button">
-        MISSING
-      </button>
-
-      <button
-        id="unsafeButton"
-        class="status-button unsafe-button">
-        NOT SAFE
-      </button>
-
-    </div>
-
-
-    <!-- MISSING FORM -->
-
-    <div id="missingForm" class="form-box">
-
-      <h3>Missing Person Details</h3>
-
-      <label for="personName">
-        Person's Name
-      </label>
-
-      <input
-        type="text"
-        id="personName"
-        placeholder="Enter person's name">
-
-
-      <label for="lastLocation">
-        Last Known Location
-      </label>
-
-      <input
-        type="text"
-        id="lastLocation"
-        placeholder="Example: Classroom C2">
-
-
-      <label for="missingDetails">
-        Additional Details
-      </label>
-
-      <textarea
-        id="missingDetails"
-        placeholder="Enter any additional information"></textarea>
-
-
-      <button
-        id="saveMissingButton"
-        class="save-button">
-        Save Missing Report
-      </button>
-
-      <button
-        id="cancelMissingButton"
-        class="cancel-button">
-        Cancel
-      </button>
-
-    </div>
-
-
-    <!-- RESULT -->
-
-    <div id="result" class="result"></div>
-
-
-    <a href="zones.html" class="back-link">
-      ← Back to Zones
-    </a>
 
   </div>
 
-</main>
+
+  <!-- FIREBASE -->
+
+  <script type="module">
+
+    import {
+      initializeApp
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+
+    import {
+      getFirestore,
+      collection,
+      addDoc,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
 
-<script type="module">
-
-  import { initializeApp }
-    from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-
-  import {
-    getFirestore,
-    collection,
-    addDoc,
-    serverTimestamp
-  }
-    from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+    const firebaseConfig = {
+      apiKey: "AIzaSyB0--wrOqeid_iVGJkqDwJAWBefPyI4HPw",
+      authDomain: "fps-zone-safety.firebaseapp.com",
+      projectId: "fps-zone-safety",
+      storageBucket: "fps-zone-safety.firebasestorage.app",
+      messagingSenderId: "96363004027",
+      appId: "1:96363004027:web:101c3b8ba1fde53655e2de",
+      measurementId: "G-WEK1MZ48M2"
+    };
 
 
-  /* FIREBASE */
+    const app = initializeApp(firebaseConfig);
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyB0--wrOqeid_iVGJkqDwJAWBefPyI4HPw",
-    authDomain: "fps-zone-safety.firebaseapp.com",
-    projectId: "fps-zone-safety",
-    storageBucket: "fps-zone-safety.firebasestorage.app",
-    messagingSenderId: "96363004027",
-    appId: "1:96363004027:web:101c3b8ba1fde53655e2de",
-    measurementId: "G-WEK1MZ48M2"
-  };
+    const db = getFirestore(app);
 
 
-  const app = initializeApp(firebaseConfig);
+    /* ZONE ASSIGNMENTS */
 
-  const db = getFirestore(app);
+    const zonePeople = {
 
+      "AG": ["Vishnu", "Grace"],
 
-  /* GET ZONE */
+      "A1": ["Manoj", "Pukar"],
 
-  const params =
-    new URLSearchParams(window.location.search);
+      "A2": ["Rhys", "Laura Nulty"],
 
-  const zone =
-    params.get("zone") || "Unknown";
+      "BG & B1": ["Abdul", "Salu"],
 
+      "CG": ["Danielle Bishay", "Claire Nami"],
 
-  /* ZONE ASSIGNMENTS */
+      "C1": ["Hannah Jones", "Amy Jones"],
 
-  const zonePeople = {
+      "C2": ["Emily Griffin", "Rachael Gabel"],
 
-    "AG": ["Vishnu", "Grace"],
+      "C3": ["Regan", "Olivia Radford"],
 
-    "A1": ["Manoj", "Pukar"],
+      "DG": ["Gavin", "Gemma Harris"],
 
-    "A2": ["Rhys", "Laura Nulty"],
+      "D1": ["Asif", "Rachel Forrest"],
 
-    "BG & B1": ["Abdul", "Salu"],
+      "D2": ["Lily", "Anthea"],
 
-    "CG": ["Danielle Bishay", "Claire Nami"],
+      "EG": ["Emily Gallone", "Roxanne"],
 
-    "C1": ["Hannah Jones", "Amy Jones"],
+      "E1": ["Isabel", "Shaimaa"],
 
-    "C2": ["Emily Griffin", "Rachael Gabel"],
+      "E2": ["Danielle Jolosa", "Hanan"],
 
-    "C3": ["Regan", "Olivia Radford"],
+      "E3": ["Erika", "Sarah Barr"],
 
-    "DG": ["Gavin", "Gemma Harris"],
+      "AG (Parents)": ["Aisha", "Conference Room A"]
 
-    "D1": ["Asif", "Rachel Forrest"],
-
-    "D2": ["Lily", "Anthea"],
-
-    "EG": ["Emily Gallone", "Roxanne"],
-
-    "E1": ["Isabel", "Shaimaa"],
-
-    "E2": ["Danielle Jolosa", "Hanan"],
-
-    "E3": ["Erika", "Sarah Barr"],
-
-    "AG (Parents)": ["Aisha", "Conference Room A"]
-
-  };
+    };
 
 
-  /* DISPLAY ZONE */
+    /* GET ZONE FROM URL */
 
-  document
-    .getElementById("zoneName")
-    .textContent = zone;
+    const params = new URLSearchParams(
+      window.location.search
+    );
+
+    const zone = params.get("zone");
 
 
-  if (zonePeople[zone]) {
+    if (!zone || !zonePeople[zone]) {
 
-    document
-      .getElementById("zonePeople")
-      .innerHTML =
+      document.getElementById("zoneTitle").textContent =
+        "Zone Not Found";
+
+    } else {
+
+      document.getElementById("zoneTitle").textContent =
+        zone;
+
+      document.getElementById("zonePeople").innerHTML =
         "<strong>Lead:</strong> " +
         zonePeople[zone][0] +
         "<br>" +
         "<strong>Deputy / Location:</strong> " +
         zonePeople[zone][1];
 
-  }
+    }
 
 
-  /* ELEMENTS */
+    const safeButton =
+      document.getElementById("safeButton");
 
-  const missingForm =
-    document.getElementById("missingForm");
+    const missingButton =
+      document.getElementById("missingButton");
 
-  const result =
-    document.getElementById("result");
+    const unsafeButton =
+      document.getElementById("unsafeButton");
 
+    const missingForm =
+      document.getElementById("missingForm");
 
-  /* ALL SAFE */
+    const unsafeForm =
+      document.getElementById("unsafeForm");
 
-  document
-    .getElementById("safeButton")
-    .addEventListener("click", function() {
-
-      saveStatus("ALL SAFE");
-
-    });
-
-
-  /* NOT SAFE */
-
-  document
-    .getElementById("unsafeButton")
-    .addEventListener("click", function() {
-
-      saveStatus("NOT SAFE");
-
-    });
+    const result =
+      document.getElementById("result");
 
 
-  /* MISSING */
+    /* SHOW RESULT */
 
-  document
-    .getElementById("missingButton")
-    .addEventListener("click", function() {
+    function showResult(message, type) {
 
-      missingForm.style.display = "block";
+      result.className = "result " + type;
 
-      result.style.display = "none";
+      result.innerHTML = message;
 
-      document
-        .getElementById("personName")
-        .focus();
+      result.style.display = "block";
 
-    });
+      window.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: "smooth"
+      });
 
-
-  /* CANCEL */
-
-  document
-    .getElementById("cancelMissingButton")
-    .addEventListener("click", function() {
-
-      missingForm.style.display = "none";
-
-    });
+    }
 
 
-  /* SAVE MISSING REPORT */
+    /* SAVE SIMPLE STATUS */
 
-  document
-    .getElementById("saveMissingButton")
-    .addEventListener("click", async function() {
-
-      const personName =
-        document
-          .getElementById("personName")
-          .value
-          .trim();
-
-
-      const lastLocation =
-        document
-          .getElementById("lastLocation")
-          .value
-          .trim();
-
-
-      const details =
-        document
-          .getElementById("missingDetails")
-          .value
-          .trim();
-
-
-      if (!personName) {
-
-        alert(
-          "Please enter the person's name."
-        );
-
-        return;
-
-      }
-
-
-      if (!lastLocation) {
-
-        alert(
-          "Please enter the last known location."
-        );
-
-        return;
-
-      }
-
+    async function saveStatus(status) {
 
       try {
 
@@ -578,153 +525,354 @@
 
             zone: zone,
 
-            status: "MISSING",
+            status: status,
 
-            lead:
-              zonePeople[zone]
-                ? zonePeople[zone][0]
-                : "",
+            lead: zonePeople[zone][0],
 
-            deputy:
-              zonePeople[zone]
-                ? zonePeople[zone][1]
-                : "",
+            deputy: zonePeople[zone][1],
 
-            personName: personName,
-
-            lastLocation: lastLocation,
-
-            details: details,
-
-            checkedAt:
-              serverTimestamp()
+            checkedAt: serverTimestamp()
 
           }
         );
 
 
-        missingForm.style.display =
-          "none";
+        missingForm.style.display = "none";
+
+        unsafeForm.style.display = "none";
 
 
-        result.className =
-          "result missing";
+        if (status === "ALL SAFE") {
 
+          showResult(
+            "✓ Zone is Secure<br><br>" +
+            "All personnel and students are accounted for.",
+            "safe"
+          );
 
-        result.style.display =
-          "block";
+        }
 
+        if (status === "NOT SAFE") {
 
-        result.innerHTML =
-          "MISSING report saved successfully.<br><br>" +
-          "<strong>" +
-          personName +
-          "</strong><br>" +
-          lastLocation;
+          showResult(
+            "⚠ NOT SAFE report saved.<br><br>" +
+            "Please contact Security / SLT immediately.",
+            "unsafe"
+          );
 
+        }
 
-        document
-          .getElementById("personName")
-          .value = "";
-
-
-        document
-          .getElementById("lastLocation")
-          .value = "";
-
-
-        document
-          .getElementById("missingDetails")
-          .value = "";
-
-
-      }
-
-      catch (error) {
+      } catch (error) {
 
         console.error(error);
 
         alert(
-          "Unable to save the missing report. Please try again."
+          "Unable to save the report. Please try again."
         );
 
       }
 
-    });
+    }
 
 
-  /* SAVE ALL SAFE / NOT SAFE */
+    /* ALL SAFE */
 
-  async function saveStatus(status) {
+    safeButton.addEventListener(
+      "click",
+      function() {
 
-    try {
+        saveStatus("ALL SAFE");
 
-      const person =
-        zonePeople[zone] || ["", ""];
+      }
+    );
 
 
-      await addDoc(
-        collection(db, "checkins"),
-        {
+    /* MISSING */
 
-          zone: zone,
+    missingButton.addEventListener(
+      "click",
+      function() {
 
-          status: status,
+        unsafeForm.style.display = "none";
 
-          lead: person[0],
+        result.style.display = "none";
 
-          deputy: person[1],
+        missingForm.style.display = "block";
 
-          checkedAt:
-            serverTimestamp()
+        document
+          .getElementById("personName")
+          .focus();
+
+      }
+    );
+
+
+    /* SAVE MISSING */
+
+    document
+      .getElementById("saveMissingButton")
+      .addEventListener(
+        "click",
+        async function() {
+
+          const personName =
+            document
+              .getElementById("personName")
+              .value
+              .trim();
+
+          const lastLocation =
+            document
+              .getElementById("lastLocation")
+              .value
+              .trim();
+
+          const details =
+            document
+              .getElementById("missingDetails")
+              .value
+              .trim();
+
+
+          if (!personName || !lastLocation) {
+
+            alert(
+              "Please enter the person's name and last known location."
+            );
+
+            return;
+
+          }
+
+
+          try {
+
+            await addDoc(
+              collection(db, "checkins"),
+              {
+
+                zone: zone,
+
+                status: "MISSING",
+
+                lead: zonePeople[zone][0],
+
+                deputy: zonePeople[zone][1],
+
+                personName: personName,
+
+                lastLocation: lastLocation,
+
+                details: details,
+
+                checkedAt: serverTimestamp()
+
+              }
+            );
+
+
+            missingForm.style.display = "none";
+
+
+            document
+              .getElementById("personName")
+              .value = "";
+
+            document
+              .getElementById("lastLocation")
+              .value = "";
+
+            document
+              .getElementById("missingDetails")
+              .value = "";
+
+
+            showResult(
+              "⚠ Missing person report saved.<br><br>" +
+              "Please continue searching and inform Security / SLT.",
+              "missing"
+            );
+
+
+          } catch (error) {
+
+            console.error(error);
+
+            alert(
+              "Unable to save the missing report. Please try again."
+            );
+
+          }
 
         }
       );
 
 
-      result.style.display =
-        "block";
+    /* CANCEL MISSING */
 
+    document
+      .getElementById("cancelMissingButton")
+      .addEventListener(
+        "click",
+        function() {
 
-      if (status === "ALL SAFE") {
+          missingForm.style.display = "none";
 
-        result.className =
-          "result safe";
-
-
-        result.innerHTML =
-          "<strong>Zone is Secure</strong><br>" +
-          "All personnel and students are accounted for.";
-
-      }
-
-      else {
-
-        result.className =
-          "result unsafe";
-
-
-        result.innerHTML =
-          "<strong>NOT SAFE has been recorded.</strong><br>" +
-          "Please follow the emergency procedure.";
-
-      }
-
-    }
-
-    catch (error) {
-
-      console.error(error);
-
-      alert(
-        "Unable to save the status. Please try again."
+        }
       );
 
-    }
 
-  }
+    /* NOT SAFE */
 
-</script>
+    unsafeButton.addEventListener(
+      "click",
+      function() {
+
+        missingForm.style.display = "none";
+
+        result.style.display = "none";
+
+        unsafeForm.style.display = "block";
+
+        document
+          .getElementById("safetyConcern")
+          .focus();
+
+      }
+    );
+
+
+    /* SAVE NOT SAFE */
+
+    document
+      .getElementById("saveUnsafeButton")
+      .addEventListener(
+        "click",
+        async function() {
+
+          const safetyConcern =
+            document
+              .getElementById("safetyConcern")
+              .value
+              .trim();
+
+          const issueLocation =
+            document
+              .getElementById("issueLocation")
+              .value
+              .trim();
+
+          const details =
+            document
+              .getElementById("unsafeDetails")
+              .value
+              .trim();
+
+          const immediateAssistance =
+            document
+              .getElementById("immediateAssistance")
+              .value;
+
+
+          if (
+            !safetyConcern ||
+            !issueLocation ||
+            !immediateAssistance
+          ) {
+
+            alert(
+              "Please complete the safety concern, location and immediate assistance fields."
+            );
+
+            return;
+
+          }
+
+
+          try {
+
+            await addDoc(
+              collection(db, "checkins"),
+              {
+
+                zone: zone,
+
+                status: "NOT SAFE",
+
+                lead: zonePeople[zone][0],
+
+                deputy: zonePeople[zone][1],
+
+                safetyConcern: safetyConcern,
+
+                issueLocation: issueLocation,
+
+                details: details,
+
+                immediateAssistance:
+                  immediateAssistance,
+
+                checkedAt: serverTimestamp()
+
+              }
+            );
+
+
+            unsafeForm.style.display = "none";
+
+
+            document
+              .getElementById("safetyConcern")
+              .value = "";
+
+            document
+              .getElementById("issueLocation")
+              .value = "";
+
+            document
+              .getElementById("unsafeDetails")
+              .value = "";
+
+            document
+              .getElementById("immediateAssistance")
+              .value = "";
+
+
+            showResult(
+              "⚠ NOT SAFE report saved.<br><br>" +
+              "Please contact Security / SLT immediately.",
+              "unsafe"
+            );
+
+
+          } catch (error) {
+
+            console.error(error);
+
+            alert(
+              "Unable to save the safety report. Please try again."
+            );
+
+          }
+
+        }
+      );
+
+
+    /* CANCEL NOT SAFE */
+
+    document
+      .getElementById("cancelUnsafeButton")
+      .addEventListener(
+        "click",
+        function() {
+
+          unsafeForm.style.display = "none";
+
+        }
+      );
+
+  </script>
 
 </body>
 </html>
