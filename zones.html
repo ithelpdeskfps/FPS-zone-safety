@@ -238,7 +238,6 @@
 
   <div class="zones">
 
-    <!-- AG -->
     <div class="zone-card">
       <div class="zone-name">AG</div>
       <div class="person"><span class="label">Lead:</span> Vishnu</div>
@@ -248,7 +247,6 @@
       <button class="open-btn" onclick="openZone('AG')">Open Zone</button>
     </div>
 
-    <!-- A1 -->
     <div class="zone-card">
       <div class="zone-name">A1</div>
       <div class="person"><span class="label">Lead:</span> Manoj</div>
@@ -258,7 +256,6 @@
       <button class="open-btn" onclick="openZone('A1')">Open Zone</button>
     </div>
 
-    <!-- A2 -->
     <div class="zone-card">
       <div class="zone-name">A2</div>
       <div class="person"><span class="label">Lead:</span> Rhys</div>
@@ -268,7 +265,6 @@
       <button class="open-btn" onclick="openZone('A2')">Open Zone</button>
     </div>
 
-    <!-- BG & B1 -->
     <div class="zone-card">
       <div class="zone-name">BG &amp; B1</div>
       <div class="person"><span class="label">Lead:</span> Abdul</div>
@@ -278,7 +274,6 @@
       <button class="open-btn" onclick="openZone('BG-B1')">Open Zone</button>
     </div>
 
-    <!-- CG -->
     <div class="zone-card">
       <div class="zone-name">CG</div>
       <div class="person"><span class="label">Lead:</span> Danielle Bishay</div>
@@ -288,7 +283,6 @@
       <button class="open-btn" onclick="openZone('CG')">Open Zone</button>
     </div>
 
-    <!-- C1 -->
     <div class="zone-card">
       <div class="zone-name">C1</div>
       <div class="person"><span class="label">Lead:</span> Hannah Jones</div>
@@ -298,7 +292,6 @@
       <button class="open-btn" onclick="openZone('C1')">Open Zone</button>
     </div>
 
-    <!-- C2 -->
     <div class="zone-card">
       <div class="zone-name">C2</div>
       <div class="person"><span class="label">Lead:</span> Emily Griffin</div>
@@ -308,7 +301,6 @@
       <button class="open-btn" onclick="openZone('C2')">Open Zone</button>
     </div>
 
-    <!-- C3 -->
     <div class="zone-card">
       <div class="zone-name">C3</div>
       <div class="person"><span class="label">Lead:</span> Regan</div>
@@ -318,7 +310,6 @@
       <button class="open-btn" onclick="openZone('C3')">Open Zone</button>
     </div>
 
-    <!-- DG -->
     <div class="zone-card">
       <div class="zone-name">DG</div>
       <div class="person"><span class="label">Lead:</span> Gavin</div>
@@ -328,7 +319,6 @@
       <button class="open-btn" onclick="openZone('DG')">Open Zone</button>
     </div>
 
-    <!-- D1 -->
     <div class="zone-card">
       <div class="zone-name">D1</div>
       <div class="person"><span class="label">Lead:</span> Asif</div>
@@ -338,7 +328,6 @@
       <button class="open-btn" onclick="openZone('D1')">Open Zone</button>
     </div>
 
-    <!-- D2 -->
     <div class="zone-card">
       <div class="zone-name">D2</div>
       <div class="person"><span class="label">Lead:</span> Lily</div>
@@ -348,7 +337,6 @@
       <button class="open-btn" onclick="openZone('D2')">Open Zone</button>
     </div>
 
-    <!-- EG -->
     <div class="zone-card">
       <div class="zone-name">EG</div>
       <div class="person"><span class="label">Lead:</span> Emily Gallone</div>
@@ -358,7 +346,6 @@
       <button class="open-btn" onclick="openZone('EG')">Open Zone</button>
     </div>
 
-    <!-- E1 -->
     <div class="zone-card">
       <div class="zone-name">E1</div>
       <div class="person"><span class="label">Lead:</span> Isabel</div>
@@ -368,7 +355,6 @@
       <button class="open-btn" onclick="openZone('E1')">Open Zone</button>
     </div>
 
-    <!-- E2 -->
     <div class="zone-card">
       <div class="zone-name">E2</div>
       <div class="person"><span class="label">Lead:</span> Danielle Jolosa</div>
@@ -378,7 +364,6 @@
       <button class="open-btn" onclick="openZone('E2')">Open Zone</button>
     </div>
 
-    <!-- E3 -->
     <div class="zone-card">
       <div class="zone-name">E3</div>
       <div class="person"><span class="label">Lead:</span> Erika</div>
@@ -388,7 +373,6 @@
       <button class="open-btn" onclick="openZone('E3')">Open Zone</button>
     </div>
 
-    <!-- AG Parents -->
     <div class="zone-card">
       <div class="zone-name">AG (Parents)</div>
       <div class="person"><span class="label">Lead:</span> Aisha</div>
@@ -402,10 +386,10 @@
 
 </main>
 
-
 <script type="module">
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 
 import {
   getFirestore,
@@ -415,12 +399,14 @@ import {
   onSnapshot,
   doc,
   getDoc
-} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+}
+from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
 import {
   getAuth,
   onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+}
+from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
 
 const firebaseConfig = {
@@ -435,21 +421,193 @@ const firebaseConfig = {
 
 
 const app = initializeApp(firebaseConfig);
-
 const db = getFirestore(app);
-
 const auth = getAuth(app);
 
 let currentSessionId = null;
 
 
+/* Login protection */
+onAuthStateChanged(auth, async function(user) {
+
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  try {
+
+    await loadCurrentSession();
+
+    listenForCheckins();
+
+  } catch (error) {
+
+    console.error(error);
+
+    showError(
+      "Unable to load the current safety session."
+    );
+
+  }
+
+});
+
+
 /*
-  Convert the display zone name to the
-  ID used by the HTML.
+  Always get the latest current session.
+*/
+async function loadCurrentSession() {
+
+  const sessionRef = doc(
+    db,
+    "system",
+    "currentSession"
+  );
+
+  const sessionSnap = await getDoc(sessionRef);
+
+  if (!sessionSnap.exists()) {
+
+    currentSessionId = null;
+
+    document.getElementById("sessionInfo").textContent =
+      "No active safety session.";
+
+    throw new Error("No current safety session found.");
+
+  }
+
+  const sessionData = sessionSnap.data();
+
+  currentSessionId = sessionData.sessionId;
+
+  if (!currentSessionId) {
+
+    throw new Error(
+      "Current safety session ID is missing."
+    );
+
+  }
+
+  if (
+    sessionData.startedAt &&
+    typeof sessionData.startedAt.toDate === "function"
+  ) {
+
+    document.getElementById("sessionInfo").textContent =
+      "Current Safety Session started: " +
+      sessionData.startedAt.toDate().toLocaleString();
+
+  } else {
+
+    document.getElementById("sessionInfo").textContent =
+      "Current Safety Session: Active";
+
+  }
+
+}
+
+
+/*
+  Listen for Firebase check-ins.
+*/
+function listenForCheckins() {
+
+  const checkinsQuery = query(
+    collection(db, "checkins"),
+    orderBy("checkedAt", "desc")
+  );
+
+  onSnapshot(
+    checkinsQuery,
+
+    function(snapshot) {
+
+      const latestByZone = {};
+
+      snapshot.forEach(function(docSnapshot) {
+
+        const data = docSnapshot.data();
+
+        if (
+          !data.sessionId ||
+          data.sessionId !== currentSessionId
+        ) {
+          return;
+        }
+
+        if (!latestByZone[data.zone]) {
+
+          latestByZone[data.zone] = data;
+
+        }
+
+      });
+
+      updateZoneStatuses(latestByZone);
+
+    },
+
+    function(error) {
+
+      console.error(error);
+
+      showError(
+        "Unable to load zone check-ins. Please check Firestore permissions."
+      );
+
+    }
+  );
+
+}
+
+
+/*
+  Convert old and new status values
+  into one standard value.
+*/
+function normalizeStatus(status) {
+
+  if (!status) {
+    return "";
+  }
+
+  const value =
+    String(status).trim().toLowerCase();
+
+  if (
+    value === "safe" ||
+    value === "all safe"
+  ) {
+    return "safe";
+  }
+
+  if (
+    value === "missing"
+  ) {
+    return "missing";
+  }
+
+  if (
+    value === "unsafe" ||
+    value === "not safe"
+  ) {
+    return "unsafe";
+  }
+
+  return value;
+
+}
+
+
+/*
+  Map zone names to HTML IDs.
 */
 function getZoneElementId(zoneName) {
 
   const mapping = {
+
     "AG": "AG",
     "A1": "A1",
     "A2": "A2",
@@ -466,6 +624,7 @@ function getZoneElementId(zoneName) {
     "E2": "E2",
     "E3": "E3",
     "AG (Parents)": "AG-Parents"
+
   };
 
   return mapping[zoneName] || zoneName;
@@ -474,160 +633,12 @@ function getZoneElementId(zoneName) {
 
 
 /*
-  Login protection
-*/
-onAuthStateChanged(auth, async function(user) {
-
-  if (!user) {
-
-    window.location.href = "login.html";
-
-    return;
-
-  }
-
-
-  try {
-
-    const sessionRef =
-      doc(db, "system", "currentSession");
-
-    const sessionSnap =
-      await getDoc(sessionRef);
-
-
-    if (!sessionSnap.exists()) {
-
-      showError(
-        "No active safety session found. Please open the Dashboard first."
-      );
-
-      document.getElementById("sessionInfo").textContent =
-        "No active safety session.";
-
-      return;
-
-    }
-
-
-    const sessionData =
-      sessionSnap.data();
-
-    currentSessionId =
-      sessionData.sessionId;
-
-
-    if (
-      sessionData.startedAt &&
-      typeof sessionData.startedAt.toDate === "function"
-    ) {
-
-      document.getElementById("sessionInfo").textContent =
-        "Current Safety Session started: " +
-        sessionData.startedAt.toDate().toLocaleString();
-
-    } else {
-
-      document.getElementById("sessionInfo").textContent =
-        "Current Safety Session: Active";
-
-    }
-
-
-    listenForCheckins();
-
-
-  } catch (error) {
-
-    console.error(error);
-
-    showError(
-      "Unable to load the current safety session."
-    );
-
-  }
-
-});
-
-
-/*
-  Listen for all check-ins.
-  Firebase will automatically update
-  the page when a new check-in is saved.
-*/
-function listenForCheckins() {
-
-  const checkinsQuery =
-    query(
-      collection(db, "checkins"),
-      orderBy("checkedAt", "desc")
-    );
-
-
-  onSnapshot(
-    checkinsQuery,
-    function(snapshot) {
-
-      const latestByZone = {};
-
-
-      snapshot.forEach(function(docSnapshot) {
-
-        const data =
-          docSnapshot.data();
-
-
-        /*
-          Only use records belonging
-          to the current safety session.
-        */
-        if (
-          !data.sessionId ||
-          data.sessionId !== currentSessionId
-        ) {
-
-          return;
-
-        }
-
-
-        /*
-          Because the query is ordered
-          newest first, the first report
-          we see for each zone is the latest.
-        */
-        if (!latestByZone[data.zone]) {
-
-          latestByZone[data.zone] = data;
-
-        }
-
-      });
-
-
-      updateZoneStatuses(latestByZone);
-
-    },
-    function(error) {
-
-      console.error(error);
-
-      showError(
-        "Unable to load zone check-ins. Please check Firestore permissions."
-      );
-
-    }
-  );
-
-}
-
-
-/*
-  Update all zone cards
+  Update all zone cards.
 */
 function updateZoneStatuses(latestByZone) {
 
   const zones = [
+
     "AG",
     "A1",
     "A2",
@@ -644,6 +655,7 @@ function updateZoneStatuses(latestByZone) {
     "E2",
     "E3",
     "AG (Parents)"
+
   ];
 
 
@@ -651,7 +663,6 @@ function updateZoneStatuses(latestByZone) {
 
     const elementId =
       getZoneElementId(zoneName);
-
 
     const statusElement =
       document.getElementById(
@@ -663,11 +674,8 @@ function updateZoneStatuses(latestByZone) {
         "time-" + elementId
       );
 
-
     if (!statusElement) {
-
       return;
-
     }
 
 
@@ -675,9 +683,7 @@ function updateZoneStatuses(latestByZone) {
       latestByZone[zoneName];
 
 
-    /*
-      No report = Unchecked
-    */
+    /* No report */
     if (!report) {
 
       statusElement.textContent =
@@ -695,9 +701,15 @@ function updateZoneStatuses(latestByZone) {
 
 
     /*
-      ALL SAFE
+      IMPORTANT:
+      Accept both old and new
+      Firebase status values.
     */
-    if (report.status === "safe") {
+    const status =
+      normalizeStatus(report.status);
+
+
+    if (status === "safe") {
 
       statusElement.textContent =
         "ALL SAFE";
@@ -707,11 +719,7 @@ function updateZoneStatuses(latestByZone) {
 
     }
 
-
-    /*
-      MISSING
-    */
-    else if (report.status === "missing") {
+    else if (status === "missing") {
 
       statusElement.textContent =
         "MISSING";
@@ -721,11 +729,7 @@ function updateZoneStatuses(latestByZone) {
 
     }
 
-
-    /*
-      NOT SAFE
-    */
-    else if (report.status === "unsafe") {
+    else if (status === "unsafe") {
 
       statusElement.textContent =
         "NOT SAFE";
@@ -734,7 +738,6 @@ function updateZoneStatuses(latestByZone) {
         "status status-unsafe";
 
     }
-
 
     else {
 
@@ -748,7 +751,7 @@ function updateZoneStatuses(latestByZone) {
 
 
     /*
-      Show check-in time
+      Show checked time.
     */
     if (
       report.checkedAt &&
@@ -759,7 +762,9 @@ function updateZoneStatuses(latestByZone) {
         "Checked: " +
         report.checkedAt.toDate().toLocaleString();
 
-    } else {
+    }
+
+    else {
 
       timeElement.textContent =
         "Checking time...";
@@ -771,6 +776,9 @@ function updateZoneStatuses(latestByZone) {
 }
 
 
+/*
+  Show error.
+*/
 function showError(message) {
 
   const errorBox =
@@ -786,7 +794,7 @@ function showError(message) {
 
 
 /*
-  Open individual zone
+  Open individual zone.
 */
 window.openZone = function(zone) {
 
