@@ -112,13 +112,15 @@
       initializeApp
     } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 
- import {
-  getAuth,
-  setPersistence,
-  browserLocalPersistence,
-  signInWithEmailAndPassword
-} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+    import {
+      getAuth,
+      setPersistence,
+      browserLocalPersistence,
+      signInWithEmailAndPassword
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
+
+    // Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyB0--wrOqeid_iVGJkqDwJAWBefPyI4HPw",
       authDomain: "fps-zone-safety.firebaseapp.com",
@@ -130,33 +132,59 @@
     };
 
 
+    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
+
+    // Initialize Firebase Authentication
     const auth = getAuth(app);
 
-await setPersistence(auth, browserLocalPersistence);
 
+    // Login function
     window.login = async function() {
 
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value;
-      const message = document.getElementById("message");
+      const email =
+        document.getElementById("email").value.trim();
+
+      const password =
+        document.getElementById("password").value;
+
+      const message =
+        document.getElementById("message");
+
 
       message.textContent = "";
 
+
+      // Check fields
       if (!email || !password) {
-        message.textContent = "Please enter your email and password.";
+
+        message.textContent =
+          "Please enter your email and password.";
+
         return;
       }
 
+
       try {
 
+        // Keep the user logged in across pages
+        await setPersistence(
+          auth,
+          browserLocalPersistence
+        );
+
+
+        // Sign in
         await signInWithEmailAndPassword(
           auth,
           email,
           password
         );
 
+
+        // Go to dashboard
         window.location.href = "index.html";
+
 
       } catch (error) {
 
