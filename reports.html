@@ -2,980 +2,986 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Safety Reports</title>
 
-  <title>Safety Reports</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f8;
+    margin: 0;
+    color: #222;
+}
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f6f8;
-      margin: 0;
-      padding: 20px;
-      color: #222;
-    }
+header {
+    background: #17365d;
+    color: white;
+    padding: 18px 25px;
+}
 
-    .header {
-      background: #17365d;
-      color: white;
-      padding: 18px;
-      text-align: center;
-      border-radius: 10px;
-      margin-bottom: 20px;
-    }
+header h1 {
+    margin: 0;
+    font-size: 24px;
+}
 
-    .header h1 {
-      margin: 0;
-      font-size: 26px;
-    }
+nav {
+    margin-top: 10px;
+}
 
-    .container {
-      max-width: 1200px;
-      margin: auto;
-    }
+nav a {
+    color: white;
+    text-decoration: none;
+    margin-right: 20px;
+    font-size: 14px;
+}
 
+.container {
+    max-width: 1200px;
+    margin: 25px auto;
+    padding: 0 20px;
+}
+
+.session-box {
+    background: white;
+    border-radius: 10px;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.session-title {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.session-info {
+    margin-top: 6px;
+    color: #666;
+    font-size: 14px;
+}
+
+.summary {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.card {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.card h2 {
+    margin: 0;
+    font-size: 32px;
+}
+
+.card p {
+    margin: 8px 0 0;
+    color: #666;
+}
+
+.safe {
+    color: #16803c;
+}
+
+.unsafe {
+    color: #c62828;
+}
+
+.missing {
+    color: #d88900;
+}
+
+.unchecked {
+    color: #555;
+}
+
+.section {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.section h2 {
+    margin-top: 0;
+    color: #17365d;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 11px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+}
+
+th {
+    background: #f0f3f7;
+}
+
+.status {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.status-safe {
+    background: #dff5e5;
+    color: #16803c;
+}
+
+.status-unsafe {
+    background: #fde0e0;
+    color: #c62828;
+}
+
+.status-missing {
+    background: #fff0cc;
+    color: #a96800;
+}
+
+.status-unchecked {
+    background: #e8e8e8;
+    color: #555;
+}
+
+.report-item {
+    border-left: 5px solid #c62828;
+    background: #fff7f7;
+    padding: 15px;
+    margin-bottom: 12px;
+    border-radius: 5px;
+}
+
+.missing-item {
+    border-left: 5px solid #d88900;
+    background: #fffaf0;
+    padding: 15px;
+    margin-bottom: 12px;
+    border-radius: 5px;
+}
+
+.actions {
+    margin-bottom: 20px;
+}
+
+button {
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-right: 8px;
+    font-weight: bold;
+}
+
+.print-button {
+    background: #17365d;
+    color: white;
+}
+
+.copy-button {
+    background: #555;
+    color: white;
+}
+
+.error {
+    background: #fde0e0;
+    color: #a00000;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    display: none;
+}
+
+.loading {
+    color: #666;
+    padding: 15px 0;
+}
+
+@media (max-width: 800px) {
     .summary {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 15px;
-      margin-bottom: 25px;
-    }
-
-    .summary-card {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      text-align: center;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    }
-
-    .summary-number {
-      font-size: 32px;
-      font-weight: bold;
-      margin-bottom: 5px;
-    }
-
-    .summary-label {
-      font-size: 14px;
-      color: #666;
-    }
-
-    .safe {
-      color: #16a34a;
-    }
-
-    .unsafe {
-      color: #dc2626;
-    }
-
-    .missing {
-      color: #d97706;
-    }
-
-    .unchecked {
-      color: #6b7280;
-    }
-
-    .section {
-      background: white;
-      border-radius: 10px;
-      padding: 20px;
-      margin-bottom: 25px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    }
-
-    .section h2 {
-      margin-top: 0;
-      color: #17365d;
-    }
-
-    .report-card {
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      padding: 15px;
-      margin-bottom: 12px;
-      background: #fafafa;
-    }
-
-    .report-card.safe-card {
-      border-left: 6px solid #16a34a;
-    }
-
-    .report-card.missing-card {
-      border-left: 6px solid #f59e0b;
-    }
-
-    .report-card.unsafe-card {
-      border-left: 6px solid #dc2626;
-    }
-
-    .report-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .zone-name {
-      font-size: 19px;
-      font-weight: bold;
-      color: #17365d;
-    }
-
-    .status {
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: bold;
-    }
-
-    .status-safe {
-      background: #dcfce7;
-      color: #166534;
-    }
-
-    .status-missing {
-      background: #fef3c7;
-      color: #92400e;
-    }
-
-    .status-unsafe {
-      background: #fee2e2;
-      color: #991b1b;
-    }
-
-    .status-unchecked {
-      background: #e5e7eb;
-      color: #374151;
-    }
-
-    .details {
-      margin-top: 10px;
-      line-height: 1.6;
-      font-size: 14px;
-    }
-
-    .time {
-      color: #666;
-      font-size: 13px;
-      margin-top: 8px;
-    }
-
-    .button-area {
-      text-align: center;
-      margin: 25px 0;
-    }
-
-    .button {
-      display: inline-block;
-      padding: 11px 18px;
-      margin: 5px;
-      border-radius: 7px;
-      border: none;
-      background: #17365d;
-      color: white;
-      font-size: 15px;
-      font-weight: bold;
-      cursor: pointer;
-      text-decoration: none;
-    }
-
-    .button:hover {
-      opacity: 0.9;
-    }
-
-    .refresh-button {
-      background: #16a34a;
-    }
-
-    .loading {
-      text-align: center;
-      padding: 20px;
-      color: #666;
-    }
-
-    .empty {
-      text-align: center;
-      padding: 15px;
-      color: #777;
-    }
-
-    @media (max-width: 800px) {
-
-      .summary {
         grid-template-columns: repeat(2, 1fr);
-      }
-
     }
 
-    @media (max-width: 500px) {
+    table {
+        font-size: 13px;
+    }
+}
 
-      body {
-        padding: 10px;
-      }
-
-      .summary {
-        grid-template-columns: 1fr 1fr;
-        gap: 8px;
-      }
-
-      .summary-card {
-        padding: 15px 8px;
-      }
-
-      .summary-number {
-        font-size: 26px;
-      }
-
-      .report-header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
+@media (max-width: 500px) {
+    .summary {
+        grid-template-columns: 1fr;
     }
 
-    @media print {
+    header {
+        padding: 15px;
+    }
 
-      body {
-        background: white;
-        padding: 0;
-      }
+    nav a {
+        display: inline-block;
+        margin-bottom: 8px;
+    }
+}
 
-      .button-area {
+@media print {
+    nav,
+    .actions {
         display: none;
-      }
+    }
 
-      .section {
+    body {
+        background: white;
+    }
+
+    .section,
+    .card,
+    .session-box {
         box-shadow: none;
         border: 1px solid #ddd;
-      }
-
     }
-
-  </style>
+}
+</style>
 </head>
 
 <body>
 
-  <div class="header">
+<header>
     <h1>Safety Reports</h1>
-  </div>
 
+    <nav>
+        <a href="index.html">Dashboard</a>
+        <a href="zones.html">Zones</a>
+        <a href="reports.html">Reports</a>
+        <a href="contacts.html">Contacts</a>
+    </nav>
+</header>
 
-  <div class="container">
+<div class="container">
 
+    <div id="errorBox" class="error"></div>
 
-    <!-- SUMMARY -->
+    <div class="session-box">
+        <div class="session-title">Current Safety Session</div>
+        <div id="sessionInfo" class="session-info">
+            Loading current safety session...
+        </div>
+    </div>
+
+    <div class="actions">
+        <button class="print-button" onclick="window.print()">PRINT REPORT</button>
+        <button class="copy-button" onclick="copyReport()">COPY REPORT</button>
+    </div>
 
     <div class="summary">
 
-      <div class="summary-card">
-        <div id="safeCount" class="summary-number safe">0</div>
-        <div class="summary-label">All Clear / Safe</div>
-      </div>
+        <div class="card">
+            <h2 id="safeCount" class="safe">0</h2>
+            <p>All Clear / Safe</p>
+        </div>
 
-      <div class="summary-card">
-        <div id="unsafeCount" class="summary-number unsafe">0</div>
-        <div class="summary-label">Unsafe</div>
-      </div>
+        <div class="card">
+            <h2 id="unsafeCount" class="unsafe">0</h2>
+            <p>Unsafe</p>
+        </div>
 
-      <div class="summary-card">
-        <div id="missingCount" class="summary-number missing">0</div>
-        <div class="summary-label">Missing</div>
-      </div>
+        <div class="card">
+            <h2 id="missingCount" class="missing">0</h2>
+            <p>Missing</p>
+        </div>
 
-      <div class="summary-card">
-        <div id="uncheckedCount" class="summary-number unchecked">0</div>
-        <div class="summary-label">Unchecked</div>
-      </div>
-
-    </div>
-
-
-    <!-- BUTTONS -->
-
-    <div class="button-area">
-
-      <button
-        class="button refresh-button"
-        onclick="location.reload()">
-        Refresh Report
-      </button>
-
-      <button
-        class="button"
-        onclick="window.print()">
-        Print Report
-      </button>
-
-      <a
-        href="index.html"
-        class="button">
-        Back to Dashboard
-      </a>
+        <div class="card">
+            <h2 id="uncheckedCount" class="unchecked">16</h2>
+            <p>Unchecked</p>
+        </div>
 
     </div>
-
-
-    <!-- ZONE STATUS -->
 
     <div class="section">
 
-      <h2>Zone Status</h2>
+        <h2>Zone Status</h2>
 
-      <div id="zoneStatus">
-
-        <div class="loading">
-          Loading zone status...
+        <div id="zoneLoading" class="loading">
+            Loading reports...
         </div>
 
-      </div>
+        <table id="zoneTable" style="display:none;">
+
+            <thead>
+                <tr>
+                    <th>Zone / Area</th>
+                    <th>Lead</th>
+                    <th>Deputy</th>
+                    <th>Status</th>
+                    <th>Time</th>
+                </tr>
+            </thead>
+
+            <tbody id="zoneTableBody"></tbody>
+
+        </table>
 
     </div>
-
-
-    <!-- MISSING REPORTS -->
 
     <div class="section">
 
-      <h2>Students / Personnel Located Off Register</h2>
+        <h2>Students / Personnel Located Off Register</h2>
 
-      <div id="missingReports">
-
-        <div class="loading">
-          Loading reports...
+        <div id="missingReports">
+            <div class="loading">No missing reports.</div>
         </div>
 
-      </div>
-
     </div>
-
-
-    <!-- UNSAFE REPORTS -->
 
     <div class="section">
 
-      <h2>Safety Concerns</h2>
+        <h2>Safety Concerns</h2>
 
-      <div id="unsafeReports">
-
-        <div class="loading">
-          Loading reports...
+        <div id="unsafeReports">
+            <div class="loading">No safety concerns reported.</div>
         </div>
-
-      </div>
 
     </div>
 
-
-  </div>
-
-
-  <!-- FIREBASE -->
-
-  <script type="module">
-
-    import {
-      initializeApp
-    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-
-    import {
-      getFirestore,
-      collection,
-      query,
-      orderBy,
-      onSnapshot
-    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+</div>
 
 
-    const firebaseConfig = {
+<script type="module">
 
-      apiKey:
-        "AIzaSyB0--wrOqeid_iVGJkqDwJAWBefPyI4HPw",
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 
-      authDomain:
-        "fps-zone-safety.firebaseapp.com",
+import {
+    getFirestore,
+    collection,
+    query,
+    orderBy,
+    onSnapshot,
+    doc,
+    getDoc
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-      projectId:
-        "fps-zone-safety",
-
-      storageBucket:
-        "fps-zone-safety.firebasestorage.app",
-
-      messagingSenderId:
-        "96363004027",
-
-      appId:
-        "1:96363004027:web:101c3b8ba1fde53655e2de",
-
-      measurementId:
-        "G-WEK1MZ48M2"
-
-    };
+import {
+    getAuth,
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
 
-    const app =
-      initializeApp(firebaseConfig);
-
-    const db =
-      getFirestore(app);
-
-
-    /* ALL 16 ZONES */
-
-    const zones = [
-
-      ["AG", "Vishnu", "Grace"],
-
-      ["A1", "Manoj", "Pukar"],
-
-      ["A2", "Rhys", "Laura Nulty"],
-
-      ["BG & B1", "Abdul", "Salu"],
-
-      ["CG", "Danielle Bishay", "Claire Nami"],
-
-      ["C1", "Hannah Jones", "Amy Jones"],
-
-      ["C2", "Emily Griffin", "Rachael Gabel"],
-
-      ["C3", "Regan", "Olivia Radford"],
-
-      ["DG", "Gavin", "Gemma Harris"],
-
-      ["D1", "Asif", "Rachel Forrest"],
-
-      ["D2", "Lily", "Anthea"],
-
-      ["EG", "Emily Gallone", "Roxanne"],
-
-      ["E1", "Isabel", "Shaimaa"],
-
-      ["E2", "Danielle Jolosa", "Hanan"],
-
-      ["E3", "Erika", "Sarah Barr"],
-
-      ["AG (Parents)", "Aisha", "Conference Room A"]
-
-    ];
+const firebaseConfig = {
+    apiKey: "AIzaSyB0--wrOqeid_iVGJkqDwJAWBefPyI4HPw",
+    authDomain: "fps-zone-safety.firebaseapp.com",
+    projectId: "fps-zone-safety",
+    storageBucket: "fps-zone-safety.firebasestorage.app",
+    messagingSenderId: "96363004027",
+    appId: "1:96363004027:web:101c3b8ba1fde53655e2de",
+    measurementId: "G-WEK1MZ48M2"
+};
 
 
-    const zoneStatus =
-      document.getElementById("zoneStatus");
+const app = initializeApp(firebaseConfig);
 
-    const missingReports =
-      document.getElementById("missingReports");
+const db = getFirestore(app);
 
-    const unsafeReports =
-      document.getElementById("unsafeReports");
+const auth = getAuth(app);
+
+let currentSessionId = null;
+
+let allReports = [];
+
+let zones = [
+    {
+        name: "AG",
+        lead: "Vishnu",
+        deputy: "Grace"
+    },
+    {
+        name: "A1",
+        lead: "Manoj",
+        deputy: "Pukar"
+    },
+    {
+        name: "A2",
+        lead: "Rhys",
+        deputy: "Laura Nulty"
+    },
+    {
+        name: "BG & B1",
+        lead: "Abdul",
+        deputy: "Salu"
+    },
+    {
+        name: "CG",
+        lead: "Danielle Bishay",
+        deputy: "Claire Nami"
+    },
+    {
+        name: "C1",
+        lead: "Hannah Jones",
+        deputy: "Amy Jones"
+    },
+    {
+        name: "C2",
+        lead: "Emily Griffin",
+        deputy: "Rachael Gabel"
+    },
+    {
+        name: "C3",
+        lead: "Regan",
+        deputy: "Olivia Radford"
+    },
+    {
+        name: "DG",
+        lead: "Gavin",
+        deputy: "Gemma Harris"
+    },
+    {
+        name: "D1",
+        lead: "Asif",
+        deputy: "Rachel Forrest"
+    },
+    {
+        name: "D2",
+        lead: "Lily",
+        deputy: "Anthea"
+    },
+    {
+        name: "EG",
+        lead: "Emily Gallone",
+        deputy: "Roxanne"
+    },
+    {
+        name: "E1",
+        lead: "Isabel",
+        deputy: "Shaimaa"
+    },
+    {
+        name: "E2",
+        lead: "Danielle Jolosa",
+        deputy: "Hanan"
+    },
+    {
+        name: "E3",
+        lead: "Erika",
+        deputy: "Sarah Barr"
+    },
+    {
+        name: "AG (Parents)",
+        lead: "Aisha",
+        deputy: "Conference Room A"
+    }
+];
 
 
-    /*
-      Store the newest report for each zone
-    */
+onAuthStateChanged(auth, async function(user) {
 
-    const latestByZone = {};
+    if (!user) {
 
+        window.location.href = "login.html";
 
-    /*
-      Listen for live Firebase updates
-    */
+        return;
+    }
 
-    const reportsQuery = query(
-      collection(db, "checkins"),
-      orderBy("checkedAt", "desc")
-    );
+    try {
 
-
-    onSnapshot(
-      reportsQuery,
-      function(snapshot) {
-
-        Object.keys(latestByZone).forEach(
-          key => delete latestByZone[key]
+        const sessionRef = doc(
+            db,
+            "system",
+            "currentSession"
         );
 
+        const sessionSnap = await getDoc(sessionRef);
 
-        const missingList = [];
+        if (!sessionSnap.exists()) {
 
-        const unsafeList = [];
+            showError(
+                "No active safety session found. Please open the Dashboard and start a new safety session."
+            );
 
+            document.getElementById("sessionInfo").textContent =
+                "No active safety session.";
 
-        snapshot.forEach(
-          function(doc) {
+            return;
+        }
 
-            const data = doc.data();
+        const sessionData = sessionSnap.data();
 
+        currentSessionId = sessionData.sessionId;
 
-            /*
-              First record for a zone is the newest
-            */
+        let sessionTime = "Current session";
 
-            if (!latestByZone[data.zone]) {
+        if (
+            sessionData.startedAt &&
+            typeof sessionData.startedAt.toDate === "function"
+        ) {
 
-              latestByZone[data.zone] = data;
+            sessionTime =
+                "Started: " +
+                sessionData.startedAt.toDate().toLocaleString();
 
-            }
+        }
 
+        document.getElementById("sessionInfo").textContent =
+            sessionTime;
 
-            if (data.status === "MISSING") {
+        listenToReports();
 
-              missingList.push(data);
-
-            }
-
-
-            if (data.status === "NOT SAFE") {
-
-              unsafeList.push(data);
-
-            }
-
-          }
-        );
-
-
-        updateSummary();
-
-        displayZoneStatus();
-
-        displayMissingReports(missingList);
-
-        displayUnsafeReports(unsafeList);
-
-      },
-      function(error) {
+    } catch (error) {
 
         console.error(error);
 
-        zoneStatus.innerHTML =
-          "<div class='empty'>" +
-          "Unable to load reports." +
-          "</div>";
+        showError(
+            "Unable to load reports. Please check your Firebase login and Firestore rules."
+        );
 
-      }
+    }
+
+});
+
+
+function listenToReports() {
+
+    const reportsQuery = query(
+        collection(db, "checkins"),
+        orderBy("checkedAt", "desc")
     );
 
+    onSnapshot(
+        reportsQuery,
+        function(snapshot) {
 
-    /* SUMMARY */
+            allReports = [];
 
-    function updateSummary() {
+            snapshot.forEach(function(docSnapshot) {
 
-      let safe = 0;
+                const data = docSnapshot.data();
 
-      let unsafe = 0;
+                /*
+                 IMPORTANT:
+                 Only reports belonging to the CURRENT
+                 safety session are displayed.
+                */
 
-      let missing = 0;
+                if (
+                    data.sessionId &&
+                    data.sessionId === currentSessionId
+                ) {
 
-      let unchecked = 0;
+                    allReports.push({
+                        id: docSnapshot.id,
+                        ...data
+                    });
 
+                }
 
-      zones.forEach(
-        function(zone) {
+            });
 
-          const zoneName = zone[0];
+            updateReportDisplay();
 
-          const report =
-            latestByZone[zoneName];
+        },
+        function(error) {
 
+            console.error(error);
 
-          if (!report) {
-
-            unchecked++;
-
-          }
-
-          else if (report.status === "ALL SAFE") {
-
-            safe++;
-
-          }
-
-          else if (report.status === "NOT SAFE") {
-
-            unsafe++;
-
-          }
-
-          else if (report.status === "MISSING") {
-
-            missing++;
-
-          }
-
-          else {
-
-            unchecked++;
-
-          }
+            showError(
+                "Unable to load reports. Please check Firestore permissions."
+            );
 
         }
-      );
+    );
 
+}
 
-      document.getElementById(
-        "safeCount"
-      ).textContent = safe;
 
+function updateReportDisplay() {
 
-      document.getElementById(
-        "unsafeCount"
-      ).textContent = unsafe;
+    const latestByZone = {};
 
+    allReports.forEach(function(report) {
 
-      document.getElementById(
-        "missingCount"
-      ).textContent = missing;
+        if (!latestByZone[report.zone]) {
 
-
-      document.getElementById(
-        "uncheckedCount"
-      ).textContent = unchecked;
-
-    }
-
-
-    /* ZONE STATUS */
-
-    function displayZoneStatus() {
-
-      zoneStatus.innerHTML = "";
-
-
-      zones.forEach(
-        function(zone) {
-
-          const zoneName = zone[0];
-
-          const lead = zone[1];
-
-          const deputy = zone[2];
-
-
-          const report =
-            latestByZone[zoneName];
-
-
-          let status =
-            "UNCHECKED";
-
-          let statusClass =
-            "status-unchecked";
-
-          let cardClass =
-            "";
-
-
-          if (report) {
-
-            status = report.status;
-
-
-            if (status === "ALL SAFE") {
-
-              statusClass =
-                "status-safe";
-
-              cardClass =
-                "safe-card";
-
-            }
-
-            else if (status === "MISSING") {
-
-              statusClass =
-                "status-missing";
-
-              cardClass =
-                "missing-card";
-
-            }
-
-            else if (status === "NOT SAFE") {
-
-              statusClass =
-                "status-unsafe";
-
-              cardClass =
-                "unsafe-card";
-
-            }
-
-          }
-
-
-          const card =
-            document.createElement("div");
-
-          card.className =
-            "report-card " + cardClass;
-
-
-          let timeText =
-            "No check-in recorded";
-
-
-          if (
-            report &&
-            report.checkedAt
-          ) {
-
-            timeText =
-              report.checkedAt
-                .toDate()
-                .toLocaleString();
-
-          }
-
-
-          card.innerHTML = `
-
-            <div class="report-header">
-
-              <div class="zone-name">
-                ${zoneName}
-              </div>
-
-              <div class="status ${statusClass}">
-                ${status}
-              </div>
-
-            </div>
-
-            <div class="details">
-
-              <strong>Lead:</strong>
-              ${lead}
-
-              <br>
-
-              <strong>Deputy / Location:</strong>
-              ${deputy}
-
-            </div>
-
-            <div class="time">
-              Last update: ${timeText}
-            </div>
-
-          `;
-
-
-          zoneStatus.appendChild(card);
+            latestByZone[report.zone] = report;
 
         }
-      );
 
-    }
-
-
-    /* MISSING REPORTS */
-
-    function displayMissingReports(
-      reports
-    ) {
-
-      missingReports.innerHTML = "";
+    });
 
 
-      if (reports.length === 0) {
+    let safeCount = 0;
+    let unsafeCount = 0;
+    let missingCount = 0;
+    let uncheckedCount = 0;
 
-        missingReports.innerHTML =
-          "<div class='empty'>" +
-          "No missing person reports." +
-          "</div>";
+
+    zones.forEach(function(zone) {
+
+        const report = latestByZone[zone.name];
+
+        if (!report) {
+
+            uncheckedCount++;
+
+        } else if (report.status === "safe") {
+
+            safeCount++;
+
+        } else if (report.status === "unsafe") {
+
+            unsafeCount++;
+
+        } else if (report.status === "missing") {
+
+            missingCount++;
+
+        }
+
+    });
+
+
+    document.getElementById("safeCount").textContent =
+        safeCount;
+
+    document.getElementById("unsafeCount").textContent =
+        unsafeCount;
+
+    document.getElementById("missingCount").textContent =
+        missingCount;
+
+    document.getElementById("uncheckedCount").textContent =
+        uncheckedCount;
+
+
+    buildZoneTable(latestByZone);
+
+    buildMissingReports();
+
+    buildUnsafeReports();
+
+}
+
+
+function buildZoneTable(latestByZone) {
+
+    const tbody =
+        document.getElementById("zoneTableBody");
+
+    tbody.innerHTML = "";
+
+
+    zones.forEach(function(zone) {
+
+        const report = latestByZone[zone.name];
+
+        const row = document.createElement("tr");
+
+        let statusText = "Unchecked";
+        let statusClass = "status-unchecked";
+        let timeText = "-";
+
+
+        if (report) {
+
+            if (report.status === "safe") {
+
+                statusText = "ALL SAFE";
+                statusClass = "status-safe";
+
+            } else if (report.status === "unsafe") {
+
+                statusText = "NOT SAFE";
+                statusClass = "status-unsafe";
+
+            } else if (report.status === "missing") {
+
+                statusText = "MISSING";
+                statusClass = "status-missing";
+
+            }
+
+            timeText = formatTimestamp(report.checkedAt);
+
+        }
+
+
+        row.innerHTML = `
+
+            <td>${escapeHtml(zone.name)}</td>
+
+            <td>${escapeHtml(zone.lead)}</td>
+
+            <td>${escapeHtml(zone.deputy)}</td>
+
+            <td>
+                <span class="status ${statusClass}">
+                    ${statusText}
+                </span>
+            </td>
+
+            <td>${escapeHtml(timeText)}</td>
+
+        `;
+
+
+        tbody.appendChild(row);
+
+    });
+
+
+    document.getElementById("zoneLoading").style.display =
+        "none";
+
+    document.getElementById("zoneTable").style.display =
+        "table";
+
+}
+
+
+function buildMissingReports() {
+
+    const container =
+        document.getElementById("missingReports");
+
+    const reports =
+        allReports.filter(function(report) {
+
+            return report.status === "missing";
+
+        });
+
+
+    if (reports.length === 0) {
+
+        container.innerHTML =
+            '<div class="loading">No missing reports.</div>';
 
         return;
 
-      }
-
-
-      reports.forEach(
-        function(report) {
-
-          const card =
-            document.createElement("div");
-
-          card.className =
-            "report-card missing-card";
-
-
-          let timeText = "";
-
-
-          if (report.checkedAt) {
-
-            timeText =
-              report.checkedAt
-                .toDate()
-                .toLocaleString();
-
-          }
-
-
-          card.innerHTML = `
-
-            <div class="report-header">
-
-              <div class="zone-name">
-                ${report.zone}
-              </div>
-
-              <div class="status status-missing">
-                MISSING
-              </div>
-
-            </div>
-
-            <div class="details">
-
-              <strong>Name:</strong>
-              ${report.personName || "Not provided"}
-
-              <br>
-
-              <strong>Last Known Location:</strong>
-              ${report.lastLocation || "Not provided"}
-
-              <br>
-
-              <strong>Additional Details:</strong>
-              ${report.details || "None"}
-
-              <br>
-
-              <strong>Lead:</strong>
-              ${report.lead || "Not provided"}
-
-              <br>
-
-              <strong>Deputy:</strong>
-              ${report.deputy || "Not provided"}
-
-            </div>
-
-            <div class="time">
-              Reported: ${timeText}
-            </div>
-
-          `;
-
-
-          missingReports.appendChild(card);
-
-        }
-      );
-
     }
 
 
-    /* UNSAFE REPORTS */
-
-    function displayUnsafeReports(
-      reports
-    ) {
-
-      unsafeReports.innerHTML = "";
+    container.innerHTML = "";
 
 
-      if (reports.length === 0) {
+    reports.forEach(function(report) {
 
-        unsafeReports.innerHTML =
-          "<div class='empty'>" +
-          "No safety concerns reported." +
-          "</div>";
+        const div =
+            document.createElement("div");
+
+        div.className = "missing-item";
+
+
+        div.innerHTML = `
+
+            <strong>Zone:</strong>
+            ${escapeHtml(report.zone)}
+            <br><br>
+
+            <strong>Person:</strong>
+            ${escapeHtml(report.personName || "-")}
+            <br>
+
+            <strong>Last Known Location:</strong>
+            ${escapeHtml(report.lastKnownLocation || "-")}
+            <br>
+
+            <strong>Additional Details:</strong>
+            ${escapeHtml(report.details || "-")}
+            <br><br>
+
+            <strong>Time:</strong>
+            ${escapeHtml(formatTimestamp(report.checkedAt))}
+
+        `;
+
+
+        container.appendChild(div);
+
+    });
+
+}
+
+
+function buildUnsafeReports() {
+
+    const container =
+        document.getElementById("unsafeReports");
+
+    const reports =
+        allReports.filter(function(report) {
+
+            return report.status === "unsafe";
+
+        });
+
+
+    if (reports.length === 0) {
+
+        container.innerHTML =
+            '<div class="loading">No safety concerns reported.</div>';
 
         return;
 
-      }
+    }
 
 
-      reports.forEach(
-        function(report) {
+    container.innerHTML = "";
 
-          const card =
+
+    reports.forEach(function(report) {
+
+        const div =
             document.createElement("div");
 
-          card.className =
-            "report-card unsafe-card";
+        div.className = "report-item";
 
 
-          let timeText = "";
+        div.innerHTML = `
+
+            <strong>Zone:</strong>
+            ${escapeHtml(report.zone)}
+            <br><br>
+
+            <strong>Safety Concern:</strong>
+            ${escapeHtml(report.concern || "-")}
+            <br>
+
+            <strong>Location:</strong>
+            ${escapeHtml(report.location || "-")}
+            <br>
+
+            <strong>Additional Details:</strong>
+            ${escapeHtml(report.details || "-")}
+            <br>
+
+            <strong>Immediate Assistance:</strong>
+            ${escapeHtml(report.immediateAssistance || "-")}
+            <br><br>
+
+            <strong>Time:</strong>
+            ${escapeHtml(formatTimestamp(report.checkedAt))}
+
+        `;
 
 
-          if (report.checkedAt) {
+        container.appendChild(div);
 
-            timeText =
-              report.checkedAt
-                .toDate()
-                .toLocaleString();
+    });
 
-          }
+}
 
 
-          card.innerHTML = `
+function formatTimestamp(timestamp) {
 
-            <div class="report-header">
+    if (
+        timestamp &&
+        typeof timestamp.toDate === "function"
+    ) {
 
-              <div class="zone-name">
-                ${report.zone}
-              </div>
-
-              <div class="status status-unsafe">
-                NOT SAFE
-              </div>
-
-            </div>
-
-            <div class="details">
-
-              <strong>Safety Concern:</strong>
-              ${report.safetyConcern || "Not provided"}
-
-              <br>
-
-              <strong>Issue Location:</strong>
-              ${report.issueLocation || "Not provided"}
-
-              <br>
-
-              <strong>Additional Details:</strong>
-              ${report.details || "None"}
-
-              <br>
-
-              <strong>Immediate Assistance Required:</strong>
-              ${report.immediateAssistance || "Not provided"}
-
-              <br>
-
-              <strong>Lead:</strong>
-              ${report.lead || "Not provided"}
-
-              <br>
-
-              <strong>Deputy:</strong>
-              ${report.deputy || "Not provided"}
-
-            </div>
-
-            <div class="time">
-              Reported: ${timeText}
-            </div>
-
-          `;
-
-
-          unsafeReports.appendChild(card);
-
-        }
-      );
+        return timestamp.toDate().toLocaleString();
 
     }
 
-  </script>
+    return "Pending";
+
+}
+
+
+function escapeHtml(value) {
+
+    if (value === null || value === undefined) {
+
+        return "";
+
+    }
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+function showError(message) {
+
+    const box =
+        document.getElementById("errorBox");
+
+    box.textContent = message;
+
+    box.style.display = "block";
+
+}
+
+
+window.copyReport = function() {
+
+    let text =
+        "ZONE SAFETY REPORT\n\n";
+
+    text +=
+        "Current Safety Session: " +
+        currentSessionId +
+        "\n\n";
+
+
+    zones.forEach(function(zone) {
+
+        const report =
+            allReports.find(function(item) {
+
+                return item.zone === zone.name;
+
+            });
+
+
+        let status = "UNCHECKED";
+
+        if (report) {
+
+            status =
+                String(report.status).toUpperCase();
+
+        }
+
+
+        text +=
+            zone.name +
+            " - " +
+            status +
+            "\n";
+
+    });
+
+
+    navigator.clipboard.writeText(text)
+        .then(function() {
+
+            alert("Report copied to clipboard.");
+
+        })
+        .catch(function() {
+
+            alert("Unable to copy the report.");
+
+        });
+
+};
+
+</script>
 
 </body>
 </html>
