@@ -94,7 +94,6 @@
     #message {
       text-align: center;
       margin-top: 15px;
-      color: #dc2626;
       font-size: 14px;
       min-height: 20px;
     }
@@ -167,8 +166,8 @@
 
 
     import {
-      initializeAuth,
-      indexedDBLocalPersistence,
+      getAuth,
+      setPersistence,
       browserLocalPersistence,
       signInWithEmailAndPassword
     } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
@@ -208,26 +207,8 @@
       initializeApp(firebaseConfig);
 
 
-    /*
-      Use IndexedDB as the main
-      authentication persistence.
-
-      This keeps the login session
-      when moving between pages.
-    */
-
     const auth =
-      initializeAuth(app, {
-
-        persistence: [
-
-          indexedDBLocalPersistence,
-
-          browserLocalPersistence
-
-        ]
-
-      });
+      getAuth(app);
 
 
     /* LOGIN */
@@ -258,6 +239,10 @@
       message.textContent = "";
 
 
+      message.style.color =
+        "#dc2626";
+
+
       if (!email || !password) {
 
         message.textContent =
@@ -277,9 +262,18 @@
       try {
 
         /*
-          Sign in to Firebase.
-          The IndexedDB persistence above
-          will keep the session active.
+          Keep Firebase login active
+          between pages.
+        */
+
+        await setPersistence(
+          auth,
+          browserLocalPersistence
+        );
+
+
+        /*
+          Sign in.
         */
 
         await signInWithEmailAndPassword(
@@ -292,14 +286,14 @@
         message.style.color =
           "#166534";
 
+
         message.textContent =
           "Login successful. Opening dashboard...";
 
 
         /*
-          Give Firebase a moment to save
-          the authentication session before
-          moving to the next page.
+          Give Firebase time to save
+          the login session.
         */
 
         setTimeout(
@@ -309,7 +303,7 @@
               "index.html";
 
           },
-          300
+          500
         );
 
 
@@ -317,39 +311,27 @@
 
       catch (error) {
 
-        console.error(error);
+        console.error(
+          "Firebase login error:",
+          error
+        );
+
 
         message.style.color =
           "#dc2626";
 
 
-        if (
-          error.code ===
-          "auth/invalid-credential"
-        ) {
+        /*
+          Show the actual Firebase
+          error temporarily so we can
+          identify the problem if needed.
+        */
+
+        if (error.code) {
 
           message.textContent =
-            "Invalid email or password.";
-
-        }
-
-        else if (
-          error.code ===
-          "auth/user-not-found"
-        ) {
-
-          message.textContent =
-            "User account not found.";
-
-        }
-
-        else if (
-          error.code ===
-          "auth/wrong-password"
-        ) {
-
-          message.textContent =
-            "Incorrect password.";
+            "Login failed: " +
+            error.code;
 
         }
 
@@ -372,7 +354,7 @@
 
 
     /*
-      Allow pressing ENTER to login.
+      Press ENTER to login.
     */
 
     document
