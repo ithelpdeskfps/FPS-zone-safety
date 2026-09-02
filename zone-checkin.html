@@ -4,9 +4,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Zone Safety Check-In</title>
 
   <style>
+
     body {
       font-family: Arial, sans-serif;
       background: #f4f6f8;
@@ -55,8 +57,6 @@
       margin-bottom: 20px;
     }
 
-    /* Status buttons */
-
     .status-buttons {
       display: flex;
       flex-direction: column;
@@ -92,8 +92,6 @@
     .status-button:hover {
       opacity: 0.9;
     }
-
-    /* Forms */
 
     .form-box {
       display: none;
@@ -154,10 +152,6 @@
       cursor: pointer;
     }
 
-    .save-button:hover {
-      opacity: 0.9;
-    }
-
     .cancel-button {
       width: 100%;
       margin-top: 8px;
@@ -169,8 +163,6 @@
       font-size: 15px;
       cursor: pointer;
     }
-
-    /* Result */
 
     .result {
       display: none;
@@ -208,14 +200,20 @@
       border-radius: 8px;
       font-weight: bold;
     }
+
   </style>
 </head>
 
+
 <body>
 
+
   <div class="header">
+
     <h1>Zone Safety Check-In</h1>
+
   </div>
+
 
   <div class="container">
 
@@ -228,7 +226,6 @@
       <div id="zonePeople" class="zone-people">
       </div>
 
-      <!-- STATUS BUTTONS -->
 
       <div class="status-buttons">
 
@@ -255,7 +252,9 @@
 
       <!-- MISSING FORM -->
 
-      <div id="missingForm" class="form-box missing-form">
+      <div
+        id="missingForm"
+        class="form-box missing-form">
 
         <h3>Missing Person Details</h3>
 
@@ -285,8 +284,7 @@
 
         <textarea
           id="missingDetails"
-          placeholder="Enter any additional information">
-        </textarea>
+          placeholder="Enter any additional information"></textarea>
 
         <button
           id="saveMissingButton"
@@ -305,7 +303,9 @@
 
       <!-- NOT SAFE FORM -->
 
-      <div id="unsafeForm" class="form-box unsafe-form">
+      <div
+        id="unsafeForm"
+        class="form-box unsafe-form">
 
         <h3>Safety Concern Details</h3>
 
@@ -335,17 +335,26 @@
 
         <textarea
           id="unsafeDetails"
-          placeholder="Enter any additional information">
-        </textarea>
+          placeholder="Enter any additional information"></textarea>
 
         <label for="immediateAssistance">
           Is immediate assistance required?
         </label>
 
         <select id="immediateAssistance">
-          <option value="">Please select</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
+
+          <option value="">
+            Please select
+          </option>
+
+          <option value="Yes">
+            Yes
+          </option>
+
+          <option value="No">
+            No
+          </option>
+
         </select>
 
         <button
@@ -363,11 +372,15 @@
       </div>
 
 
-      <!-- RESULT -->
+      <div
+        id="result"
+        class="result">
+      </div>
 
-      <div id="result" class="result"></div>
 
-      <a href="zones.html" class="back-button">
+      <a
+        href="zones.html"
+        class="back-button">
         Back to Zones
       </a>
 
@@ -388,27 +401,61 @@
       getFirestore,
       collection,
       addDoc,
-      serverTimestamp
+      serverTimestamp,
+      doc,
+      getDoc
     } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+    import {
+      getAuth,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
 
     const firebaseConfig = {
-      apiKey: "AIzaSyB0--wrOqeid_iVGJkqDwJAWBefPyI4HPw",
-      authDomain: "fps-zone-safety.firebaseapp.com",
-      projectId: "fps-zone-safety",
-      storageBucket: "fps-zone-safety.firebasestorage.app",
-      messagingSenderId: "96363004027",
-      appId: "1:96363004027:web:101c3b8ba1fde53655e2de",
-      measurementId: "G-WEK1MZ48M2"
+
+      apiKey:
+        "AIzaSyB0--wrOqeid_iVGJkqDwJAWBefPyI4HPw",
+
+      authDomain:
+        "fps-zone-safety.firebaseapp.com",
+
+      projectId:
+        "fps-zone-safety",
+
+      storageBucket:
+        "fps-zone-safety.firebasestorage.app",
+
+      messagingSenderId:
+        "96363004027",
+
+      appId:
+        "1:96363004027:web:101c3b8ba1fde53655e2de",
+
+      measurementId:
+        "G-WEK1MZ48M2"
+
     };
 
 
-    const app = initializeApp(firebaseConfig);
+    const app =
+      initializeApp(firebaseConfig);
 
-    const db = getFirestore(app);
+    const db =
+      getFirestore(app);
+
+    const auth =
+      getAuth(app);
 
 
-    /* ZONE ASSIGNMENTS */
+    let currentSessionId = null;
+
+    let loggedInUser = null;
+
+
+    /*
+      ZONE ASSIGNMENTS
+    */
 
     const zonePeople = {
 
@@ -447,29 +494,48 @@
     };
 
 
-    /* GET ZONE FROM URL */
+    /*
+      GET ZONE
+    */
 
-    const params = new URLSearchParams(
-      window.location.search
-    );
+    const params =
+      new URLSearchParams(
+        window.location.search
+      );
 
-    const zone = params.get("zone");
+    const zone =
+      params.get("zone");
 
 
-    if (!zone || !zonePeople[zone]) {
+    if (
+      !zone ||
+      !zonePeople[zone]
+    ) {
 
-      document.getElementById("zoneTitle").textContent =
+      document.getElementById(
+        "zoneTitle"
+      ).textContent =
         "Zone Not Found";
 
-    } else {
+    }
 
-      document.getElementById("zoneTitle").textContent =
+    else {
+
+      document.getElementById(
+        "zoneTitle"
+      ).textContent =
         zone;
 
-      document.getElementById("zonePeople").innerHTML =
+
+      document.getElementById(
+        "zonePeople"
+      ).innerHTML =
+
         "<strong>Lead:</strong> " +
         zonePeople[zone][0] +
+
         "<br>" +
+
         "<strong>Deputy / Location:</strong> " +
         zonePeople[zone][1];
 
@@ -477,92 +543,242 @@
 
 
     const safeButton =
-      document.getElementById("safeButton");
+      document.getElementById(
+        "safeButton"
+      );
 
     const missingButton =
-      document.getElementById("missingButton");
+      document.getElementById(
+        "missingButton"
+      );
 
     const unsafeButton =
-      document.getElementById("unsafeButton");
+      document.getElementById(
+        "unsafeButton"
+      );
 
     const missingForm =
-      document.getElementById("missingForm");
+      document.getElementById(
+        "missingForm"
+      );
 
     const unsafeForm =
-      document.getElementById("unsafeForm");
+      document.getElementById(
+        "unsafeForm"
+      );
 
     const result =
-      document.getElementById("result");
+      document.getElementById(
+        "result"
+      );
 
 
-    /* SHOW RESULT */
+    /*
+      LOGIN + LOAD SESSION
+    */
 
-    function showResult(message, type) {
+    onAuthStateChanged(
+      auth,
+      async function(user) {
 
-      result.className = "result " + type;
+        if (!user) {
 
-      result.innerHTML = message;
+          window.location.href =
+            "login.html";
 
-      result.style.display = "block";
+          return;
+
+        }
+
+
+        loggedInUser =
+          user;
+
+
+        try {
+
+          const sessionRef =
+            doc(
+              db,
+              "system",
+              "currentSession"
+            );
+
+
+          const sessionSnap =
+            await getDoc(
+              sessionRef
+            );
+
+
+          if (
+            !sessionSnap.exists()
+          ) {
+
+            alert(
+              "No active safety session found. Please open the Dashboard and start a new session."
+            );
+
+            return;
+
+          }
+
+
+          const sessionData =
+            sessionSnap.data();
+
+
+          currentSessionId =
+            sessionData.sessionId;
+
+
+        }
+
+        catch (error) {
+
+          console.error(error);
+
+          alert(
+            "Unable to load the current safety session."
+          );
+
+        }
+
+      }
+    );
+
+
+    /*
+      SHOW RESULT
+    */
+
+    function showResult(
+      message,
+      type
+    ) {
+
+      result.className =
+        "result " + type;
+
+      result.innerHTML =
+        message;
+
+      result.style.display =
+        "block";
 
       window.scrollTo({
-        top: document.body.scrollHeight,
-        behavior: "smooth"
+
+        top:
+          document.body.scrollHeight,
+
+        behavior:
+          "smooth"
+
       });
 
     }
 
 
-    /* SAVE SIMPLE STATUS */
+    /*
+      SAVE SIMPLE STATUS
+    */
 
     async function saveStatus(status) {
+
+      if (!currentSessionId) {
+
+        alert(
+          "No active safety session. Please return to the Dashboard and start a session."
+        );
+
+        return;
+
+      }
+
 
       try {
 
         await addDoc(
-          collection(db, "checkins"),
+
+          collection(
+            db,
+            "checkins"
+          ),
+
           {
 
-            zone: zone,
+            sessionId:
+              currentSessionId,
 
-            status: status,
+            zone:
+              zone,
 
-            lead: zonePeople[zone][0],
+            status:
+              status,
 
-            deputy: zonePeople[zone][1],
+            lead:
+              zonePeople[zone][0],
 
-            checkedAt: serverTimestamp()
+            deputy:
+              zonePeople[zone][1],
+
+            checkedAt:
+              serverTimestamp(),
+
+            submittedBy:
+              loggedInUser
+                ? loggedInUser.email
+                : ""
 
           }
+
         );
 
 
-        missingForm.style.display = "none";
+        missingForm.style.display =
+          "none";
 
-        unsafeForm.style.display = "none";
+        unsafeForm.style.display =
+          "none";
 
 
-        if (status === "ALL SAFE") {
+        if (
+          status ===
+          "ALL SAFE"
+        ) {
 
           showResult(
+
             "✓ Zone is Secure<br><br>" +
             "All personnel and students are accounted for.",
+
             "safe"
+
           );
 
         }
 
-        if (status === "NOT SAFE") {
+
+        if (
+          status ===
+          "NOT SAFE"
+        ) {
 
           showResult(
+
             "⚠ NOT SAFE report saved.<br><br>" +
             "Please contact Security / SLT immediately.",
+
             "unsafe"
+
           );
 
         }
 
-      } catch (error) {
+
+      }
+
+      catch (error) {
 
         console.error(error);
 
@@ -575,66 +791,103 @@
     }
 
 
-    /* ALL SAFE */
+    /*
+      ALL SAFE
+    */
 
     safeButton.addEventListener(
       "click",
       function() {
 
-        saveStatus("ALL SAFE");
+        saveStatus(
+          "ALL SAFE"
+        );
 
       }
     );
 
 
-    /* MISSING */
+    /*
+      MISSING
+    */
 
     missingButton.addEventListener(
       "click",
       function() {
 
-        unsafeForm.style.display = "none";
+        unsafeForm.style.display =
+          "none";
 
-        result.style.display = "none";
+        result.style.display =
+          "none";
 
-        missingForm.style.display = "block";
+        missingForm.style.display =
+          "block";
 
         document
-          .getElementById("personName")
+          .getElementById(
+            "personName"
+          )
           .focus();
 
       }
     );
 
 
-    /* SAVE MISSING */
+    /*
+      SAVE MISSING
+    */
 
     document
-      .getElementById("saveMissingButton")
+      .getElementById(
+        "saveMissingButton"
+      )
       .addEventListener(
         "click",
         async function() {
 
+          if (!currentSessionId) {
+
+            alert(
+              "No active safety session. Please return to the Dashboard."
+            );
+
+            return;
+
+          }
+
+
           const personName =
             document
-              .getElementById("personName")
+              .getElementById(
+                "personName"
+              )
               .value
               .trim();
+
 
           const lastLocation =
             document
-              .getElementById("lastLocation")
+              .getElementById(
+                "lastLocation"
+              )
               .value
               .trim();
+
 
           const details =
             document
-              .getElementById("missingDetails")
+              .getElementById(
+                "missingDetails"
+              )
               .value
               .trim();
 
 
-          if (!personName || !lastLocation) {
+          if (
+            !personName ||
+            !lastLocation
+          ) {
 
             alert(
               "Please enter the person's name and last known location."
@@ -648,53 +901,89 @@
           try {
 
             await addDoc(
-              collection(db, "checkins"),
+
+              collection(
+                db,
+                "checkins"
+              ),
+
               {
 
-                zone: zone,
+                sessionId:
+                  currentSessionId,
 
-                status: "MISSING",
+                zone:
+                  zone,
 
-                lead: zonePeople[zone][0],
+                status:
+                  "MISSING",
 
-                deputy: zonePeople[zone][1],
+                lead:
+                  zonePeople[zone][0],
 
-                personName: personName,
+                deputy:
+                  zonePeople[zone][1],
 
-                lastLocation: lastLocation,
+                personName:
+                  personName,
 
-                details: details,
+                lastLocation:
+                  lastLocation,
 
-                checkedAt: serverTimestamp()
+                details:
+                  details,
+
+                checkedAt:
+                  serverTimestamp(),
+
+                submittedBy:
+                  loggedInUser
+                    ? loggedInUser.email
+                    : ""
 
               }
+
             );
 
 
-            missingForm.style.display = "none";
+            missingForm.style.display =
+              "none";
 
 
             document
-              .getElementById("personName")
-              .value = "";
+              .getElementById(
+                "personName"
+              )
+              .value =
+              "";
 
             document
-              .getElementById("lastLocation")
-              .value = "";
+              .getElementById(
+                "lastLocation"
+              )
+              .value =
+              "";
 
             document
-              .getElementById("missingDetails")
-              .value = "";
+              .getElementById(
+                "missingDetails"
+              )
+              .value =
+              "";
 
 
             showResult(
+
               "⚠ Missing person report saved.<br><br>" +
               "Please continue searching and inform Security / SLT.",
+
               "missing"
+
             );
 
+          }
 
-          } catch (error) {
+          catch (error) {
 
             console.error(error);
 
@@ -708,69 +997,107 @@
       );
 
 
-    /* CANCEL MISSING */
+    /*
+      CANCEL MISSING
+    */
 
     document
-      .getElementById("cancelMissingButton")
+      .getElementById(
+        "cancelMissingButton"
+      )
       .addEventListener(
         "click",
         function() {
 
-          missingForm.style.display = "none";
+          missingForm.style.display =
+            "none";
 
         }
       );
 
 
-    /* NOT SAFE */
+    /*
+      NOT SAFE
+    */
 
     unsafeButton.addEventListener(
       "click",
       function() {
 
-        missingForm.style.display = "none";
+        missingForm.style.display =
+          "none";
 
-        result.style.display = "none";
+        result.style.display =
+          "none";
 
-        unsafeForm.style.display = "block";
+        unsafeForm.style.display =
+          "block";
 
         document
-          .getElementById("safetyConcern")
+          .getElementById(
+            "safetyConcern"
+          )
           .focus();
 
       }
     );
 
 
-    /* SAVE NOT SAFE */
+    /*
+      SAVE NOT SAFE
+    */
 
     document
-      .getElementById("saveUnsafeButton")
+      .getElementById(
+        "saveUnsafeButton"
+      )
       .addEventListener(
         "click",
         async function() {
 
+          if (!currentSessionId) {
+
+            alert(
+              "No active safety session. Please return to the Dashboard."
+            );
+
+            return;
+
+          }
+
+
           const safetyConcern =
             document
-              .getElementById("safetyConcern")
+              .getElementById(
+                "safetyConcern"
+              )
               .value
               .trim();
+
 
           const issueLocation =
             document
-              .getElementById("issueLocation")
+              .getElementById(
+                "issueLocation"
+              )
               .value
               .trim();
+
 
           const details =
             document
-              .getElementById("unsafeDetails")
+              .getElementById(
+                "unsafeDetails"
+              )
               .value
               .trim();
 
+
           const immediateAssistance =
             document
-              .getElementById("immediateAssistance")
+              .getElementById(
+                "immediateAssistance"
+              )
               .value;
 
 
@@ -792,60 +1119,99 @@
           try {
 
             await addDoc(
-              collection(db, "checkins"),
+
+              collection(
+                db,
+                "checkins"
+              ),
+
               {
 
-                zone: zone,
+                sessionId:
+                  currentSessionId,
 
-                status: "NOT SAFE",
+                zone:
+                  zone,
 
-                lead: zonePeople[zone][0],
+                status:
+                  "NOT SAFE",
 
-                deputy: zonePeople[zone][1],
+                lead:
+                  zonePeople[zone][0],
 
-                safetyConcern: safetyConcern,
+                deputy:
+                  zonePeople[zone][1],
 
-                issueLocation: issueLocation,
+                safetyConcern:
+                  safetyConcern,
 
-                details: details,
+                issueLocation:
+                  issueLocation,
+
+                details:
+                  details,
 
                 immediateAssistance:
                   immediateAssistance,
 
-                checkedAt: serverTimestamp()
+                checkedAt:
+                  serverTimestamp(),
+
+                submittedBy:
+                  loggedInUser
+                    ? loggedInUser.email
+                    : ""
 
               }
+
             );
 
 
-            unsafeForm.style.display = "none";
+            unsafeForm.style.display =
+              "none";
 
 
             document
-              .getElementById("safetyConcern")
-              .value = "";
+              .getElementById(
+                "safetyConcern"
+              )
+              .value =
+              "";
 
             document
-              .getElementById("issueLocation")
-              .value = "";
+              .getElementById(
+                "issueLocation"
+              )
+              .value =
+              "";
 
             document
-              .getElementById("unsafeDetails")
-              .value = "";
+              .getElementById(
+                "unsafeDetails"
+              )
+              .value =
+              "";
 
             document
-              .getElementById("immediateAssistance")
-              .value = "";
+              .getElementById(
+                "immediateAssistance"
+              )
+              .value =
+              "";
 
 
             showResult(
+
               "⚠ NOT SAFE report saved.<br><br>" +
               "Please contact Security / SLT immediately.",
+
               "unsafe"
+
             );
 
+          }
 
-          } catch (error) {
+          catch (error) {
 
             console.error(error);
 
@@ -859,15 +1225,20 @@
       );
 
 
-    /* CANCEL NOT SAFE */
+    /*
+      CANCEL NOT SAFE
+    */
 
     document
-      .getElementById("cancelUnsafeButton")
+      .getElementById(
+        "cancelUnsafeButton"
+      )
       .addEventListener(
         "click",
         function() {
 
-          unsafeForm.style.display = "none";
+          unsafeForm.style.display =
+            "none";
 
         }
       );
