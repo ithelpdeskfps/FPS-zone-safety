@@ -77,6 +77,11 @@
       text-align: center;
     }
 
+    .status-button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
     .safe-button {
       background: #16a34a;
     }
@@ -89,7 +94,7 @@
       background: #dc2626;
     }
 
-    .status-button:hover {
+    .status-button:hover:not(:disabled) {
       opacity: 0.9;
     }
 
@@ -256,6 +261,7 @@
 
       </div>
 
+
       <!-- MISSING FORM -->
 
       <div id="missingForm" class="form-box missing-form">
@@ -301,6 +307,7 @@
         </button>
 
       </div>
+
 
       <!-- NOT SAFE FORM -->
 
@@ -368,7 +375,9 @@
 
       </div>
 
+
       <div id="result" class="result"></div>
+
 
       <a
         href="zones.html"
@@ -400,9 +409,7 @@
 
     import {
       getAuth,
-      onAuthStateChanged,
-      setPersistence,
-      browserLocalPersistence
+      onAuthStateChanged
     } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
 
@@ -411,7 +418,7 @@
     const firebaseConfig = {
 
       apiKey:
-        "AIzaSyB0--wrOqeid_iVGJkqDWJAWBefPyI4HPQw",
+        "AIzaSyB0--wrOqeid_iVGJkqDwJAWBefPyI4HPQw",
 
       authDomain:
         "fps-zone-safety.firebaseapp.com",
@@ -498,19 +505,14 @@
       params.get("zone");
 
 
-    if (
-      !zone ||
-      !zonePeople[zone]
-    ) {
+    if (!zone || !zonePeople[zone]) {
 
       document.getElementById(
         "zoneTitle"
       ).textContent =
         "Zone Not Found";
 
-    }
-
-    else {
+    } else {
 
       document.getElementById(
         "zoneTitle"
@@ -535,39 +537,25 @@
     /* BUTTONS */
 
     const safeButton =
-      document.getElementById(
-        "safeButton"
-      );
+      document.getElementById("safeButton");
 
     const missingButton =
-      document.getElementById(
-        "missingButton"
-      );
+      document.getElementById("missingButton");
 
     const unsafeButton =
-      document.getElementById(
-        "unsafeButton"
-      );
+      document.getElementById("unsafeButton");
 
     const missingForm =
-      document.getElementById(
-        "missingForm"
-      );
+      document.getElementById("missingForm");
 
     const unsafeForm =
-      document.getElementById(
-        "unsafeForm"
-      );
+      document.getElementById("unsafeForm");
 
     const result =
-      document.getElementById(
-        "result"
-      );
+      document.getElementById("result");
 
     const loginStatus =
-      document.getElementById(
-        "loginStatus"
-      );
+      document.getElementById("loginStatus");
 
 
     /* ENABLE BUTTONS */
@@ -599,14 +587,10 @@
         );
 
       const sessionSnap =
-        await getDoc(
-          sessionRef
-        );
+        await getDoc(sessionRef);
 
 
-      if (
-        !sessionSnap.exists()
-      ) {
+      if (!sessionSnap.exists()) {
 
         throw new Error(
           "No active safety session found."
@@ -619,9 +603,7 @@
         sessionSnap.data();
 
 
-      if (
-        !sessionData.sessionId
-      ) {
+      if (!sessionData.sessionId) {
 
         throw new Error(
           "Current safety session ID is missing."
@@ -641,10 +623,7 @@
 
     /* SHOW RESULT */
 
-    function showResult(
-      message,
-      type
-    ) {
+    function showResult(message, type) {
 
       result.className =
         "result " + type;
@@ -675,7 +654,7 @@
       if (!loggedInUser) {
 
         alert(
-          "You are not logged in. Please return to the login page."
+          "Login session is not ready. Please wait a moment and try again."
         );
 
         return;
@@ -684,8 +663,6 @@
 
 
       try {
-
-        /* Always get the latest session */
 
         await getCurrentSession();
 
@@ -718,7 +695,7 @@
               serverTimestamp(),
 
             submittedBy:
-              loggedInUser.email
+              loggedInUser.email || ""
 
           }
 
@@ -732,9 +709,7 @@
           "none";
 
 
-        if (
-          status === "safe"
-        ) {
+        if (status === "safe") {
 
           showResult(
 
@@ -790,9 +765,7 @@
           "block";
 
         document
-          .getElementById(
-            "personName"
-          )
+          .getElementById("personName")
           .focus();
 
       }
@@ -802,9 +775,7 @@
     /* SAVE MISSING */
 
     document
-      .getElementById(
-        "saveMissingButton"
-      )
+      .getElementById("saveMissingButton")
       .addEventListener(
         "click",
         async function() {
@@ -812,7 +783,7 @@
           if (!loggedInUser) {
 
             alert(
-              "You are not logged in. Please return to the login page."
+              "Login session is not ready. Please wait a moment and try again."
             );
 
             return;
@@ -827,35 +798,26 @@
 
             const personName =
               document
-                .getElementById(
-                  "personName"
-                )
+                .getElementById("personName")
                 .value
                 .trim();
 
 
             const lastLocation =
               document
-                .getElementById(
-                  "lastLocation"
-                )
+                .getElementById("lastLocation")
                 .value
                 .trim();
 
 
             const missingDetails =
               document
-                .getElementById(
-                  "missingDetails"
-                )
+                .getElementById("missingDetails")
                 .value
                 .trim();
 
 
-            if (
-              !personName ||
-              !lastLocation
-            ) {
+            if (!personName || !lastLocation) {
 
               alert(
                 "Please enter the person's name and last known location."
@@ -903,7 +865,7 @@
                   serverTimestamp(),
 
                 submittedBy:
-                  loggedInUser.email
+                  loggedInUser.email || ""
 
               }
 
@@ -915,25 +877,16 @@
 
 
             document
-              .getElementById(
-                "personName"
-              )
-              .value =
-              "";
+              .getElementById("personName")
+              .value = "";
 
             document
-              .getElementById(
-                "lastLocation"
-              )
-              .value =
-              "";
+              .getElementById("lastLocation")
+              .value = "";
 
             document
-              .getElementById(
-                "missingDetails"
-              )
-              .value =
-              "";
+              .getElementById("missingDetails")
+              .value = "";
 
 
             showResult(
@@ -964,9 +917,7 @@
     /* CANCEL MISSING */
 
     document
-      .getElementById(
-        "cancelMissingButton"
-      )
+      .getElementById("cancelMissingButton")
       .addEventListener(
         "click",
         function() {
@@ -994,9 +945,7 @@
           "block";
 
         document
-          .getElementById(
-            "safetyConcern"
-          )
+          .getElementById("safetyConcern")
           .focus();
 
       }
@@ -1006,9 +955,7 @@
     /* SAVE NOT SAFE */
 
     document
-      .getElementById(
-        "saveUnsafeButton"
-      )
+      .getElementById("saveUnsafeButton")
       .addEventListener(
         "click",
         async function() {
@@ -1016,7 +963,7 @@
           if (!loggedInUser) {
 
             alert(
-              "You are not logged in. Please return to the login page."
+              "Login session is not ready. Please wait a moment and try again."
             );
 
             return;
@@ -1031,36 +978,28 @@
 
             const safetyConcern =
               document
-                .getElementById(
-                  "safetyConcern"
-                )
+                .getElementById("safetyConcern")
                 .value
                 .trim();
 
 
             const issueLocation =
               document
-                .getElementById(
-                  "issueLocation"
-                )
+                .getElementById("issueLocation")
                 .value
                 .trim();
 
 
             const unsafeDetails =
               document
-                .getElementById(
-                  "unsafeDetails"
-                )
+                .getElementById("unsafeDetails")
                 .value
                 .trim();
 
 
             const immediateAssistance =
               document
-                .getElementById(
-                  "immediateAssistance"
-                )
+                .getElementById("immediateAssistance")
                 .value;
 
 
@@ -1119,7 +1058,7 @@
                   serverTimestamp(),
 
                 submittedBy:
-                  loggedInUser.email
+                  loggedInUser.email || ""
 
               }
 
@@ -1131,32 +1070,20 @@
 
 
             document
-              .getElementById(
-                "safetyConcern"
-              )
-              .value =
-              "";
+              .getElementById("safetyConcern")
+              .value = "";
 
             document
-              .getElementById(
-                "issueLocation"
-              )
-              .value =
-              "";
+              .getElementById("issueLocation")
+              .value = "";
 
             document
-              .getElementById(
-                "unsafeDetails"
-              )
-              .value =
-              "";
+              .getElementById("unsafeDetails")
+              .value = "";
 
             document
-              .getElementById(
-                "immediateAssistance"
-              )
-              .value =
-              "";
+              .getElementById("immediateAssistance")
+              .value = "";
 
 
             showResult(
@@ -1187,9 +1114,7 @@
     /* CANCEL NOT SAFE */
 
     document
-      .getElementById(
-        "cancelUnsafeButton"
-      )
+      .getElementById("cancelUnsafeButton")
       .addEventListener(
         "click",
         function() {
@@ -1202,51 +1127,24 @@
 
 
     /*
-      FIREBASE LOGIN PERSISTENCE
+      FIREBASE AUTHENTICATION
 
-      This keeps the user signed in when
-      moving between Dashboard, Zones,
-      Reports and Zone Check-In.
+      We wait for Firebase to completely restore
+      the existing login session before enabling
+      the Zone Check-In buttons.
     */
 
-    setPersistence(
+    onAuthStateChanged(
       auth,
-      browserLocalPersistence
-    )
-    .then(function() {
+      async function(user) {
 
-      onAuthStateChanged(
-        auth,
-        async function(user) {
+        console.log(
+          "Firebase authentication state:",
+          user ? user.email : "No user"
+        );
 
-          if (!user) {
 
-            loginStatus.textContent =
-              "Login required.";
-
-            loginStatus.style.color =
-              "#dc2626";
-
-            /*
-              Small delay gives Firebase time
-              to restore the saved login session.
-            */
-
-            setTimeout(function() {
-
-              if (!loggedInUser) {
-
-                window.location.href =
-                  "login.html";
-
-              }
-
-            }, 1000);
-
-            return;
-
-          }
-
+        if (user) {
 
           loggedInUser =
             user;
@@ -1271,19 +1169,49 @@
 
           }
 
+          return;
+
         }
-      );
 
-    })
-    .catch(function(error) {
 
-      console.error(error);
+        /*
+          Firebase has confirmed that there is
+          currently no logged-in user.
+        */
 
-      alert(
-        "Unable to initialize the login session."
-      );
+        loggedInUser = null;
 
-    });
+        loginStatus.textContent =
+          "No active login session.";
+
+        loginStatus.style.color =
+          "#dc2626";
+
+
+        /*
+          Do NOT immediately redirect.
+
+          This gives the user a chance to return
+          to login if the browser has genuinely
+          lost the Firebase session.
+        */
+
+        setTimeout(
+          function() {
+
+            if (!loggedInUser) {
+
+              loginStatus.innerHTML =
+                'Login required. <a href="login.html">Click here to login</a>';
+
+            }
+
+          },
+          3000
+        );
+
+      }
+    );
 
   </script>
 
