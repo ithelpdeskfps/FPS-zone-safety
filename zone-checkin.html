@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Zone Check-In</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f4f7fb;
+      color: #1e293b;
+    }
+
+    header {
+      background: #17365d;
+      color: white;
+      padding: 24px 30px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+
+    header p {
+      margin: 6px 0 0;
+      opacity: 0.9;
+    }
+
+    nav {
+      background: white;
+      padding: 13px 30px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #334155;
+      font-weight: 600;
+      margin-right: 25px;
+    }
+
+    main {
+      max-width: 800px;
+      margin: auto;
+      padding: 35px 20px;
+    }
+
+    .zone-card {
+      background: white;
+      border-radius: 18px;
+      padding: 35px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+      text-align: center;
+    }
+
+    .zone-name {
+      font-size: 38px;
+      font-weight: bold;
+      color: #17365d;
+      margin-bottom: 10px;
+    }
+
+    .lead {
+      color: #64748b;
+      margin-bottom: 30px;
+    }
+
+    .question {
+      font-size: 22px;
+      font-weight: bold;
+      margin-bottom: 25px;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 15px;
+    }
+
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 20px 10px;
+      color: white;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .safe {
+      background: #16a34a;
+    }
+
+    .safe:hover {
+      background: #15803d;
+    }
+
+    .missing {
+      background: #f59e0b;
+    }
+
+    .missing:hover {
+      background: #d97706;
+    }
+
+    .unsafe {
+      background: #dc2626;
+    }
+
+    .unsafe:hover {
+      background: #b91c1c;
+    }
+
+    .result {
+      display: none;
+      margin-top: 30px;
+      padding: 25px;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .result.safe-result {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .result.missing-result {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .result.unsafe-result {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .back {
+      display: inline-block;
+      margin-top: 25px;
+      text-decoration: none;
+      color: #2563eb;
+      font-weight: bold;
+    }
+
+    @media (max-width: 650px) {
+      .buttons {
+        grid-template-columns: 1fr;
+      }
+
+      .zone-name {
+        font-size: 32px;
+      }
+
+      .zone-card {
+        padding: 25px 18px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>Zone Safety Check-In</h1>
+  <p>Emergency Coverage & Safety Management</p>
+</header>
+
+<nav>
+  <a href="index.html">Coverage</a>
+  <a href="zones.html">Zones</a>
+  <a href="#">Reports</a>
+  <a href="#">Contacts</a>
+</nav>
+
+<main>
+
+  <div class="zone-card">
+
+    <div class="zone-name" id="zoneName">Zone</div>
+
+    <div class="lead" id="zoneInfo">
+      Please complete the safety check for this area.
+    </div>
+
+    <div class="question">
+      What is the current status?
+    </div>
+
+    <div class="buttons">
+
+      <button class="safe" onclick="selectStatus('safe')">
+        ✓ ALL SAFE
+      </button>
+
+      <button class="missing" onclick="selectStatus('missing')">
+        ⚠ MISSING
+      </button>
+
+      <button class="unsafe" onclick="selectStatus('unsafe')">
+        ✕ NOT SAFE
+      </button>
+
+    </div>
+
+    <div id="result" class="result"></div>
+
+    <a class="back" href="zones.html">
+      ← Back to Zones
+    </a>
+
+  </div>
+
+</main>
+
+<script>
+
+  const params = new URLSearchParams(window.location.search);
+
+  const zone = params.get("zone") || "Unknown";
+
+  document.getElementById("zoneName").textContent =
+    zone.replace("-", " & ");
+
+  const zoneInfo = {
+    "AG": "Lead: Vishnu | Deputy: Grace",
+    "A1": "Lead: Manoj | Deputy: Pukar",
+    "A2": "Lead: Rhys | Deputy: Laura Nulty",
+    "BG-B1": "Lead: Abdul | Deputy: Salu",
+    "CG": "Lead: Danielle Bishay | Deputy: Claire Nami",
+    "C1": "Lead: Hannah Jones | Deputy: Amy Jones",
+    "C2": "Lead: Emily Griffin | Deputy: Rachael Gabel",
+    "C3": "Lead: Regan | Deputy: Olivia Radford",
+    "DG": "Lead: Gavin | Deputy: Gemma Harris",
+    "D1": "Lead: Asif | Deputy: Rachel Forrest",
+    "D2": "Lead: Lily | Deputy: Anthea",
+    "EG": "Lead: Emily Gallone | Deputy: Roxanne",
+    "E1": "Lead: Isable | Deputy: Shaimaa",
+    "E2": "Lead: Danielle Jolosa | Deputy: Hanan",
+    "E3": "Lead: Erika | Deputy: Sarah Barr",
+    "AG-Parents": "Lead: Aisha | Location: Conference Room A"
+  };
+
+  document.getElementById("zoneInfo").textContent =
+    zoneInfo[zone] || "Please complete the safety check for this area.";
+
+  function selectStatus(status) {
+
+    const result = document.getElementById("result");
+
+    result.style.display = "block";
+
+    const currentTime = new Date().toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit"
+    });
+
+    if (status === "safe") {
+
+      result.className = "result safe-result";
+
+      result.innerHTML =
+        "✓ Zone is Secure<br>" +
+        "All personnel and students are accounted for.<br><br>" +
+        "Checked at " + currentTime;
+
+    }
+
+    if (status === "missing") {
+
+      result.className = "result missing-result";
+
+      result.innerHTML =
+        "⚠ Missing Person Report<br><br>" +
+        "Please report the missing student or staff member.";
+
+    }
+
+    if (status === "unsafe") {
+
+      result.className = "result unsafe-result";
+
+      result.innerHTML =
+        "✕ Safety Concern Reported<br><br>" +
+        "Please provide details of the safety concern.";
+
+    }
+
+  }
+
+</script>
+
+</body>
+</html>
