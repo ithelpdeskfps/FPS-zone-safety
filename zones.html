@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -72,6 +73,16 @@
       color: #64748b;
     }
 
+    .session-info {
+      background: white;
+      padding: 14px 18px;
+      border-radius: 10px;
+      margin-bottom: 25px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+      color: #475569;
+      font-size: 14px;
+    }
+
     .zones {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -106,12 +117,36 @@
     .status {
       display: inline-block;
       margin-top: 12px;
-      background: #e2e8f0;
-      color: #475569;
-      padding: 7px 12px;
+      padding: 8px 13px;
       border-radius: 20px;
       font-size: 12px;
       font-weight: bold;
+    }
+
+    .status-unchecked {
+      background: #e2e8f0;
+      color: #475569;
+    }
+
+    .status-safe {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .status-missing {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .status-unsafe {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .check-time {
+      margin-top: 8px;
+      font-size: 12px;
+      color: #64748b;
     }
 
     .open-btn {
@@ -129,6 +164,15 @@
 
     .open-btn:hover {
       background: #1d4ed8;
+    }
+
+    .error {
+      background: #fee2e2;
+      color: #991b1b;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: none;
     }
 
     @media (max-width: 1100px) {
@@ -175,8 +219,8 @@
 <nav>
   <a href="index.html">Coverage</a>
   <a href="zones.html">Zones</a>
-  <a href="#">Reports</a>
-  <a href="#">Contacts</a>
+  <a href="reports.html">Reports</a>
+  <a href="contacts.html">Contacts</a>
 </nav>
 
 <main>
@@ -186,6 +230,12 @@
     <p>Select your assigned area to complete the safety check.</p>
   </div>
 
+  <div id="errorBox" class="error"></div>
+
+  <div id="sessionInfo" class="session-info">
+    Loading current safety session...
+  </div>
+
   <div class="zones">
 
     <!-- AG -->
@@ -193,7 +243,8 @@
       <div class="zone-name">AG</div>
       <div class="person"><span class="label">Lead:</span> Vishnu</div>
       <div class="person"><span class="label">Deputy:</span> Grace</div>
-      <span class="status">Unchecked</span>
+      <span id="status-AG" class="status status-unchecked">Unchecked</span>
+      <div id="time-AG" class="check-time"></div>
       <button class="open-btn" onclick="openZone('AG')">Open Zone</button>
     </div>
 
@@ -202,7 +253,8 @@
       <div class="zone-name">A1</div>
       <div class="person"><span class="label">Lead:</span> Manoj</div>
       <div class="person"><span class="label">Deputy:</span> Pukar</div>
-      <span class="status">Unchecked</span>
+      <span id="status-A1" class="status status-unchecked">Unchecked</span>
+      <div id="time-A1" class="check-time"></div>
       <button class="open-btn" onclick="openZone('A1')">Open Zone</button>
     </div>
 
@@ -211,7 +263,8 @@
       <div class="zone-name">A2</div>
       <div class="person"><span class="label">Lead:</span> Rhys</div>
       <div class="person"><span class="label">Deputy:</span> Laura Nulty</div>
-      <span class="status">Unchecked</span>
+      <span id="status-A2" class="status status-unchecked">Unchecked</span>
+      <div id="time-A2" class="check-time"></div>
       <button class="open-btn" onclick="openZone('A2')">Open Zone</button>
     </div>
 
@@ -220,7 +273,8 @@
       <div class="zone-name">BG &amp; B1</div>
       <div class="person"><span class="label">Lead:</span> Abdul</div>
       <div class="person"><span class="label">Deputy:</span> Salu</div>
-      <span class="status">Unchecked</span>
+      <span id="status-BG-B1" class="status status-unchecked">Unchecked</span>
+      <div id="time-BG-B1" class="check-time"></div>
       <button class="open-btn" onclick="openZone('BG-B1')">Open Zone</button>
     </div>
 
@@ -229,7 +283,8 @@
       <div class="zone-name">CG</div>
       <div class="person"><span class="label">Lead:</span> Danielle Bishay</div>
       <div class="person"><span class="label">Deputy:</span> Claire Nami</div>
-      <span class="status">Unchecked</span>
+      <span id="status-CG" class="status status-unchecked">Unchecked</span>
+      <div id="time-CG" class="check-time"></div>
       <button class="open-btn" onclick="openZone('CG')">Open Zone</button>
     </div>
 
@@ -238,7 +293,8 @@
       <div class="zone-name">C1</div>
       <div class="person"><span class="label">Lead:</span> Hannah Jones</div>
       <div class="person"><span class="label">Deputy:</span> Amy Jones</div>
-      <span class="status">Unchecked</span>
+      <span id="status-C1" class="status status-unchecked">Unchecked</span>
+      <div id="time-C1" class="check-time"></div>
       <button class="open-btn" onclick="openZone('C1')">Open Zone</button>
     </div>
 
@@ -247,7 +303,8 @@
       <div class="zone-name">C2</div>
       <div class="person"><span class="label">Lead:</span> Emily Griffin</div>
       <div class="person"><span class="label">Deputy:</span> Rachael Gabel</div>
-      <span class="status">Unchecked</span>
+      <span id="status-C2" class="status status-unchecked">Unchecked</span>
+      <div id="time-C2" class="check-time"></div>
       <button class="open-btn" onclick="openZone('C2')">Open Zone</button>
     </div>
 
@@ -256,7 +313,8 @@
       <div class="zone-name">C3</div>
       <div class="person"><span class="label">Lead:</span> Regan</div>
       <div class="person"><span class="label">Deputy:</span> Olivia Radford</div>
-      <span class="status">Unchecked</span>
+      <span id="status-C3" class="status status-unchecked">Unchecked</span>
+      <div id="time-C3" class="check-time"></div>
       <button class="open-btn" onclick="openZone('C3')">Open Zone</button>
     </div>
 
@@ -265,7 +323,8 @@
       <div class="zone-name">DG</div>
       <div class="person"><span class="label">Lead:</span> Gavin</div>
       <div class="person"><span class="label">Deputy:</span> Gemma Harris</div>
-      <span class="status">Unchecked</span>
+      <span id="status-DG" class="status status-unchecked">Unchecked</span>
+      <div id="time-DG" class="check-time"></div>
       <button class="open-btn" onclick="openZone('DG')">Open Zone</button>
     </div>
 
@@ -274,7 +333,8 @@
       <div class="zone-name">D1</div>
       <div class="person"><span class="label">Lead:</span> Asif</div>
       <div class="person"><span class="label">Deputy:</span> Rachel Forrest</div>
-      <span class="status">Unchecked</span>
+      <span id="status-D1" class="status status-unchecked">Unchecked</span>
+      <div id="time-D1" class="check-time"></div>
       <button class="open-btn" onclick="openZone('D1')">Open Zone</button>
     </div>
 
@@ -283,7 +343,8 @@
       <div class="zone-name">D2</div>
       <div class="person"><span class="label">Lead:</span> Lily</div>
       <div class="person"><span class="label">Deputy:</span> Anthea</div>
-      <span class="status">Unchecked</span>
+      <span id="status-D2" class="status status-unchecked">Unchecked</span>
+      <div id="time-D2" class="check-time"></div>
       <button class="open-btn" onclick="openZone('D2')">Open Zone</button>
     </div>
 
@@ -292,16 +353,18 @@
       <div class="zone-name">EG</div>
       <div class="person"><span class="label">Lead:</span> Emily Gallone</div>
       <div class="person"><span class="label">Deputy:</span> Roxanne</div>
-      <span class="status">Unchecked</span>
+      <span id="status-EG" class="status status-unchecked">Unchecked</span>
+      <div id="time-EG" class="check-time"></div>
       <button class="open-btn" onclick="openZone('EG')">Open Zone</button>
     </div>
 
     <!-- E1 -->
     <div class="zone-card">
       <div class="zone-name">E1</div>
-      <div class="person"><span class="label">Lead:</span> Isable</div>
+      <div class="person"><span class="label">Lead:</span> Isabel</div>
       <div class="person"><span class="label">Deputy:</span> Shaimaa</div>
-      <span class="status">Unchecked</span>
+      <span id="status-E1" class="status status-unchecked">Unchecked</span>
+      <div id="time-E1" class="check-time"></div>
       <button class="open-btn" onclick="openZone('E1')">Open Zone</button>
     </div>
 
@@ -310,7 +373,8 @@
       <div class="zone-name">E2</div>
       <div class="person"><span class="label">Lead:</span> Danielle Jolosa</div>
       <div class="person"><span class="label">Deputy:</span> Hanan</div>
-      <span class="status">Unchecked</span>
+      <span id="status-E2" class="status status-unchecked">Unchecked</span>
+      <div id="time-E2" class="check-time"></div>
       <button class="open-btn" onclick="openZone('E2')">Open Zone</button>
     </div>
 
@@ -319,7 +383,8 @@
       <div class="zone-name">E3</div>
       <div class="person"><span class="label">Lead:</span> Erika</div>
       <div class="person"><span class="label">Deputy:</span> Sarah Barr</div>
-      <span class="status">Unchecked</span>
+      <span id="status-E3" class="status status-unchecked">Unchecked</span>
+      <div id="time-E3" class="check-time"></div>
       <button class="open-btn" onclick="openZone('E3')">Open Zone</button>
     </div>
 
@@ -328,7 +393,8 @@
       <div class="zone-name">AG (Parents)</div>
       <div class="person"><span class="label">Lead:</span> Aisha</div>
       <div class="person"><span class="label">Location:</span> Conference Room A</div>
-      <span class="status">Unchecked</span>
+      <span id="status-AG-Parents" class="status status-unchecked">Unchecked</span>
+      <div id="time-AG-Parents" class="check-time"></div>
       <button class="open-btn" onclick="openZone('AG-Parents')">Open Area</button>
     </div>
 
@@ -336,13 +402,402 @@
 
 </main>
 
-<script>
 
-  function openZone(zone) {
-    window.location.href = "zone-checkin.html?zone=" + encodeURIComponent(zone);
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+
+import {
+  getFirestore,
+  collection,
+  query,
+  orderBy,
+  onSnapshot,
+  doc,
+  getDoc
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+import {
+  getAuth,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+
+const firebaseConfig = {
+  apiKey: "AIzaSyB0--wrOqeid_iVGJkqDwJAWBefPyI4HPw",
+  authDomain: "fps-zone-safety.firebaseapp.com",
+  projectId: "fps-zone-safety",
+  storageBucket: "fps-zone-safety.firebasestorage.app",
+  messagingSenderId: "96363004027",
+  appId: "1:96363004027:web:101c3b8ba1fde53655e2de",
+  measurementId: "G-WEK1MZ48M2"
+};
+
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
+const auth = getAuth(app);
+
+let currentSessionId = null;
+
+
+/*
+  Convert the display zone name to the
+  ID used by the HTML.
+*/
+function getZoneElementId(zoneName) {
+
+  const mapping = {
+    "AG": "AG",
+    "A1": "A1",
+    "A2": "A2",
+    "BG & B1": "BG-B1",
+    "CG": "CG",
+    "C1": "C1",
+    "C2": "C2",
+    "C3": "C3",
+    "DG": "DG",
+    "D1": "D1",
+    "D2": "D2",
+    "EG": "EG",
+    "E1": "E1",
+    "E2": "E2",
+    "E3": "E3",
+    "AG (Parents)": "AG-Parents"
+  };
+
+  return mapping[zoneName] || zoneName;
+
+}
+
+
+/*
+  Login protection
+*/
+onAuthStateChanged(auth, async function(user) {
+
+  if (!user) {
+
+    window.location.href = "login.html";
+
+    return;
+
   }
+
+
+  try {
+
+    const sessionRef =
+      doc(db, "system", "currentSession");
+
+    const sessionSnap =
+      await getDoc(sessionRef);
+
+
+    if (!sessionSnap.exists()) {
+
+      showError(
+        "No active safety session found. Please open the Dashboard first."
+      );
+
+      document.getElementById("sessionInfo").textContent =
+        "No active safety session.";
+
+      return;
+
+    }
+
+
+    const sessionData =
+      sessionSnap.data();
+
+    currentSessionId =
+      sessionData.sessionId;
+
+
+    if (
+      sessionData.startedAt &&
+      typeof sessionData.startedAt.toDate === "function"
+    ) {
+
+      document.getElementById("sessionInfo").textContent =
+        "Current Safety Session started: " +
+        sessionData.startedAt.toDate().toLocaleString();
+
+    } else {
+
+      document.getElementById("sessionInfo").textContent =
+        "Current Safety Session: Active";
+
+    }
+
+
+    listenForCheckins();
+
+
+  } catch (error) {
+
+    console.error(error);
+
+    showError(
+      "Unable to load the current safety session."
+    );
+
+  }
+
+});
+
+
+/*
+  Listen for all check-ins.
+  Firebase will automatically update
+  the page when a new check-in is saved.
+*/
+function listenForCheckins() {
+
+  const checkinsQuery =
+    query(
+      collection(db, "checkins"),
+      orderBy("checkedAt", "desc")
+    );
+
+
+  onSnapshot(
+    checkinsQuery,
+    function(snapshot) {
+
+      const latestByZone = {};
+
+
+      snapshot.forEach(function(docSnapshot) {
+
+        const data =
+          docSnapshot.data();
+
+
+        /*
+          Only use records belonging
+          to the current safety session.
+        */
+        if (
+          !data.sessionId ||
+          data.sessionId !== currentSessionId
+        ) {
+
+          return;
+
+        }
+
+
+        /*
+          Because the query is ordered
+          newest first, the first report
+          we see for each zone is the latest.
+        */
+        if (!latestByZone[data.zone]) {
+
+          latestByZone[data.zone] = data;
+
+        }
+
+      });
+
+
+      updateZoneStatuses(latestByZone);
+
+    },
+    function(error) {
+
+      console.error(error);
+
+      showError(
+        "Unable to load zone check-ins. Please check Firestore permissions."
+      );
+
+    }
+  );
+
+}
+
+
+/*
+  Update all zone cards
+*/
+function updateZoneStatuses(latestByZone) {
+
+  const zones = [
+    "AG",
+    "A1",
+    "A2",
+    "BG & B1",
+    "CG",
+    "C1",
+    "C2",
+    "C3",
+    "DG",
+    "D1",
+    "D2",
+    "EG",
+    "E1",
+    "E2",
+    "E3",
+    "AG (Parents)"
+  ];
+
+
+  zones.forEach(function(zoneName) {
+
+    const elementId =
+      getZoneElementId(zoneName);
+
+
+    const statusElement =
+      document.getElementById(
+        "status-" + elementId
+      );
+
+    const timeElement =
+      document.getElementById(
+        "time-" + elementId
+      );
+
+
+    if (!statusElement) {
+
+      return;
+
+    }
+
+
+    const report =
+      latestByZone[zoneName];
+
+
+    /*
+      No report = Unchecked
+    */
+    if (!report) {
+
+      statusElement.textContent =
+        "Unchecked";
+
+      statusElement.className =
+        "status status-unchecked";
+
+      timeElement.textContent =
+        "";
+
+      return;
+
+    }
+
+
+    /*
+      ALL SAFE
+    */
+    if (report.status === "safe") {
+
+      statusElement.textContent =
+        "ALL SAFE";
+
+      statusElement.className =
+        "status status-safe";
+
+    }
+
+
+    /*
+      MISSING
+    */
+    else if (report.status === "missing") {
+
+      statusElement.textContent =
+        "MISSING";
+
+      statusElement.className =
+        "status status-missing";
+
+    }
+
+
+    /*
+      NOT SAFE
+    */
+    else if (report.status === "unsafe") {
+
+      statusElement.textContent =
+        "NOT SAFE";
+
+      statusElement.className =
+        "status status-unsafe";
+
+    }
+
+
+    else {
+
+      statusElement.textContent =
+        "Unchecked";
+
+      statusElement.className =
+        "status status-unchecked";
+
+    }
+
+
+    /*
+      Show check-in time
+    */
+    if (
+      report.checkedAt &&
+      typeof report.checkedAt.toDate === "function"
+    ) {
+
+      timeElement.textContent =
+        "Checked: " +
+        report.checkedAt.toDate().toLocaleString();
+
+    } else {
+
+      timeElement.textContent =
+        "Checking time...";
+
+    }
+
+  });
+
+}
+
+
+function showError(message) {
+
+  const errorBox =
+    document.getElementById("errorBox");
+
+  errorBox.textContent =
+    message;
+
+  errorBox.style.display =
+    "block";
+
+}
+
+
+/*
+  Open individual zone
+*/
+window.openZone = function(zone) {
+
+  window.location.href =
+    "zone-checkin.html?zone=" +
+    encodeURIComponent(zone);
+
+};
 
 </script>
 
 </body>
 </html>
+```
