@@ -63,6 +63,45 @@
       margin: auto;
     }
 
+    /* NEW SESSION */
+
+    .session-box {
+      background: white;
+      padding: 18px;
+      border-radius: 10px;
+      margin-bottom: 25px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      text-align: center;
+    }
+
+    .session-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #17365d;
+      margin-bottom: 8px;
+    }
+
+    .session-info {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 14px;
+    }
+
+    .new-session-button {
+      background: #17365d;
+      color: white;
+      border: none;
+      border-radius: 7px;
+      padding: 12px 25px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .new-session-button:hover {
+      opacity: 0.9;
+    }
+
     /* SUMMARY */
 
     .summary {
@@ -317,32 +356,51 @@
 
   <div class="navigation">
 
-    <a
-      href="index.html"
-      class="nav-button">
+    <a href="index.html" class="nav-button">
       Dashboard
     </a>
 
-    <a
-      href="zones.html"
-      class="nav-button">
+    <a href="zones.html" class="nav-button">
       Zones
     </a>
 
-    <a
-      href="reports.html"
-      class="nav-button">
+    <a href="reports.html" class="nav-button">
       Reports
     </a>
-<a 
-  href="contacts.html"
-  class="nav-button">
-  Contacts
-   </a>
+
+    <a href="contacts.html" class="nav-button">
+      Contacts
+    </a>
+
   </div>
 
 
   <div class="container">
+
+
+    <!-- NEW SESSION -->
+
+    <div class="session-box">
+
+      <div class="session-title">
+        Current Safety Session
+      </div>
+
+      <div
+        id="sessionInfo"
+        class="session-info">
+        Starting safety session...
+      </div>
+
+      <button
+        id="newSessionButton"
+        class="new-session-button">
+
+        START NEW SAFETY SESSION
+
+      </button>
+
+    </div>
 
 
     <!-- TOP SUMMARY -->
@@ -419,7 +477,6 @@
 
       <div class="status-summary">
 
-
         <div class="status-box safe">
 
           <span
@@ -471,7 +528,6 @@
 
         </div>
 
-
       </div>
 
     </div>
@@ -500,7 +556,760 @@
   </div>
 
 
-  <!-- FIREBASE --> <script type="module"> import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js"; import { getFirestore, collection, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js"; import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js"; const firebaseConfig = { apiKey: "AIzaSyB0--wrOqeid_iVGJkqDwJAWBefPyI4HPw", authDomain: "fps-zone-safety.firebaseapp.com", projectId: "fps-zone-safety", storageBucket: "fps-zone-safety.firebasestorage.app", messagingSenderId: "96363004027", appId: "1:96363004027:web:101c3b8ba1fde53655e2de", measurementId: "G-WEK1MZ48M2" }; const app = initializeApp(firebaseConfig); const db = getFirestore(app); const auth = getAuth(app); /* LOGIN CHECK */ onAuthStateChanged(auth, (user) => { if (!user) { window.location.href = "login.html"; return; } /* User is logged in. Continue loading the dashboard. */ startDashboard(); }); /* ALL 16 ZONES */ const zones = [ { name: "AG", lead: "Vishnu", deputy: "Grace" }, { name: "A1", lead: "Manoj", deputy: "Pukar" }, { name: "A2", lead: "Rhys", deputy: "Laura Nulty" }, { name: "BG & B1", lead: "Abdul", deputy: "Salu" }, { name: "CG", lead: "Danielle Bishay", deputy: "Claire Nami" }, { name: "C1", lead: "Hannah Jones", deputy: "Amy Jones" }, { name: "C2", lead: "Emily Griffin", deputy: "Rachael Gabel" }, { name: "C3", lead: "Regan", deputy: "Olivia Radford" }, { name: "DG", lead: "Gavin", deputy: "Gemma Harris" }, { name: "D1", lead: "Asif", deputy: "Rachel Forrest" }, { name: "D2", lead: "Lily", deputy: "Anthea" }, { name: "EG", lead: "Emily Gallone", deputy: "Roxanne" }, { name: "E1", lead: "Isabel", deputy: "Shaimaa" }, { name: "E2", lead: "Danielle Jolosa", deputy: "Hanan" }, { name: "E3", lead: "Erika", deputy: "Sarah Barr" }, { name: "AG (Parents)", lead: "Aisha", deputy: "Conference Room A" } ]; const zoneGrid = document.getElementById("zoneGrid"); const latestByZone = {}; /* START DASHBOARD */ function startDashboard() { createZoneCards(); const reportsQuery = query( collection(db, "checkins"), orderBy( "checkedAt", "desc" ) ); onSnapshot( reportsQuery, function(snapshot) { Object.keys( latestByZone ).forEach( function(key) { delete latestByZone[key]; } ); snapshot.forEach( function(doc) { const data = doc.data(); if ( !latestByZone[data.zone] ) { latestByZone[data.zone] = data; } } ); updateDashboard(); }, function(error) { console.error(error); document.getElementById( "lastUpdated" ).textContent = "Unable to connect to Firebase."; } ); } /* CREATE ZONE CARDS */ function createZoneCards() { zoneGrid.innerHTML = ""; zones.forEach( function(zone) { const card = document.createElement("div"); card.className = "zone-card"; card.id = "zone-" + zone.name.replace( /[^a-zA-Z0-9]/g, "-" ); card.innerHTML = ` <div class="zone-name"> ${zone.name} </div> <div class="zone-person"> <strong>Lead:</strong> ${zone.lead} <br> <strong>Deputy / Location:</strong> ${zone.deputy} </div> <div id="status-${zone.name.replace( /[^a-zA-Z0-9]/g, "-" )}" class="zone-status status-unchecked"> UNCHECKED </div> <a href="zone-checkin.html?zone=${encodeURIComponent(zone.name)}" class="open-button"> Open Zone </a> `; zoneGrid.appendChild(card); } ); } /* UPDATE DASHBOARD */ function updateDashboard() { let safe = 0; let unsafe = 0; let missing = 0; let unchecked = 0; let covered = 0; zones.forEach( function(zone) { const report = latestByZone[zone.name]; const statusId = "status-" + zone.name.replace( /[^a-zA-Z0-9]/g, "-" ); const statusElement = document.getElementById( statusId ); if (!report) { unchecked++; statusElement.textContent = "UNCHECKED"; statusElement.className = "zone-status status-unchecked"; return; } covered++; if ( report.status === "ALL SAFE" ) { safe++; statusElement.textContent = "ALL SAFE"; statusElement.className = "zone-status status-safe"; } else if ( report.status === "NOT SAFE" ) { unsafe++; statusElement.textContent = "NOT SAFE"; statusElement.className = "zone-status status-unsafe"; } else if ( report.status === "MISSING" ) { missing++; statusElement.textContent = "MISSING"; statusElement.className = "zone-status status-missing"; } else { unchecked++; statusElement.textContent = "UNCHECKED"; statusElement.className = "zone-status status-unchecked"; } } ); document.getElementById( "zoneCount" ).textContent = zones.length; document.getElementById( "coveredCount" ).textContent = covered; document.getElementById( "leadCount" ).textContent = zones.length; document.getElementById( "deputyCount" ).textContent = 15; document.getElementById( "safeCount" ).textContent = safe; document.getElementById( "unsafeCount" ).textContent = unsafe; document.getElementById( "missingCount" ).textContent = missing; document.getElementById( "uncheckedCount" ).textContent = unchecked; document.getElementById( "lastUpdated" ).textContent = "Live updates connected • " + new Date().toLocaleString(); } </script>
+  <!-- FIREBASE -->
+
+  <script type="module">
+
+    import {
+      initializeApp
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+
+    import {
+      getFirestore,
+      collection,
+      query,
+      orderBy,
+      onSnapshot,
+      doc,
+      getDoc,
+      setDoc,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+    import {
+      getAuth,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+
+    const firebaseConfig = {
+
+      apiKey:
+        "AIzaSyB0--wrOqeid_iVGJkqDwJAWBefPyI4HPw",
+
+      authDomain:
+        "fps-zone-safety.firebaseapp.com",
+
+      projectId:
+        "fps-zone-safety",
+
+      storageBucket:
+        "fps-zone-safety.firebasestorage.app",
+
+      messagingSenderId:
+        "96363004027",
+
+      appId:
+        "1:96363004027:web:101c3b8ba1fde53655e2de",
+
+      measurementId:
+        "G-WEK1MZ48M2"
+
+    };
+
+
+    const app =
+      initializeApp(firebaseConfig);
+
+    const db =
+      getFirestore(app);
+
+    const auth =
+      getAuth(app);
+
+
+    let currentSessionId = null;
+
+
+    const zones = [
+
+      {
+        name: "AG",
+        lead: "Vishnu",
+        deputy: "Grace"
+      },
+
+      {
+        name: "A1",
+        lead: "Manoj",
+        deputy: "Pukar"
+      },
+
+      {
+        name: "A2",
+        lead: "Rhys",
+        deputy: "Laura Nulty"
+      },
+
+      {
+        name: "BG & B1",
+        lead: "Abdul",
+        deputy: "Salu"
+      },
+
+      {
+        name: "CG",
+        lead: "Danielle Bishay",
+        deputy: "Claire Nami"
+      },
+
+      {
+        name: "C1",
+        lead: "Hannah Jones",
+        deputy: "Amy Jones"
+      },
+
+      {
+        name: "C2",
+        lead: "Emily Griffin",
+        deputy: "Rachael Gabel"
+      },
+
+      {
+        name: "C3",
+        lead: "Regan",
+        deputy: "Olivia Radford"
+      },
+
+      {
+        name: "DG",
+        lead: "Gavin",
+        deputy: "Gemma Harris"
+      },
+
+      {
+        name: "D1",
+        lead: "Asif",
+        deputy: "Rachel Forrest"
+      },
+
+      {
+        name: "D2",
+        lead: "Lily",
+        deputy: "Anthea"
+      },
+
+      {
+        name: "EG",
+        lead: "Emily Gallone",
+        deputy: "Roxanne"
+      },
+
+      {
+        name: "E1",
+        lead: "Isabel",
+        deputy: "Shaimaa"
+      },
+
+      {
+        name: "E2",
+        lead: "Danielle Jolosa",
+        deputy: "Hanan"
+      },
+
+      {
+        name: "E3",
+        lead: "Erika",
+        deputy: "Sarah Barr"
+      },
+
+      {
+        name: "AG (Parents)",
+        lead: "Aisha",
+        deputy: "Conference Room A"
+      }
+
+    ];
+
+
+    const zoneGrid =
+      document.getElementById("zoneGrid");
+
+
+    const latestByZone = {};
+
+
+    /*
+      LOGIN CHECK
+    */
+
+    onAuthStateChanged(
+      auth,
+      async function(user) {
+
+        if (!user) {
+
+          window.location.href =
+            "login.html";
+
+          return;
+
+        }
+
+        await startDashboard();
+
+      }
+    );
+
+
+    /*
+      START DASHBOARD
+    */
+
+    async function startDashboard() {
+
+      createZoneCards();
+
+      await loadCurrentSession();
+
+      listenToCurrentSession();
+
+    }
+
+
+    /*
+      LOAD CURRENT SESSION
+    */
+
+    async function loadCurrentSession() {
+
+      const sessionRef =
+        doc(
+          db,
+          "system",
+          "currentSession"
+        );
+
+      const sessionSnap =
+        await getDoc(sessionRef);
+
+
+      if (!sessionSnap.exists()) {
+
+        await createNewSession();
+
+        return;
+
+      }
+
+
+      const sessionData =
+        sessionSnap.data();
+
+
+      currentSessionId =
+        sessionData.sessionId;
+
+
+      updateSessionInfo(
+        sessionData.startedAt
+      );
+
+    }
+
+
+    /*
+      CREATE NEW SESSION
+    */
+
+    async function createNewSession() {
+
+      const newSessionId =
+        "session-" +
+        Date.now();
+
+
+      currentSessionId =
+        newSessionId;
+
+
+      const sessionRef =
+        doc(
+          db,
+          "system",
+          "currentSession"
+        );
+
+
+      await setDoc(
+        sessionRef,
+        {
+
+          sessionId:
+            newSessionId,
+
+          startedAt:
+            serverTimestamp()
+
+        }
+      );
+
+
+      updateSessionInfo(
+        new Date()
+      );
+
+    }
+
+
+    /*
+      NEW SESSION BUTTON
+    */
+
+    document
+      .getElementById("newSessionButton")
+      .addEventListener(
+        "click",
+        async function() {
+
+          const confirmed =
+            confirm(
+              "Start a new safety session?\n\n" +
+              "The current dashboard will be reset.\n\n" +
+              "Previous session records will NOT be deleted."
+            );
+
+
+          if (!confirmed) {
+
+            return;
+
+          }
+
+
+          const button =
+            document.getElementById(
+              "newSessionButton"
+            );
+
+
+          button.disabled = true;
+
+          button.textContent =
+            "STARTING...";
+
+
+          try {
+
+            await createNewSession();
+
+
+            Object.keys(
+              latestByZone
+            ).forEach(
+              function(key) {
+
+                delete latestByZone[key];
+
+              }
+            );
+
+
+            updateDashboard();
+
+
+            button.textContent =
+              "START NEW SAFETY SESSION";
+
+
+          } catch (error) {
+
+            console.error(error);
+
+            alert(
+              "Unable to start the new session. Please try again."
+            );
+
+          }
+
+
+          button.disabled = false;
+
+        }
+      );
+
+
+    /*
+      SESSION INFORMATION
+    */
+
+    function updateSessionInfo(startedAt) {
+
+      let text =
+        "Current session is active";
+
+
+      if (
+        startedAt &&
+        typeof startedAt.toDate === "function"
+      ) {
+
+        text =
+          "Current session started: " +
+          startedAt
+            .toDate()
+            .toLocaleString();
+
+      }
+
+      else if (
+        startedAt instanceof Date
+      ) {
+
+        text =
+          "Current session started: " +
+          startedAt.toLocaleString();
+
+      }
+
+
+      document.getElementById(
+        "sessionInfo"
+      ).textContent =
+        text;
+
+    }
+
+
+    /*
+      FIREBASE LIVE LISTENER
+    */
+
+    function listenToCurrentSession() {
+
+      const reportsQuery =
+        query(
+          collection(
+            db,
+            "checkins"
+          ),
+          orderBy(
+            "checkedAt",
+            "desc"
+          )
+        );
+
+
+      onSnapshot(
+        reportsQuery,
+        function(snapshot) {
+
+          Object.keys(
+            latestByZone
+          ).forEach(
+            function(key) {
+
+              delete latestByZone[key];
+
+            }
+          );
+
+
+          snapshot.forEach(
+            function(docSnapshot) {
+
+              const data =
+                docSnapshot.data();
+
+
+              /*
+                ONLY USE CURRENT SESSION
+              */
+
+              if (
+                data.sessionId !==
+                currentSessionId
+              ) {
+
+                return;
+
+              }
+
+
+              if (
+                !latestByZone[data.zone]
+              ) {
+
+                latestByZone[data.zone] =
+                  data;
+
+              }
+
+            }
+          );
+
+
+          updateDashboard();
+
+        },
+
+
+        function(error) {
+
+          console.error(error);
+
+          document.getElementById(
+            "lastUpdated"
+          ).textContent =
+            "Unable to connect to Firebase.";
+
+        }
+
+      );
+
+    }
+
+
+    /*
+      CREATE ZONE CARDS
+    */
+
+    function createZoneCards() {
+
+      zoneGrid.innerHTML = "";
+
+
+      zones.forEach(
+        function(zone) {
+
+          const card =
+            document.createElement("div");
+
+
+          card.className =
+            "zone-card";
+
+
+          card.id =
+            "zone-" +
+            zone.name.replace(
+              /[^a-zA-Z0-9]/g,
+              "-"
+            );
+
+
+          card.innerHTML = `
+
+            <div class="zone-name">
+              ${zone.name}
+            </div>
+
+            <div class="zone-person">
+
+              <strong>Lead:</strong>
+              ${zone.lead}
+
+              <br>
+
+              <strong>Deputy / Location:</strong>
+              ${zone.deputy}
+
+            </div>
+
+            <div
+              id="status-${zone.name.replace(
+                /[^a-zA-Z0-9]/g,
+                "-"
+              )}"
+              class="zone-status status-unchecked">
+
+              UNCHECKED
+
+            </div>
+
+            <a
+              href="zone-checkin.html?zone=${encodeURIComponent(zone.name)}"
+              class="open-button">
+
+              Open Zone
+
+            </a>
+
+          `;
+
+
+          zoneGrid.appendChild(card);
+
+        }
+      );
+
+    }
+
+
+    /*
+      UPDATE DASHBOARD
+    */
+
+    function updateDashboard() {
+
+      let safe = 0;
+
+      let unsafe = 0;
+
+      let missing = 0;
+
+      let unchecked = 0;
+
+      let covered = 0;
+
+
+      zones.forEach(
+        function(zone) {
+
+          const report =
+            latestByZone[zone.name];
+
+
+          const statusId =
+            "status-" +
+            zone.name.replace(
+              /[^a-zA-Z0-9]/g,
+              "-"
+            );
+
+
+          const statusElement =
+            document.getElementById(
+              statusId
+            );
+
+
+          if (!report) {
+
+            unchecked++;
+
+            statusElement.textContent =
+              "UNCHECKED";
+
+            statusElement.className =
+              "zone-status status-unchecked";
+
+            return;
+
+          }
+
+
+          covered++;
+
+
+          if (
+            report.status ===
+            "ALL SAFE"
+          ) {
+
+            safe++;
+
+            statusElement.textContent =
+              "ALL SAFE";
+
+            statusElement.className =
+              "zone-status status-safe";
+
+          }
+
+          else if (
+            report.status ===
+            "NOT SAFE"
+          ) {
+
+            unsafe++;
+
+            statusElement.textContent =
+              "NOT SAFE";
+
+            statusElement.className =
+              "zone-status status-unsafe";
+
+          }
+
+          else if (
+            report.status ===
+            "MISSING"
+          ) {
+
+            missing++;
+
+            statusElement.textContent =
+              "MISSING";
+
+            statusElement.className =
+              "zone-status status-missing";
+
+          }
+
+          else {
+
+            unchecked++;
+
+            statusElement.textContent =
+              "UNCHECKED";
+
+            statusElement.className =
+              "zone-status status-unchecked";
+
+          }
+
+        }
+      );
+
+
+      document.getElementById(
+        "zoneCount"
+      ).textContent =
+        zones.length;
+
+
+      document.getElementById(
+        "coveredCount"
+      ).textContent =
+        covered;
+
+
+      document.getElementById(
+        "leadCount"
+      ).textContent =
+        zones.length;
+
+
+      document.getElementById(
+        "deputyCount"
+      ).textContent =
+        15;
+
+
+      document.getElementById(
+        "safeCount"
+      ).textContent =
+        safe;
+
+
+      document.getElementById(
+        "unsafeCount"
+      ).textContent =
+        unsafe;
+
+
+      document.getElementById(
+        "missingCount"
+      ).textContent =
+        missing;
+
+
+      document.getElementById(
+        "uncheckedCount"
+      ).textContent =
+        unchecked;
+
+
+      document.getElementById(
+        "lastUpdated"
+      ).textContent =
+        "Live updates connected • " +
+        new Date().toLocaleString();
+
+    }
+
+  </script>
 
 </body>
 </html>
