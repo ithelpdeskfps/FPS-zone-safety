@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,212 +14,211 @@
       margin: 0;
       font-family: Arial, Helvetica, sans-serif;
       background: #f4f7fb;
-      color: #1f2937;
+      color: #1e293b;
     }
 
+    /* HEADER */
     header {
       background: #17365d;
       color: white;
-      padding: 22px 30px;
+      padding: 24px 30px;
     }
 
     header h1 {
       margin: 0;
-      font-size: 26px;
+      font-size: 28px;
     }
 
     header p {
       margin: 6px 0 0;
-      opacity: 0.85;
+      font-size: 15px;
+      opacity: 0.9;
     }
 
+    /* NAVIGATION */
     nav {
       background: white;
-      padding: 14px 30px;
-      border-bottom: 1px solid #ddd;
-      display: flex;
-      gap: 25px;
-      flex-wrap: wrap;
+      padding: 12px 30px;
+      border-bottom: 1px solid #e2e8f0;
     }
 
     nav a {
       text-decoration: none;
-      color: #17365d;
-      font-weight: bold;
+      color: #334155;
+      font-weight: 600;
+      margin-right: 25px;
     }
 
-    nav a.active {
-      color: #0b7a75;
+    nav a:hover {
+      color: #2563eb;
     }
 
+    /* MAIN */
     main {
       max-width: 1400px;
-      margin: 25px auto;
-      padding: 0 20px;
+      margin: auto;
+      padding: 30px;
     }
 
-    .welcome {
-      background: white;
-      border-radius: 14px;
-      padding: 25px;
-      margin-bottom: 25px;
-      box-shadow: 0 3px 12px rgba(0,0,0,0.07);
+    .section-title {
+      margin-bottom: 18px;
     }
 
-    .welcome h2 {
-      margin-top: 0;
-      color: #17365d;
+    .section-title h2 {
+      margin: 0;
+      font-size: 22px;
+    }
+
+    .section-title p {
+      margin: 5px 0 0;
+      color: #64748b;
     }
 
     /* SUMMARY CARDS */
-
     .summary-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 18px;
-      margin-bottom: 30px;
+      margin-bottom: 35px;
     }
 
     .summary-card {
-      padding: 22px;
+      background: white;
       border-radius: 14px;
-      color: white;
-      min-height: 125px;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.12);
+      padding: 22px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.06);
+      border-left: 6px solid;
     }
 
-    .summary-card h3 {
-      margin: 0 0 12px;
-      font-size: 16px;
-    }
-
-    .summary-number {
-      font-size: 38px;
+    .summary-card .number {
+      font-size: 34px;
       font-weight: bold;
+      margin-bottom: 5px;
     }
 
-    .zones-card {
-      background: #2563eb;
+    .summary-card .label {
+      color: #64748b;
+      font-size: 15px;
+      font-weight: 600;
     }
 
-    .areas-card {
-      background: #7c3aed;
+    .blue {
+      border-color: #2563eb;
     }
 
-    .leads-card {
-      background: #0891b2;
+    .blue .number {
+      color: #2563eb;
     }
 
-    .deputies-card {
-      background: #059669;
+    .purple {
+      border-color: #7c3aed;
     }
 
-    /* STATUS */
-
-    .section-title {
-      color: #17365d;
-      margin: 10px 0 15px;
+    .purple .number {
+      color: #7c3aed;
     }
 
+    .cyan {
+      border-color: #0891b2;
+    }
+
+    .cyan .number {
+      color: #0891b2;
+    }
+
+    .green {
+      border-color: #059669;
+    }
+
+    .green .number {
+      color: #059669;
+    }
+
+    /* SAFETY STATUS */
     .status-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 18px;
-      margin-bottom: 30px;
+      margin-bottom: 35px;
     }
 
     .status-card {
       background: white;
       border-radius: 14px;
-      padding: 22px;
+      padding: 20px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.06);
       text-align: center;
-      cursor: pointer;
-      border: 3px solid transparent;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.07);
-      transition: transform 0.15s;
     }
 
-    .status-card:hover {
-      transform: translateY(-3px);
-    }
-
-    .status-icon {
+    .status-card .number {
       font-size: 32px;
-      margin-bottom: 8px;
-    }
-
-    .status-number {
-      font-size: 34px;
       font-weight: bold;
     }
 
-    .safe {
-      border-color: #16a34a;
+    .status-card .label {
+      margin-top: 5px;
+      color: #64748b;
+      font-weight: 600;
     }
 
-    .safe .status-number {
+    .safe .number {
       color: #16a34a;
     }
 
-    .unsafe {
-      border-color: #dc2626;
-    }
-
-    .unsafe .status-number {
+    .unsafe .number {
       color: #dc2626;
     }
 
-    .missing {
-      border-color: #f59e0b;
-    }
-
-    .missing .status-number {
+    .missing .number {
       color: #f59e0b;
     }
 
-    .unchecked {
-      border-color: #94a3b8;
+    .unchecked .number {
+      color: #94a3b8;
     }
 
-    .unchecked .status-number {
+    /* ASSIGNMENT BOARD */
+    .board {
+      background: white;
+      border-radius: 14px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.06);
+      overflow: hidden;
+    }
+
+    .board-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .board-header h2 {
+      margin: 0;
+      font-size: 21px;
+    }
+
+    .board-header p {
+      margin: 5px 0 0;
       color: #64748b;
     }
 
-    /* ZONE TABLE */
-
-    .zone-section {
-      background: white;
-      border-radius: 14px;
-      padding: 22px;
-      box-shadow: 0 3px 12px rgba(0,0,0,0.07);
-      overflow-x: auto;
+    .zone-row {
+      display: grid;
+      grid-template-columns: 1.2fr 2fr 2fr 1.2fr 1.2fr;
+      gap: 15px;
+      align-items: center;
+      padding: 16px 24px;
+      border-bottom: 1px solid #eef2f7;
     }
 
-    .zone-section h2 {
-      margin-top: 0;
-      color: #17365d;
+    .zone-row:last-child {
+      border-bottom: none;
     }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 700px;
-    }
-
-    th {
-      background: #eef2f7;
-      color: #374151;
-      text-align: left;
-      padding: 14px;
-    }
-
-    td {
-      padding: 14px;
-      border-bottom: 1px solid #e5e7eb;
-    }
-
-    tr:hover {
+    .zone-row.header {
       background: #f8fafc;
+      font-size: 13px;
+      font-weight: bold;
+      color: #64748b;
+      text-transform: uppercase;
     }
 
     .zone-name {
@@ -228,99 +226,124 @@
       color: #17365d;
     }
 
-    .status-badge {
+    .person {
+      font-size: 14px;
+    }
+
+    .location {
+      font-size: 13px;
+      color: #64748b;
+    }
+
+    /* STATUS BADGE */
+    .badge {
       display: inline-block;
       padding: 7px 12px;
       border-radius: 20px;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: bold;
-    }
-
-    .badge-safe {
-      background: #dcfce7;
-      color: #166534;
-    }
-
-    .badge-unsafe {
-      background: #fee2e2;
-      color: #991b1b;
-    }
-
-    .badge-missing {
-      background: #fef3c7;
-      color: #92400e;
-    }
-
-    .badge-unchecked {
-      background: #e5e7eb;
+      background: #e2e8f0;
       color: #475569;
     }
 
-    .zone-button {
-      background: #17365d;
+    /* BUTTON */
+    .open-btn {
+      background: #2563eb;
       color: white;
       border: none;
-      padding: 8px 14px;
-      border-radius: 7px;
+      border-radius: 8px;
+      padding: 9px 14px;
+      font-weight: bold;
       cursor: pointer;
     }
 
-    .zone-button:hover {
-      background: #0f2948;
-    }
-
-    footer {
-      text-align: center;
-      color: #6b7280;
-      padding: 30px;
-      font-size: 13px;
+    .open-btn:hover {
+      background: #1d4ed8;
     }
 
     /* MOBILE */
-
     @media (max-width: 900px) {
+
+      main {
+        padding: 20px;
+      }
+
       .summary-grid,
       .status-grid {
         grid-template-columns: repeat(2, 1fr);
       }
-    }
 
-    @media (max-width: 600px) {
-      header {
+      .zone-row {
+        grid-template-columns: 1fr;
+        gap: 8px;
         padding: 18px;
       }
 
+      .zone-row.header {
+        display: none;
+      }
+
+      .zone-row > div::before {
+        font-weight: bold;
+        color: #64748b;
+        margin-right: 5px;
+      }
+
+      .zone-row > div:nth-child(1)::before {
+        content: "Area: ";
+      }
+
+      .zone-row > div:nth-child(2)::before {
+        content: "Lead: ";
+      }
+
+      .zone-row > div:nth-child(3)::before {
+        content: "Deputy: ";
+      }
+
+      .zone-row > div:nth-child(4)::before {
+        content: "Status: ";
+      }
+
+      .zone-row > div:nth-child(5)::before {
+        content: "";
+      }
+    }
+
+    @media (max-width: 600px) {
+
+      header {
+        padding: 20px;
+      }
+
       header h1 {
-        font-size: 21px;
+        font-size: 23px;
       }
 
       nav {
-        padding: 12px 18px;
-        gap: 15px;
-      }
-
-      main {
-        padding: 0 12px;
+        padding: 12px 20px;
+        overflow-x: auto;
+        white-space: nowrap;
       }
 
       .summary-grid,
       .status-grid {
         grid-template-columns: 1fr 1fr;
-        gap: 10px;
+        gap: 12px;
       }
 
-      .summary-card {
-        min-height: 105px;
+      .summary-card,
+      .status-card {
         padding: 16px;
       }
 
-      .summary-number,
-      .status-number {
-        font-size: 28px;
+      .summary-card .number,
+      .status-card .number {
+        font-size: 27px;
       }
 
-      .status-card {
-        padding: 16px 8px;
+      main {
+        padding: 15px;
       }
     }
   </style>
@@ -328,186 +351,249 @@
 
 <body>
 
-<header>
-  <h1>Zone Safety Check-In</h1>
-  <p>Emergency Coverage & Safety Management</p>
-</header>
+  <!-- HEADER -->
+  <header>
+    <h1>Zone Safety Check-In</h1>
+    <p>Emergency Coverage & Safety Management</p>
+  </header>
 
-<nav>
-  <a href="index.html" class="active">Coverage</a>
-  <a href="zones.html">Zones</a>
-  <a href="reports.html">Reports</a>
-  <a href="contacts.html">Contacts</a>
-</nav>
+  <!-- NAVIGATION -->
+  <nav>
+    <a href="index.html">Coverage</a>
+    <a href="zones.html">Zones</a>
+    <a href="#">Reports</a>
+    <a href="#">Contacts</a>
+  </nav>
 
-<main>
+  <main>
 
-  <div class="welcome">
-    <h2>Coverage Overview</h2>
-    <p>
-      Monitor zone assignments and safety status during an emergency.
-    </p>
-  </div>
-
-  <!-- SUMMARY -->
-
-  <div class="summary-grid">
-
-    <div class="summary-card zones-card">
-      <h3>Zones</h3>
-      <div class="summary-number">15</div>
+    <!-- SUMMARY -->
+    <div class="section-title">
+      <h2>Coverage Overview</h2>
+      <p>Current emergency coverage and assignment status</p>
     </div>
 
-    <div class="summary-card areas-card">
-      <h3>Areas Covered</h3>
-      <div class="summary-number">15</div>
+    <div class="summary-grid">
+
+      <div class="summary-card blue">
+        <div class="number">16</div>
+        <div class="label">Zones / Areas</div>
+      </div>
+
+      <div class="summary-card purple">
+        <div class="number">16</div>
+        <div class="label">Areas Covered</div>
+      </div>
+
+      <div class="summary-card cyan">
+        <div class="number">16</div>
+        <div class="label">Leads Assigned</div>
+      </div>
+
+      <div class="summary-card green">
+        <div class="number">15</div>
+        <div class="label">Deputies Ready</div>
+      </div>
+
     </div>
 
-    <div class="summary-card leads-card">
-      <h3>Leads Assigned</h3>
-      <div class="summary-number">15</div>
+
+    <!-- SAFETY STATUS -->
+    <div class="section-title">
+      <h2>Safety Status</h2>
+      <p>Live status of all assigned areas</p>
     </div>
 
-    <div class="summary-card deputies-card">
-      <h3>Deputies Ready</h3>
-      <div class="summary-number">15</div>
+    <div class="status-grid">
+
+      <div class="status-card safe">
+        <div class="number">0</div>
+        <div class="label">All Safe</div>
+      </div>
+
+      <div class="status-card unsafe">
+        <div class="number">0</div>
+        <div class="label">Unsafe</div>
+      </div>
+
+      <div class="status-card missing">
+        <div class="number">0</div>
+        <div class="label">Missing</div>
+      </div>
+
+      <div class="status-card unchecked">
+        <div class="number">16</div>
+        <div class="label">Unchecked</div>
+      </div>
+
     </div>
 
-  </div>
 
-  <!-- SAFETY STATUS -->
+    <!-- ASSIGNMENT BOARD -->
+    <div class="board">
 
-  <h2 class="section-title">Safety Status</h2>
+      <div class="board-header">
+        <h2>Zone Assignment Board</h2>
+        <p>All assigned areas and emergency response leads</p>
+      </div>
 
-  <div class="status-grid">
+      <!-- TABLE HEADER -->
+      <div class="zone-row header">
+        <div>Area</div>
+        <div>Lead</div>
+        <div>Deputy / Location</div>
+        <div>Status</div>
+        <div>Action</div>
+      </div>
 
-    <div class="status-card safe">
-      <div class="status-icon">🟢</div>
-      <div class="status-number">2</div>
-      <div>All Safe</div>
+
+      <!-- 1 -->
+      <div class="zone-row">
+        <div class="zone-name">AG</div>
+        <div class="person">Vishnu</div>
+        <div class="person">Grace</div>
+        <div><span class="badge">Unchecked</span></div>
+        <div><button class="open-btn">Open Zone</button></div>
+      </div>
+
+      <!-- 2 -->
+      <div class="zone-row">
+        <div class="zone-name">A1</div>
+        <div class="person">Manoj</div>
+        <div class="person">Pukar</div>
+        <div><span class="badge">Unchecked</span></div>
+        <div><button class="open-btn">Open Zone</button></div>
+      </div>
+
+      <!-- 3 -->
+      <div class="zone-row">
+        <div class="zone-name">A2</div>
+        <div class="person">Rhys</div>
+        <div class="person">Laura Nulty</div>
+        <div><span class="badge">Unchecked</span></div>
+        <div><button class="open-btn">Open Zone</button></div>
+      </div>
+
+      <!-- 4 -->
+      <div class="zone-row">
+        <div class="zone-name">BG &amp; B1</div>
+        <div class="person">Abdul</div>
+        <div class="person">Salu</div>
+        <div><span class="badge">Unchecked</span></div>
+        <div><button class="open-btn">Open Zone</button></div>
+      </div>
+
+      <!-- 5 -->
+      <div class="zone-row">
+        <div class="zone-name">CG</div>
+        <div class="person">Danielle Bishay</div>
+        <div class="person">Claire Nami</div>
+        <div><span class="badge">Unchecked</span></div>
+        <div><button class="open-btn">Open Zone</button></div>
+      </div>
+
+      <!-- 6 -->
+      <div class="zone-row">
+        <div class="zone-name">C1</div>
+        <div class="person">Hannah Jones</div>
+        <div class="person">Amy Jones</div>
+        <div><span class="badge">Unchecked</span></div>
+        <div><button class="open-btn">Open Zone</button></div>
+      </div>
+
+      <!-- 7 -->
+      <div class="zone-row">
+        <div class="zone-name">C2</div>
+        <div class="person">Emily Griffin</div>
+        <div class="person">Rachael Gabel</div>
+        <div><span class="badge">Unchecked</span></div>
+        <div><button class="open-btn">Open Zone</button></div>
+      </div>
+
+      <!-- 8 -->
+      <div class="zone-row">
+        <div class="zone-name">C3</div>
+        <div class="person">Regan</div>
+        <div class="person">Olivia Radford</div>
+        <div><span class="badge">Unchecked</span></div>
+        <div><button class="open-btn">Open Zone</button></div>
+      </div>
+
+      <!-- 9 -->
+      <div class="zone-row">
+        <div class="zone-name">DG</div>
+        <div class="person">Gavin</div>
+        <div class="person">Gemma Harris</div>
+        <div><span class="badge">Unchecked</span></div>
+        <div><button class="open-btn">Open Zone</button></div>
+      </div>
+
+      <!-- 10 -->
+      <div class="zone-row">
+        <div class="zone-name">D1</div>
+        <div class="person">Asif</div>
+        <div class="person">Rachel Forrest</div>
+        <div><span class="badge">Unchecked</span></div>
+        <div><button class="open-btn">Open Zone</button></div>
+      </div>
+
+      <!-- 11 -->
+      <div class="zone-row">
+        <div class="zone-name">D2</div>
+        <div class="person">Lily</div>
+        <div class="person">Anthea</div>
+        <div><span class="badge">Unchecked</span></div>
+        <div><button class="open-btn">Open Zone</button></div>
+      </div>
+
+      <!-- 12 -->
+      <div class="zone-row">
+        <div class="zone-name">EG</div>
+        <div class="person">Emily Gallone</div>
+        <div class="person">Roxanne</div>
+        <div><span class="badge">Unchecked</span></div>
+        <div><button class="open-btn">Open Zone</button></div>
+      </div>
+
+      <!-- 13 -->
+      <div class="zone-row">
+        <div class="zone-name">E1</div>
+        <div class="person">Isable</div>
+        <div class="person">Shaimaa</div>
+        <div><span class="badge">Unchecked</span></div>
+        <div><button class="open-btn">Open Zone</button></div>
+      </div>
+
+      <!-- 14 -->
+      <div class="zone-row">
+        <div class="zone-name">E2</div>
+        <div class="person">Danielle Jolosa</div>
+        <div class="person">Hanan</div>
+        <div><span class="badge">Unchecked</span></div>
+        <div><button class="open-btn">Open Zone</button></div>
+      </div>
+
+      <!-- 15 -->
+      <div class="zone-row">
+        <div class="zone-name">E3</div>
+        <div class="person">Erika</div>
+        <div class="person">Sarah Barr</div>
+        <div><span class="badge">Unchecked</span></div>
+        <div><button class="open-btn">Open Zone</button></div>
+      </div>
+
+      <!-- 16 -->
+      <div class="zone-row">
+        <div class="zone-name">AG (Parents)</div>
+        <div class="person">Aisha</div>
+        <div class="location">Conference Room A</div>
+        <div><span class="badge">Unchecked</span></div>
+        <div><button class="open-btn">Open Area</button></div>
+      </div>
+
     </div>
 
-    <div class="status-card unsafe">
-      <div class="status-icon">🔴</div>
-      <div class="status-number">0</div>
-      <div>Unsafe</div>
-    </div>
-
-    <div class="status-card missing">
-      <div class="status-icon">🟠</div>
-      <div class="status-number">0</div>
-      <div>Missing</div>
-    </div>
-
-    <div class="status-card unchecked">
-      <div class="status-icon">⚪</div>
-      <div class="status-number">13</div>
-      <div>Unchecked</div>
-    </div>
-
-  </div>
-
-  <!-- ZONE ASSIGNMENTS -->
-
-  <div class="zone-section">
-
-    <h2>Zone Assignment Board</h2>
-
-    <table>
-
-      <thead>
-        <tr>
-          <th>Zone</th>
-          <th>Lead</th>
-          <th>Deputy</th>
-          <th>Status</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-
-      <tbody>
-
-        <tr>
-          <td class="zone-name">E1</td>
-          <td>Isabel</td>
-          <td>Shaimaa</td>
-          <td>
-            <span class="status-badge badge-safe">
-              🟢 All Safe
-            </span>
-          </td>
-          <td>
-            <button class="zone-button">Open Zone</button>
-          </td>
-        </tr>
-
-        <tr>
-          <td class="zone-name">E2</td>
-          <td>Danielle Jolosa</td>
-          <td>Hanan</td>
-          <td>
-            <span class="status-badge badge-unchecked">
-              ⚪ Unchecked
-            </span>
-          </td>
-          <td>
-            <button class="zone-button">Open Zone</button>
-          </td>
-        </tr>
-
-        <tr>
-          <td class="zone-name">E3</td>
-          <td>Erika</td>
-          <td>Sarah Barr</td>
-          <td>
-            <span class="status-badge badge-unchecked">
-              ⚪ Unchecked
-            </span>
-          </td>
-          <td>
-            <button class="zone-button">Open Zone</button>
-          </td>
-        </tr>
-
-        <tr>
-          <td class="zone-name">AG</td>
-          <td>Vishnu</td>
-          <td>Grace</td>
-          <td>
-            <span class="status-badge badge-unchecked">
-              ⚪ Unchecked
-            </span>
-          </td>
-          <td>
-            <button class="zone-button">Open Zone</button>
-          </td>
-        </tr>
-
-        <tr>
-          <td class="zone-name">A1</td>
-          <td>Manoj</td>
-          <td>Pukar</td>
-          <td>
-            <span class="status-badge badge-unchecked">
-              ⚪ Unchecked
-            </span>
-          </td>
-          <td>
-            <button class="zone-button">Open Zone</button>
-          </td>
-        </tr>
-
-      </tbody>
-
-    </table>
-
-  </div>
-
-</main>
-
-<footer>
-  Zone Safety Check-In System
-</footer>
+  </main>
 
 </body>
 </html>
