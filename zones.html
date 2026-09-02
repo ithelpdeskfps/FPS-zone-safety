@@ -1,9 +1,9 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Zones - Zone Safety Check-In</title>
 
   <style>
@@ -15,137 +15,150 @@
       margin: 0;
       font-family: Arial, Helvetica, sans-serif;
       background: #f4f7fb;
-      color: #1f2937;
+      color: #1e293b;
     }
 
     header {
       background: #17365d;
       color: white;
-      padding: 22px 30px;
+      padding: 24px 30px;
     }
 
     header h1 {
       margin: 0;
-      font-size: 26px;
+      font-size: 28px;
     }
 
     header p {
       margin: 6px 0 0;
-      opacity: 0.85;
+      opacity: 0.9;
     }
 
     nav {
       background: white;
-      padding: 14px 30px;
-      border-bottom: 1px solid #ddd;
+      padding: 13px 30px;
+      border-bottom: 1px solid #e2e8f0;
     }
 
     nav a {
-      margin-right: 25px;
       text-decoration: none;
-      color: #17365d;
-      font-weight: bold;
+      color: #334155;
+      font-weight: 600;
+      margin-right: 25px;
     }
 
-    nav a.active {
-      color: #0b7a75;
+    nav a:hover {
+      color: #2563eb;
     }
 
     main {
-      max-width: 1200px;
-      margin: 30px auto;
-      padding: 0 20px;
+      max-width: 1400px;
+      margin: auto;
+      padding: 30px;
     }
 
-    h2 {
+    .title {
+      margin-bottom: 25px;
+    }
+
+    .title h2 {
+      margin: 0;
+      font-size: 25px;
       color: #17365d;
     }
 
-    .zone-grid {
+    .title p {
+      margin-top: 6px;
+      color: #64748b;
+    }
+
+    .zones {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 20px;
     }
 
     .zone-card {
       background: white;
-      border-radius: 14px;
+      border-radius: 15px;
       padding: 22px;
-      box-shadow: 0 3px 12px rgba(0,0,0,0.08);
-      border-left: 6px solid #2563eb;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.07);
+      border-top: 5px solid #2563eb;
     }
 
     .zone-name {
-      font-size: 25px;
+      font-size: 24px;
       font-weight: bold;
       color: #17365d;
-      margin-bottom: 14px;
+      margin-bottom: 15px;
     }
 
     .person {
-      margin: 8px 0;
-      color: #4b5563;
+      margin-bottom: 7px;
+      font-size: 14px;
     }
 
-    .location {
-      margin: 8px 0;
-      color: #7c3aed;
+    .label {
+      color: #64748b;
       font-weight: bold;
     }
 
     .status {
-      margin-top: 15px;
       display: inline-block;
+      margin-top: 12px;
+      background: #e2e8f0;
+      color: #475569;
       padding: 7px 12px;
       border-radius: 20px;
-      background: #e5e7eb;
-      color: #475569;
+      font-size: 12px;
       font-weight: bold;
-      font-size: 13px;
     }
 
-    .open-button {
-      display: block;
+    .open-btn {
       width: 100%;
       margin-top: 18px;
-      padding: 11px;
+      padding: 12px;
       border: none;
       border-radius: 8px;
-      background: #17365d;
+      background: #2563eb;
       color: white;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: bold;
       cursor: pointer;
     }
 
-    .open-button:hover {
-      background: #0f2948;
+    .open-btn:hover {
+      background: #1d4ed8;
     }
 
-    @media (max-width: 900px) {
-      .zone-grid {
+    @media (max-width: 1100px) {
+      .zones {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 800px) {
+      .zones {
         grid-template-columns: repeat(2, 1fr);
       }
     }
 
-    @media (max-width: 600px) {
+    @media (max-width: 550px) {
       header {
-        padding: 18px;
-      }
-
-      header h1 {
-        font-size: 21px;
+        padding: 20px;
       }
 
       nav {
-        padding: 12px 18px;
+        padding: 12px 20px;
+        overflow-x: auto;
+        white-space: nowrap;
       }
 
       main {
-        padding: 0 12px;
+        padding: 18px;
       }
 
-      .zone-grid {
+      .zones {
         grid-template-columns: 1fr;
       }
     }
@@ -161,150 +174,175 @@
 
 <nav>
   <a href="index.html">Coverage</a>
-  <a href="zones.html" class="active">Zones</a>
-  <a href="reports.html">Reports</a>
-  <a href="contacts.html">Contacts</a>
+  <a href="zones.html">Zones</a>
+  <a href="#">Reports</a>
+  <a href="#">Contacts</a>
 </nav>
 
 <main>
 
-  <h2>Zone Check-In</h2>
-  <p>Select your assigned area to update the safety status.</p>
+  <div class="title">
+    <h2>Zone Check-In</h2>
+    <p>Select your assigned area to complete the safety check.</p>
+  </div>
 
-  <div class="zone-grid">
+  <div class="zones">
 
+    <!-- AG -->
     <div class="zone-card">
       <div class="zone-name">AG</div>
-      <div class="person">👤 Lead: Vishnu</div>
-      <div class="person">👥 Deputy: Grace</div>
-      <div class="status">⚪ Unchecked</div>
-      <button class="open-button">Open Zone</button>
+      <div class="person"><span class="label">Lead:</span> Vishnu</div>
+      <div class="person"><span class="label">Deputy:</span> Grace</div>
+      <span class="status">Unchecked</span>
+      <button class="open-btn" onclick="openZone('AG')">Open Zone</button>
     </div>
 
+    <!-- A1 -->
     <div class="zone-card">
       <div class="zone-name">A1</div>
-      <div class="person">👤 Lead: Manoj</div>
-      <div class="person">👥 Deputy: Pukar</div>
-      <div class="status">⚪ Unchecked</div>
-      <button class="open-button">Open Zone</button>
+      <div class="person"><span class="label">Lead:</span> Manoj</div>
+      <div class="person"><span class="label">Deputy:</span> Pukar</div>
+      <span class="status">Unchecked</span>
+      <button class="open-btn" onclick="openZone('A1')">Open Zone</button>
     </div>
 
+    <!-- A2 -->
     <div class="zone-card">
       <div class="zone-name">A2</div>
-      <div class="person">👤 Lead: Rhys</div>
-      <div class="person">👥 Deputy: Laura Nulty</div>
-      <div class="status">⚪ Unchecked</div>
-      <button class="open-button">Open Zone</button>
+      <div class="person"><span class="label">Lead:</span> Rhys</div>
+      <div class="person"><span class="label">Deputy:</span> Laura Nulty</div>
+      <span class="status">Unchecked</span>
+      <button class="open-btn" onclick="openZone('A2')">Open Zone</button>
     </div>
 
+    <!-- BG & B1 -->
     <div class="zone-card">
-      <div class="zone-name">BG & B1</div>
-      <div class="person">👤 Lead: Abdul</div>
-      <div class="person">👥 Deputy: Salu</div>
-      <div class="status">⚪ Unchecked</div>
-      <button class="open-button">Open Zone</button>
+      <div class="zone-name">BG &amp; B1</div>
+      <div class="person"><span class="label">Lead:</span> Abdul</div>
+      <div class="person"><span class="label">Deputy:</span> Salu</div>
+      <span class="status">Unchecked</span>
+      <button class="open-btn" onclick="openZone('BG-B1')">Open Zone</button>
     </div>
 
+    <!-- CG -->
     <div class="zone-card">
       <div class="zone-name">CG</div>
-      <div class="person">👤 Lead: Danielle Bishay</div>
-      <div class="person">👥 Deputy: Claire Nami</div>
-      <div class="status">⚪ Unchecked</div>
-      <button class="open-button">Open Zone</button>
+      <div class="person"><span class="label">Lead:</span> Danielle Bishay</div>
+      <div class="person"><span class="label">Deputy:</span> Claire Nami</div>
+      <span class="status">Unchecked</span>
+      <button class="open-btn" onclick="openZone('CG')">Open Zone</button>
     </div>
 
+    <!-- C1 -->
     <div class="zone-card">
       <div class="zone-name">C1</div>
-      <div class="person">👤 Lead: Hannah Jones</div>
-      <div class="person">👥 Deputy: Amy Jones</div>
-      <div class="status">⚪ Unchecked</div>
-      <button class="open-button">Open Zone</button>
+      <div class="person"><span class="label">Lead:</span> Hannah Jones</div>
+      <div class="person"><span class="label">Deputy:</span> Amy Jones</div>
+      <span class="status">Unchecked</span>
+      <button class="open-btn" onclick="openZone('C1')">Open Zone</button>
     </div>
 
+    <!-- C2 -->
     <div class="zone-card">
       <div class="zone-name">C2</div>
-      <div class="person">👤 Lead: Emily Griffin</div>
-      <div class="person">👥 Deputy: Rachael Gabel</div>
-      <div class="status">⚪ Unchecked</div>
-      <button class="open-button">Open Zone</button>
+      <div class="person"><span class="label">Lead:</span> Emily Griffin</div>
+      <div class="person"><span class="label">Deputy:</span> Rachael Gabel</div>
+      <span class="status">Unchecked</span>
+      <button class="open-btn" onclick="openZone('C2')">Open Zone</button>
     </div>
 
+    <!-- C3 -->
     <div class="zone-card">
       <div class="zone-name">C3</div>
-      <div class="person">👤 Lead: Regan</div>
-      <div class="person">👥 Deputy: Olivia Radford</div>
-      <div class="status">⚪ Unchecked</div>
-      <button class="open-button">Open Zone</button>
+      <div class="person"><span class="label">Lead:</span> Regan</div>
+      <div class="person"><span class="label">Deputy:</span> Olivia Radford</div>
+      <span class="status">Unchecked</span>
+      <button class="open-btn" onclick="openZone('C3')">Open Zone</button>
     </div>
 
+    <!-- DG -->
     <div class="zone-card">
       <div class="zone-name">DG</div>
-      <div class="person">👤 Lead: Gavin</div>
-      <div class="person">👥 Deputy: Gemma Harris</div>
-      <div class="status">⚪ Unchecked</div>
-      <button class="open-button">Open Zone</button>
+      <div class="person"><span class="label">Lead:</span> Gavin</div>
+      <div class="person"><span class="label">Deputy:</span> Gemma Harris</div>
+      <span class="status">Unchecked</span>
+      <button class="open-btn" onclick="openZone('DG')">Open Zone</button>
     </div>
 
+    <!-- D1 -->
     <div class="zone-card">
       <div class="zone-name">D1</div>
-      <div class="person">👤 Lead: Asif</div>
-      <div class="person">👥 Deputy: Rachel Forrest</div>
-      <div class="status">⚪ Unchecked</div>
-      <button class="open-button">Open Zone</button>
+      <div class="person"><span class="label">Lead:</span> Asif</div>
+      <div class="person"><span class="label">Deputy:</span> Rachel Forrest</div>
+      <span class="status">Unchecked</span>
+      <button class="open-btn" onclick="openZone('D1')">Open Zone</button>
     </div>
 
+    <!-- D2 -->
     <div class="zone-card">
       <div class="zone-name">D2</div>
-      <div class="person">👤 Lead: Lily</div>
-      <div class="person">👥 Deputy: Anthea</div>
-      <div class="status">⚪ Unchecked</div>
-      <button class="open-button">Open Zone</button>
+      <div class="person"><span class="label">Lead:</span> Lily</div>
+      <div class="person"><span class="label">Deputy:</span> Anthea</div>
+      <span class="status">Unchecked</span>
+      <button class="open-btn" onclick="openZone('D2')">Open Zone</button>
     </div>
 
+    <!-- EG -->
     <div class="zone-card">
       <div class="zone-name">EG</div>
-      <div class="person">👤 Lead: Emily Gallone</div>
-      <div class="person">👥 Deputy: Roxanne</div>
-      <div class="status">⚪ Unchecked</div>
-      <button class="open-button">Open Zone</button>
+      <div class="person"><span class="label">Lead:</span> Emily Gallone</div>
+      <div class="person"><span class="label">Deputy:</span> Roxanne</div>
+      <span class="status">Unchecked</span>
+      <button class="open-btn" onclick="openZone('EG')">Open Zone</button>
     </div>
 
+    <!-- E1 -->
     <div class="zone-card">
       <div class="zone-name">E1</div>
-      <div class="person">👤 Lead: Isabel</div>
-      <div class="person">👥 Deputy: Shaimaa</div>
-      <div class="status">⚪ Unchecked</div>
-      <button class="open-button">Open Zone</button>
+      <div class="person"><span class="label">Lead:</span> Isable</div>
+      <div class="person"><span class="label">Deputy:</span> Shaimaa</div>
+      <span class="status">Unchecked</span>
+      <button class="open-btn" onclick="openZone('E1')">Open Zone</button>
     </div>
 
+    <!-- E2 -->
     <div class="zone-card">
       <div class="zone-name">E2</div>
-      <div class="person">👤 Lead: Danielle Jolosa</div>
-      <div class="person">👥 Deputy: Hanan</div>
-      <div class="status">⚪ Unchecked</div>
-      <button class="open-button">Open Zone</button>
+      <div class="person"><span class="label">Lead:</span> Danielle Jolosa</div>
+      <div class="person"><span class="label">Deputy:</span> Hanan</div>
+      <span class="status">Unchecked</span>
+      <button class="open-btn" onclick="openZone('E2')">Open Zone</button>
     </div>
 
+    <!-- E3 -->
     <div class="zone-card">
       <div class="zone-name">E3</div>
-      <div class="person">👤 Lead: Erika</div>
-      <div class="person">👥 Deputy: Sarah Barr</div>
-      <div class="status">⚪ Unchecked</div>
-      <button class="open-button">Open Zone</button>
+      <div class="person"><span class="label">Lead:</span> Erika</div>
+      <div class="person"><span class="label">Deputy:</span> Sarah Barr</div>
+      <span class="status">Unchecked</span>
+      <button class="open-btn" onclick="openZone('E3')">Open Zone</button>
     </div>
 
+    <!-- AG Parents -->
     <div class="zone-card">
       <div class="zone-name">AG (Parents)</div>
-      <div class="person">👤 Lead: Aisha</div>
-      <div class="location">📍 Location: Conference Room A</div>
-      <div class="status">⚪ Unchecked</div>
-      <button class="open-button">Open Area</button>
+      <div class="person"><span class="label">Lead:</span> Aisha</div>
+      <div class="person"><span class="label">Location:</span> Conference Room A</div>
+      <span class="status">Unchecked</span>
+      <button class="open-btn" onclick="openZone('AG-Parents')">Open Area</button>
     </div>
 
   </div>
 
 </main>
 
+<script>
+
+  function openZone(zone) {
+    window.location.href = "zone-checkin.html?zone=" + encodeURIComponent(zone);
+  }
+
+</script>
+
 </body>
 </html>
-```
