@@ -1,0 +1,310 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zones - Zone Safety Check-In</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f4f7fb;
+      color: #1f2937;
+    }
+
+    header {
+      background: #17365d;
+      color: white;
+      padding: 22px 30px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 26px;
+    }
+
+    header p {
+      margin: 6px 0 0;
+      opacity: 0.85;
+    }
+
+    nav {
+      background: white;
+      padding: 14px 30px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    nav a {
+      margin-right: 25px;
+      text-decoration: none;
+      color: #17365d;
+      font-weight: bold;
+    }
+
+    nav a.active {
+      color: #0b7a75;
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    h2 {
+      color: #17365d;
+    }
+
+    .zone-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .zone-card {
+      background: white;
+      border-radius: 14px;
+      padding: 22px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+      border-left: 6px solid #2563eb;
+    }
+
+    .zone-name {
+      font-size: 25px;
+      font-weight: bold;
+      color: #17365d;
+      margin-bottom: 14px;
+    }
+
+    .person {
+      margin: 8px 0;
+      color: #4b5563;
+    }
+
+    .location {
+      margin: 8px 0;
+      color: #7c3aed;
+      font-weight: bold;
+    }
+
+    .status {
+      margin-top: 15px;
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 20px;
+      background: #e5e7eb;
+      color: #475569;
+      font-weight: bold;
+      font-size: 13px;
+    }
+
+    .open-button {
+      display: block;
+      width: 100%;
+      margin-top: 18px;
+      padding: 11px;
+      border: none;
+      border-radius: 8px;
+      background: #17365d;
+      color: white;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .open-button:hover {
+      background: #0f2948;
+    }
+
+    @media (max-width: 900px) {
+      .zone-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 600px) {
+      header {
+        padding: 18px;
+      }
+
+      header h1 {
+        font-size: 21px;
+      }
+
+      nav {
+        padding: 12px 18px;
+      }
+
+      main {
+        padding: 0 12px;
+      }
+
+      .zone-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>Zone Safety Check-In</h1>
+  <p>Emergency Coverage & Safety Management</p>
+</header>
+
+<nav>
+  <a href="index.html">Coverage</a>
+  <a href="zones.html" class="active">Zones</a>
+  <a href="reports.html">Reports</a>
+  <a href="contacts.html">Contacts</a>
+</nav>
+
+<main>
+
+  <h2>Zone Check-In</h2>
+  <p>Select your assigned area to update the safety status.</p>
+
+  <div class="zone-grid">
+
+    <div class="zone-card">
+      <div class="zone-name">AG</div>
+      <div class="person">👤 Lead: Vishnu</div>
+      <div class="person">👥 Deputy: Grace</div>
+      <div class="status">⚪ Unchecked</div>
+      <button class="open-button">Open Zone</button>
+    </div>
+
+    <div class="zone-card">
+      <div class="zone-name">A1</div>
+      <div class="person">👤 Lead: Manoj</div>
+      <div class="person">👥 Deputy: Pukar</div>
+      <div class="status">⚪ Unchecked</div>
+      <button class="open-button">Open Zone</button>
+    </div>
+
+    <div class="zone-card">
+      <div class="zone-name">A2</div>
+      <div class="person">👤 Lead: Rhys</div>
+      <div class="person">👥 Deputy: Laura Nulty</div>
+      <div class="status">⚪ Unchecked</div>
+      <button class="open-button">Open Zone</button>
+    </div>
+
+    <div class="zone-card">
+      <div class="zone-name">BG & B1</div>
+      <div class="person">👤 Lead: Abdul</div>
+      <div class="person">👥 Deputy: Salu</div>
+      <div class="status">⚪ Unchecked</div>
+      <button class="open-button">Open Zone</button>
+    </div>
+
+    <div class="zone-card">
+      <div class="zone-name">CG</div>
+      <div class="person">👤 Lead: Danielle Bishay</div>
+      <div class="person">👥 Deputy: Claire Nami</div>
+      <div class="status">⚪ Unchecked</div>
+      <button class="open-button">Open Zone</button>
+    </div>
+
+    <div class="zone-card">
+      <div class="zone-name">C1</div>
+      <div class="person">👤 Lead: Hannah Jones</div>
+      <div class="person">👥 Deputy: Amy Jones</div>
+      <div class="status">⚪ Unchecked</div>
+      <button class="open-button">Open Zone</button>
+    </div>
+
+    <div class="zone-card">
+      <div class="zone-name">C2</div>
+      <div class="person">👤 Lead: Emily Griffin</div>
+      <div class="person">👥 Deputy: Rachael Gabel</div>
+      <div class="status">⚪ Unchecked</div>
+      <button class="open-button">Open Zone</button>
+    </div>
+
+    <div class="zone-card">
+      <div class="zone-name">C3</div>
+      <div class="person">👤 Lead: Regan</div>
+      <div class="person">👥 Deputy: Olivia Radford</div>
+      <div class="status">⚪ Unchecked</div>
+      <button class="open-button">Open Zone</button>
+    </div>
+
+    <div class="zone-card">
+      <div class="zone-name">DG</div>
+      <div class="person">👤 Lead: Gavin</div>
+      <div class="person">👥 Deputy: Gemma Harris</div>
+      <div class="status">⚪ Unchecked</div>
+      <button class="open-button">Open Zone</button>
+    </div>
+
+    <div class="zone-card">
+      <div class="zone-name">D1</div>
+      <div class="person">👤 Lead: Asif</div>
+      <div class="person">👥 Deputy: Rachel Forrest</div>
+      <div class="status">⚪ Unchecked</div>
+      <button class="open-button">Open Zone</button>
+    </div>
+
+    <div class="zone-card">
+      <div class="zone-name">D2</div>
+      <div class="person">👤 Lead: Lily</div>
+      <div class="person">👥 Deputy: Anthea</div>
+      <div class="status">⚪ Unchecked</div>
+      <button class="open-button">Open Zone</button>
+    </div>
+
+    <div class="zone-card">
+      <div class="zone-name">EG</div>
+      <div class="person">👤 Lead: Emily Gallone</div>
+      <div class="person">👥 Deputy: Roxanne</div>
+      <div class="status">⚪ Unchecked</div>
+      <button class="open-button">Open Zone</button>
+    </div>
+
+    <div class="zone-card">
+      <div class="zone-name">E1</div>
+      <div class="person">👤 Lead: Isabel</div>
+      <div class="person">👥 Deputy: Shaimaa</div>
+      <div class="status">⚪ Unchecked</div>
+      <button class="open-button">Open Zone</button>
+    </div>
+
+    <div class="zone-card">
+      <div class="zone-name">E2</div>
+      <div class="person">👤 Lead: Danielle Jolosa</div>
+      <div class="person">👥 Deputy: Hanan</div>
+      <div class="status">⚪ Unchecked</div>
+      <button class="open-button">Open Zone</button>
+    </div>
+
+    <div class="zone-card">
+      <div class="zone-name">E3</div>
+      <div class="person">👤 Lead: Erika</div>
+      <div class="person">👥 Deputy: Sarah Barr</div>
+      <div class="status">⚪ Unchecked</div>
+      <button class="open-button">Open Zone</button>
+    </div>
+
+    <div class="zone-card">
+      <div class="zone-name">AG (Parents)</div>
+      <div class="person">👤 Lead: Aisha</div>
+      <div class="location">📍 Location: Conference Room A</div>
+      <div class="status">⚪ Unchecked</div>
+      <button class="open-button">Open Area</button>
+    </div>
+
+  </div>
+
+</main>
+
+</body>
+</html>
+```
