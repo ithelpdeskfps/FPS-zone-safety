@@ -17,7 +17,6 @@
       color: #1e293b;
     }
 
-    /* HEADER */
     header {
       background: #17365d;
       color: white;
@@ -35,7 +34,6 @@
       opacity: 0.9;
     }
 
-    /* NAVIGATION */
     nav {
       background: white;
       padding: 12px 30px;
@@ -53,7 +51,6 @@
       color: #2563eb;
     }
 
-    /* MAIN */
     main {
       max-width: 1400px;
       margin: auto;
@@ -74,7 +71,6 @@
       color: #64748b;
     }
 
-    /* SUMMARY CARDS */
     .summary-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -134,7 +130,6 @@
       color: #059669;
     }
 
-    /* SAFETY STATUS */
     .status-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -177,7 +172,6 @@
       color: #94a3b8;
     }
 
-    /* ASSIGNMENT BOARD */
     .board {
       background: white;
       border-radius: 14px;
@@ -202,7 +196,7 @@
 
     .zone-row {
       display: grid;
-      grid-template-columns: 1.2fr 2fr 2fr 1.2fr 1.2fr;
+      grid-template-columns: 1.2fr 2fr 2fr 1.5fr 1.2fr;
       gap: 15px;
       align-items: center;
       padding: 16px 24px;
@@ -235,7 +229,6 @@
       color: #64748b;
     }
 
-    /* STATUS BADGE */
     .badge {
       display: inline-block;
       padding: 7px 12px;
@@ -246,7 +239,21 @@
       color: #475569;
     }
 
-    /* BUTTON */
+    .badge.safe {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .badge.unsafe {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .badge.missing {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
     .open-btn {
       background: #2563eb;
       color: white;
@@ -261,7 +268,19 @@
       background: #1d4ed8;
     }
 
-    /* MOBILE */
+    .last-time {
+      display: block;
+      margin-top: 5px;
+      font-size: 11px;
+      color: #64748b;
+      font-weight: normal;
+    }
+
+    .loading {
+      color: #64748b;
+      font-size: 14px;
+    }
+
     @media (max-width: 900px) {
 
       main {
@@ -351,249 +370,563 @@
 
 <body>
 
-  <!-- HEADER -->
-  <header>
-    <h1>Zone Safety Check-In</h1>
-    <p>Emergency Coverage & Safety Management</p>
-  </header>
+<header>
+  <h1>Zone Safety Check-In</h1>
+  <p>Emergency Coverage & Safety Management</p>
+</header>
 
-  <!-- NAVIGATION -->
-  <nav>
-    <a href="index.html">Coverage</a>
-    <a href="zones.html">Zones</a>
-    <a href="#">Reports</a>
-    <a href="#">Contacts</a>
-  </nav>
+<nav>
+  <a href="index.html">Coverage</a>
+  <a href="zones.html">Zones</a>
+  <a href="#">Reports</a>
+  <a href="#">Contacts</a>
+</nav>
 
-  <main>
+<main>
 
-    <!-- SUMMARY -->
-    <div class="section-title">
-      <h2>Coverage Overview</h2>
-      <p>Current emergency coverage and assignment status</p>
+  <div class="section-title">
+    <h2>Coverage Overview</h2>
+    <p>Current emergency coverage and assignment status</p>
+  </div>
+
+  <div class="summary-grid">
+
+    <div class="summary-card blue">
+      <div class="number" id="totalZones">16</div>
+      <div class="label">Zones / Areas</div>
     </div>
 
-    <div class="summary-grid">
+    <div class="summary-card purple">
+      <div class="number" id="areasCovered">0</div>
+      <div class="label">Areas Covered</div>
+    </div>
 
-      <div class="summary-card blue">
-        <div class="number">16</div>
-        <div class="label">Zones / Areas</div>
-      </div>
+    <div class="summary-card cyan">
+      <div class="number">16</div>
+      <div class="label">Leads Assigned</div>
+    </div>
 
-      <div class="summary-card purple">
-        <div class="number">16</div>
-        <div class="label">Areas Covered</div>
-      </div>
+    <div class="summary-card green">
+      <div class="number">15</div>
+      <div class="label">Deputies Ready</div>
+    </div>
 
-      <div class="summary-card cyan">
-        <div class="number">16</div>
-        <div class="label">Leads Assigned</div>
-      </div>
+  </div>
 
-      <div class="summary-card green">
-        <div class="number">15</div>
-        <div class="label">Deputies Ready</div>
-      </div>
 
+  <div class="section-title">
+    <h2>Safety Status</h2>
+    <p>Live status of all assigned areas</p>
+  </div>
+
+  <div class="status-grid">
+
+    <div class="status-card safe">
+      <div class="number" id="safeCount">0</div>
+      <div class="label">All Safe</div>
+    </div>
+
+    <div class="status-card unsafe">
+      <div class="number" id="unsafeCount">0</div>
+      <div class="label">Unsafe</div>
+    </div>
+
+    <div class="status-card missing">
+      <div class="number" id="missingCount">0</div>
+      <div class="label">Missing</div>
+    </div>
+
+    <div class="status-card unchecked">
+      <div class="number" id="uncheckedCount">16</div>
+      <div class="label">Unchecked</div>
+    </div>
+
+  </div>
+
+
+  <div class="board">
+
+    <div class="board-header">
+      <h2>Zone Assignment Board</h2>
+      <p>All assigned areas and emergency response leads</p>
+    </div>
+
+    <div class="zone-row header">
+      <div>Area</div>
+      <div>Lead</div>
+      <div>Deputy / Location</div>
+      <div>Status</div>
+      <div>Action</div>
     </div>
 
 
-    <!-- SAFETY STATUS -->
-    <div class="section-title">
-      <h2>Safety Status</h2>
-      <p>Live status of all assigned areas</p>
-    </div>
+    <div id="zoneBoard">
 
-    <div class="status-grid">
-
-      <div class="status-card safe">
-        <div class="number">0</div>
-        <div class="label">All Safe</div>
-      </div>
-
-      <div class="status-card unsafe">
-        <div class="number">0</div>
-        <div class="label">Unsafe</div>
-      </div>
-
-      <div class="status-card missing">
-        <div class="number">0</div>
-        <div class="label">Missing</div>
-      </div>
-
-      <div class="status-card unchecked">
-        <div class="number">16</div>
-        <div class="label">Unchecked</div>
-      </div>
-
-    </div>
-
-
-    <!-- ASSIGNMENT BOARD -->
-    <div class="board">
-
-      <div class="board-header">
-        <h2>Zone Assignment Board</h2>
-        <p>All assigned areas and emergency response leads</p>
-      </div>
-
-      <!-- TABLE HEADER -->
-      <div class="zone-row header">
-        <div>Area</div>
-        <div>Lead</div>
-        <div>Deputy / Location</div>
-        <div>Status</div>
-        <div>Action</div>
-      </div>
-
-
-      <!-- 1 -->
-      <div class="zone-row">
-        <div class="zone-name">AG</div>
-        <div class="person">Vishnu</div>
-        <div class="person">Grace</div>
-        <div><span class="badge">Unchecked</span></div>
-        <div><button class="open-btn">Open Zone</button></div>
-      </div>
-
-      <!-- 2 -->
-      <div class="zone-row">
-        <div class="zone-name">A1</div>
-        <div class="person">Manoj</div>
-        <div class="person">Pukar</div>
-        <div><span class="badge">Unchecked</span></div>
-        <div><button class="open-btn">Open Zone</button></div>
-      </div>
-
-      <!-- 3 -->
-      <div class="zone-row">
-        <div class="zone-name">A2</div>
-        <div class="person">Rhys</div>
-        <div class="person">Laura Nulty</div>
-        <div><span class="badge">Unchecked</span></div>
-        <div><button class="open-btn">Open Zone</button></div>
-      </div>
-
-      <!-- 4 -->
-      <div class="zone-row">
-        <div class="zone-name">BG &amp; B1</div>
-        <div class="person">Abdul</div>
-        <div class="person">Salu</div>
-        <div><span class="badge">Unchecked</span></div>
-        <div><button class="open-btn">Open Zone</button></div>
-      </div>
-
-      <!-- 5 -->
-      <div class="zone-row">
-        <div class="zone-name">CG</div>
-        <div class="person">Danielle Bishay</div>
-        <div class="person">Claire Nami</div>
-        <div><span class="badge">Unchecked</span></div>
-        <div><button class="open-btn">Open Zone</button></div>
-      </div>
-
-      <!-- 6 -->
-      <div class="zone-row">
-        <div class="zone-name">C1</div>
-        <div class="person">Hannah Jones</div>
-        <div class="person">Amy Jones</div>
-        <div><span class="badge">Unchecked</span></div>
-        <div><button class="open-btn">Open Zone</button></div>
-      </div>
-
-      <!-- 7 -->
-      <div class="zone-row">
-        <div class="zone-name">C2</div>
-        <div class="person">Emily Griffin</div>
-        <div class="person">Rachael Gabel</div>
-        <div><span class="badge">Unchecked</span></div>
-        <div><button class="open-btn">Open Zone</button></div>
-      </div>
-
-      <!-- 8 -->
-      <div class="zone-row">
-        <div class="zone-name">C3</div>
-        <div class="person">Regan</div>
-        <div class="person">Olivia Radford</div>
-        <div><span class="badge">Unchecked</span></div>
-        <div><button class="open-btn">Open Zone</button></div>
-      </div>
-
-      <!-- 9 -->
-      <div class="zone-row">
-        <div class="zone-name">DG</div>
-        <div class="person">Gavin</div>
-        <div class="person">Gemma Harris</div>
-        <div><span class="badge">Unchecked</span></div>
-        <div><button class="open-btn">Open Zone</button></div>
-      </div>
-
-      <!-- 10 -->
-      <div class="zone-row">
-        <div class="zone-name">D1</div>
-        <div class="person">Asif</div>
-        <div class="person">Rachel Forrest</div>
-        <div><span class="badge">Unchecked</span></div>
-        <div><button class="open-btn">Open Zone</button></div>
-      </div>
-
-      <!-- 11 -->
-      <div class="zone-row">
-        <div class="zone-name">D2</div>
-        <div class="person">Lily</div>
-        <div class="person">Anthea</div>
-        <div><span class="badge">Unchecked</span></div>
-        <div><button class="open-btn">Open Zone</button></div>
-      </div>
-
-      <!-- 12 -->
-      <div class="zone-row">
-        <div class="zone-name">EG</div>
-        <div class="person">Emily Gallone</div>
-        <div class="person">Roxanne</div>
-        <div><span class="badge">Unchecked</span></div>
-        <div><button class="open-btn">Open Zone</button></div>
-      </div>
-
-      <!-- 13 -->
-      <div class="zone-row">
-        <div class="zone-name">E1</div>
-        <div class="person">Isable</div>
-        <div class="person">Shaimaa</div>
-        <div><span class="badge">Unchecked</span></div>
-        <div><button class="open-btn">Open Zone</button></div>
-      </div>
-
-      <!-- 14 -->
-      <div class="zone-row">
-        <div class="zone-name">E2</div>
-        <div class="person">Danielle Jolosa</div>
-        <div class="person">Hanan</div>
-        <div><span class="badge">Unchecked</span></div>
-        <div><button class="open-btn">Open Zone</button></div>
-      </div>
-
-      <!-- 15 -->
-      <div class="zone-row">
-        <div class="zone-name">E3</div>
-        <div class="person">Erika</div>
-        <div class="person">Sarah Barr</div>
-        <div><span class="badge">Unchecked</span></div>
-        <div><button class="open-btn">Open Zone</button></div>
-      </div>
-
-      <!-- 16 -->
-      <div class="zone-row">
-        <div class="zone-name">AG (Parents)</div>
-        <div class="person">Aisha</div>
-        <div class="location">Conference Room A</div>
-        <div><span class="badge">Unchecked</span></div>
-        <div><button class="open-btn">Open Area</button></div>
+      <div class="loading">
+        Loading zone information...
       </div>
 
     </div>
 
-  </main>
+  </div>
+
+</main>
+
+
+<script type="module">
+
+  import { initializeApp }
+    from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+
+  import {
+    getFirestore,
+    collection,
+    onSnapshot,
+    query,
+    orderBy
+  }
+    from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+
+  // ==========================================================
+  // FIREBASE CONFIG
+  // ==========================================================
+
+  const firebaseConfig = {
+
+    apiKey: "AIzaSyB0--wrOqeid_iVGJkqDwJAWBefPyI4HPw",
+
+    authDomain: "fps-zone-safety.firebaseapp.com",
+
+    projectId: "fps-zone-safety",
+
+    storageBucket: "fps-zone-safety.firebasestorage.app",
+
+    messagingSenderId: "96363004027",
+
+    appId: "1:96363004027:web:101c3b8ba1fde53655e2de",
+
+    measurementId: "G-WEK1MZ48M2"
+
+  };
+
+
+  const app = initializeApp(firebaseConfig);
+
+  const db = getFirestore(app);
+
+
+  // ==========================================================
+  // ZONES
+  // ==========================================================
+
+  const zones = [
+
+    {
+      name: "AG",
+      lead: "Vishnu",
+      deputy: "Grace"
+    },
+
+    {
+      name: "A1",
+      lead: "Manoj",
+      deputy: "Pukar"
+    },
+
+    {
+      name: "A2",
+      lead: "Rhys",
+      deputy: "Laura Nulty"
+    },
+
+    {
+      name: "BG & B1",
+      lead: "Abdul",
+      deputy: "Salu"
+    },
+
+    {
+      name: "CG",
+      lead: "Danielle Bishay",
+      deputy: "Claire Nami"
+    },
+
+    {
+      name: "C1",
+      lead: "Hannah Jones",
+      deputy: "Amy Jones"
+    },
+
+    {
+      name: "C2",
+      lead: "Emily Griffin",
+      deputy: "Rachael Gabel"
+    },
+
+    {
+      name: "C3",
+      lead: "Regan",
+      deputy: "Olivia Radford"
+    },
+
+    {
+      name: "DG",
+      lead: "Gavin",
+      deputy: "Gemma Harris"
+    },
+
+    {
+      name: "D1",
+      lead: "Asif",
+      deputy: "Rachel Forrest"
+    },
+
+    {
+      name: "D2",
+      lead: "Lily",
+      deputy: "Anthea"
+    },
+
+    {
+      name: "EG",
+      lead: "Emily Gallone",
+      deputy: "Roxanne"
+    },
+
+    {
+      name: "E1",
+      lead: "Isabel",
+      deputy: "Shaimaa"
+    },
+
+    {
+      name: "E2",
+      lead: "Danielle Jolosa",
+      deputy: "Hanan"
+    },
+
+    {
+      name: "E3",
+      lead: "Erika",
+      deputy: "Sarah Barr"
+    },
+
+    {
+      name: "AG (Parents)",
+      lead: "Aisha",
+      deputy: "Conference Room A"
+    }
+
+  ];
+
+
+  // ==========================================================
+  // CURRENT STATUS
+  // ==========================================================
+
+  const statuses = {};
+
+
+  // ==========================================================
+  // CREATE BOARD
+  // ==========================================================
+
+  function createBoard() {
+
+    const board =
+      document.getElementById("zoneBoard");
+
+    board.innerHTML = "";
+
+
+    zones.forEach((zone, index) => {
+
+      const row =
+        document.createElement("div");
+
+      row.className = "zone-row";
+
+      row.id =
+        "zone-row-" + index;
+
+
+      row.innerHTML = `
+
+        <div class="zone-name">
+          ${zone.name}
+        </div>
+
+        <div class="person">
+          ${zone.lead}
+        </div>
+
+        <div class="person">
+          ${zone.deputy}
+        </div>
+
+        <div id="status-${index}">
+          <span class="badge">
+            Unchecked
+          </span>
+        </div>
+
+        <div>
+          <button
+            class="open-btn"
+            onclick="openZone('${encodeURIComponent(zone.name)}')">
+            Open Zone
+          </button>
+        </div>
+
+      `;
+
+      board.appendChild(row);
+
+    });
+
+  }
+
+
+  // ==========================================================
+  // OPEN ZONE
+  // ==========================================================
+
+  window.openZone = function(zoneName) {
+
+    const decoded =
+      decodeURIComponent(zoneName);
+
+    window.location.href =
+      "zone-checkin.html?zone=" +
+      encodeURIComponent(decoded);
+
+  };
+
+
+  // ==========================================================
+  // DISPLAY STATUS
+  // ==========================================================
+
+  function displayStatus() {
+
+    let safe = 0;
+
+    let unsafe = 0;
+
+    let missing = 0;
+
+    let unchecked = 0;
+
+
+    zones.forEach((zone, index) => {
+
+      const data =
+        statuses[zone.name];
+
+
+      const status =
+        data ? data.status : "UNCHECKED";
+
+
+      const statusContainer =
+        document.getElementById(
+          "status-" + index
+        );
+
+
+      if (!statusContainer) {
+        return;
+      }
+
+
+      let badgeClass = "";
+
+      let badgeText = "Unchecked";
+
+
+      if (status === "ALL SAFE") {
+
+        safe++;
+
+        badgeClass = "safe";
+
+        badgeText = "ALL SAFE";
+
+      }
+
+
+      else if (status === "NOT SAFE") {
+
+        unsafe++;
+
+        badgeClass = "unsafe";
+
+        badgeText = "NOT SAFE";
+
+      }
+
+
+      else if (status === "MISSING") {
+
+        missing++;
+
+        badgeClass = "missing";
+
+        badgeText = "MISSING";
+
+      }
+
+
+      else {
+
+        unchecked++;
+
+      }
+
+
+      let timeText = "";
+
+
+      if (
+        data &&
+        data.checkedAt &&
+        data.checkedAt.toDate
+      ) {
+
+        timeText =
+          data.checkedAt
+            .toDate()
+            .toLocaleString();
+
+      }
+
+
+      statusContainer.innerHTML = `
+
+        <span class="badge ${badgeClass}">
+          ${badgeText}
+        </span>
+
+        ${
+          timeText
+          ? `<span class="last-time">${timeText}</span>`
+          : ""
+        }
+
+      `;
+
+    });
+
+
+    document.getElementById(
+      "safeCount"
+    ).textContent = safe;
+
+
+    document.getElementById(
+      "unsafeCount"
+    ).textContent = unsafe;
+
+
+    document.getElementById(
+      "missingCount"
+    ).textContent = missing;
+
+
+    document.getElementById(
+      "uncheckedCount"
+    ).textContent = unchecked;
+
+
+    document.getElementById(
+      "areasCovered"
+    ).textContent =
+      safe + unsafe + missing;
+
+  }
+
+
+  // ==========================================================
+  // FIREBASE LIVE UPDATES
+  // ==========================================================
+
+  const checkinsQuery =
+    query(
+      collection(db, "checkins"),
+      orderBy("checkedAt", "desc")
+    );
+
+
+  onSnapshot(
+    checkinsQuery,
+
+    (snapshot) => {
+
+      // Clear current status
+
+      Object.keys(statuses).forEach(
+        key => delete statuses[key]
+      );
+
+
+      // Firebase returns newest first
+
+      snapshot.forEach((doc) => {
+
+        const data =
+          doc.data();
+
+
+        // Only use the newest record
+        // for each zone
+
+        if (!statuses[data.zone]) {
+
+          statuses[data.zone] = data;
+
+        }
+
+      });
+
+
+      displayStatus();
+
+    },
+
+
+    (error) => {
+
+      console.error(
+        "Firebase error:",
+        error
+      );
+
+      document.getElementById(
+        "zoneBoard"
+      ).innerHTML = `
+
+        <div style="
+          padding:25px;
+          color:#dc2626;
+          font-weight:bold;
+        ">
+          Unable to load live zone status.
+          Please check Firebase Firestore.
+        </div>
+
+      `;
+
+    }
+
+  );
+
+
+  // Create the board
+
+  createBoard();
+
+</script>
 
 </body>
 </html>
