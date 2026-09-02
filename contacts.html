@@ -1,0 +1,305 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Emergency Contacts</title>
+
+  <style>
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+      padding: 20px;
+      color: #222;
+    }
+
+    .header {
+      background: #17365d;
+      color: white;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+
+    .header p {
+      margin: 8px 0 0;
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: auto;
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+
+    .contact-card {
+      background: white;
+      padding: 22px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      text-align: center;
+    }
+
+    .contact-title {
+      font-size: 20px;
+      font-weight: bold;
+      color: #17365d;
+      margin-bottom: 12px;
+    }
+
+    .phone {
+      display: inline-block;
+      background: #17365d;
+      color: white;
+      text-decoration: none;
+      padding: 11px 18px;
+      border-radius: 7px;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .phone:hover {
+      opacity: 0.9;
+    }
+
+    .security {
+      border-top: 6px solid #dc2626;
+    }
+
+    .doctor {
+      border-top: 6px solid #16a34a;
+    }
+
+    .person {
+      border-top: 6px solid #17365d;
+    }
+
+    .instructions {
+      background: white;
+      margin-top: 25px;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .instructions h2 {
+      margin-top: 0;
+      color: #17365d;
+    }
+
+    .instructions ul {
+      line-height: 1.8;
+      padding-left: 22px;
+    }
+
+    .back-button {
+      display: block;
+      width: 220px;
+      margin: 25px auto 0;
+      padding: 12px;
+      text-align: center;
+      background: #17365d;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+
+    @media (max-width: 600px) {
+
+      body {
+        padding: 10px;
+      }
+
+      .contact-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .header h1 {
+        font-size: 24px;
+      }
+
+    }
+
+    @media print {
+
+      body {
+        background: white;
+      }
+
+      .phone {
+        color: #222;
+        background: white;
+        padding: 0;
+      }
+
+      .back-button {
+        display: none;
+      }
+
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <div class="header">
+
+    <h1>Emergency Contacts</h1>
+
+    <p>
+      Zone Safety Check-In
+    </p>
+
+  </div>
+
+
+  <div class="container">
+
+
+    <div class="contact-grid">
+
+
+      <!-- SECURITY -->
+
+      <div class="contact-card security">
+
+        <div class="contact-title">
+          🔴 Security
+        </div>
+
+        <a
+          class="phone"
+          href="tel:+971527163581">
+
+          📞 +971 52 716 3581
+
+        </a>
+
+      </div>
+
+
+      <!-- SCHOOL DOCTOR -->
+
+      <div class="contact-card doctor">
+
+        <div class="contact-title">
+          🩺 School Doctor
+        </div>
+
+        <a
+          class="phone"
+          href="tel:+971558732352">
+
+          📞 +971 55 873 2352
+
+        </a>
+
+      </div>
+
+
+      <!-- MANOJ -->
+
+      <div class="contact-card person">
+
+        <div class="contact-title">
+          Manoj
+        </div>
+
+        <a
+          class="phone"
+          href="tel:+971504404898">
+
+          📞 +971 50 440 4898
+
+        </a>
+
+      </div>
+
+
+      <!-- VISHNU -->
+
+      <div class="contact-card person">
+
+        <div class="contact-title">
+          Vishnu
+        </div>
+
+        <a
+          class="phone"
+          href="tel:+971567833603">
+
+          📞 +971 56 783 3603
+
+        </a>
+
+      </div>
+
+
+    </div>
+
+
+    <!-- EMERGENCY INSTRUCTIONS -->
+
+    <div class="instructions">
+
+      <h2>Emergency Instructions</h2>
+
+      <ul>
+
+        <li>
+          For an immediate safety concern, contact Security.
+        </li>
+
+        <li>
+          For a medical emergency, contact the School Doctor.
+        </li>
+
+        <li>
+          Complete the relevant zone check-in as soon as possible.
+        </li>
+
+        <li>
+          If a person is missing, record their last known location.
+        </li>
+
+        <li>
+          If an area is unsafe, provide the location and details of the concern.
+        </li>
+
+      </ul>
+
+    </div>
+
+
+    <a
+      href="index.html"
+      class="back-button">
+
+      Back to Dashboard
+
+    </a>
+
+
+  </div>
+
+</body>
+</html>
+```
