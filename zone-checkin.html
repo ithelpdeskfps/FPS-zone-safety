@@ -44,12 +44,12 @@
       background: white;
       border-radius: 16px;
       padding: 30px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
     }
 
     .zone-title {
       text-align: center;
-      margin-bottom: 30px;
+      margin-bottom: 25px;
     }
 
     .zone-title h2 {
@@ -61,7 +61,7 @@
     .zone-title p {
       color: #64748b;
       margin-top: 12px;
-      line-height: 1.8;
+      line-height: 1.7;
       font-size: 15px;
     }
 
@@ -70,18 +70,17 @@
     .status-buttons {
       display: flex;
       flex-direction: column;
-      gap: 15px;
-      width: 100%;
+      align-items: center;
+      gap: 12px;
+      margin-top: 20px;
     }
 
     .status-button {
-      display: block;
-      width: 100%;
-      min-height: 75px;
+      width: 220px;
+      height: 60px;
       border: none;
-      border-radius: 12px;
-      padding: 20px;
-      font-size: 21px;
+      border-radius: 10px;
+      font-size: 18px;
       font-weight: bold;
       cursor: pointer;
       color: white;
@@ -181,7 +180,7 @@
       cursor: pointer;
     }
 
-    /* RESULT */
+    /* RESULT MESSAGE */
 
     .result {
       display: none;
@@ -207,6 +206,8 @@
       background: #fee2e2;
       color: #991b1b;
     }
+
+    /* BACK LINK */
 
     .back-link {
       display: block;
@@ -242,8 +243,9 @@
       }
 
       .status-button {
-        min-height: 70px;
-        font-size: 19px;
+        width: 200px;
+        height: 58px;
+        font-size: 17px;
       }
     }
 
@@ -345,7 +347,7 @@
     </div>
 
 
-    <!-- RESULT MESSAGE -->
+    <!-- RESULT -->
 
     <div id="result" class="result"></div>
 
@@ -391,7 +393,7 @@
   const db = getFirestore(app);
 
 
-  /* GET ZONE FROM URL */
+  /* GET ZONE */
 
   const params =
     new URLSearchParams(window.location.search);
@@ -651,7 +653,7 @@
     });
 
 
-  /* SAVE SAFE / NOT SAFE */
+  /* SAVE ALL SAFE / NOT SAFE */
 
   async function saveStatus(status) {
 
