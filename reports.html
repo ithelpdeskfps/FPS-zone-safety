@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 
@@ -284,11 +283,9 @@ button {
 
 </header>
 
-
 <div class="container">
 
 <div id="errorBox" class="error"></div>
-
 
 <div class="session-box">
 
@@ -301,7 +298,6 @@ Loading current safety session...
 </div>
 
 </div>
-
 
 <div class="actions">
 
@@ -319,7 +315,6 @@ COPY REPORT
 
 </div>
 
-
 <div class="summary">
 
 <div class="card">
@@ -332,7 +327,6 @@ All Clear / Safe
 
 </div>
 
-
 <div class="card">
 
 <h2 id="unsafeCount" class="unsafe">0</h2>
@@ -343,7 +337,6 @@ Unsafe
 
 </div>
 
-
 <div class="card">
 
 <h2 id="missingCount" class="missing">0</h2>
@@ -353,7 +346,6 @@ Missing
 </p>
 
 </div>
-
 
 <div class="card">
 
@@ -367,7 +359,6 @@ Unchecked
 
 </div>
 
-
 <div class="section">
 
 <h2>Zone Status</h2>
@@ -375,7 +366,6 @@ Unchecked
 <div id="zoneLoading" class="loading">
 Loading reports...
 </div>
-
 
 <table id="zoneTable" style="display:none;">
 
@@ -393,13 +383,11 @@ Loading reports...
 
 </thead>
 
-
 <tbody id="zoneTableBody"></tbody>
 
 </table>
 
 </div>
-
 
 <div class="section">
 
@@ -416,7 +404,6 @@ No missing reports.
 </div>
 
 </div>
-
 
 <div class="section">
 
@@ -457,17 +444,9 @@ from
 "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
 
-import {
-    getAuth,
-    onAuthStateChanged
-}
-from
-"https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-
-
 const firebaseConfig = {
 
-    apiKey: "AIzaSyB0--wrOqeid_iVGJkqDwJAWBefPyI4HPw",
+    apiKey: "AIzaSyB0--wrOqeid_iVGJkqDwJAWBefPyI4HPQw",
 
     authDomain:
     "fps-zone-safety.firebaseapp.com",
@@ -496,10 +475,6 @@ initializeApp(firebaseConfig);
 
 const db =
 getFirestore(app);
-
-
-const auth =
-getAuth(app);
 
 
 let currentSessionId = null;
@@ -608,451 +583,443 @@ deputy: "Conference Room A"
 ];
 
 
-onAuthStateChanged(
-auth,
-async function(user) {
+/*
+START REPORTS WITHOUT LOGIN
+*/
+
+startReports();
 
 
-if (!user) {
+async function startReports() {
 
-window.location.href =
-"login.html";
+    try {
 
-return;
+        await loadCurrentSession();
 
-}
+        listenToReports();
 
+    }
 
-try {
+    catch(error) {
 
-await loadCurrentSession();
+        console.error(error);
 
-listenToReports();
+        showError(
+            "Unable to load reports. Please check Firestore permissions."
+        );
 
-
-}
-catch(error) {
-
-console.error(error);
-
-showError(
-"Unable to load reports. Please check your Firebase login and Firestore rules."
-);
+    }
 
 }
 
-});
 
+/*
+Load current safety session
+*/
 
 async function loadCurrentSession() {
 
-
-const sessionRef =
-doc(
-db,
-"system",
-"currentSession"
-);
-
-
-const sessionSnap =
-await getDoc(sessionRef);
+    const sessionRef =
+    doc(
+        db,
+        "system",
+        "currentSession"
+    );
 
 
-if (!sessionSnap.exists()) {
-
-throw new Error(
-"No active safety session found."
-);
-
-}
+    const sessionSnap =
+    await getDoc(sessionRef);
 
 
-const sessionData =
-sessionSnap.data();
+    if (!sessionSnap.exists()) {
+
+        throw new Error(
+            "No active safety session found."
+        );
+
+    }
 
 
-currentSessionId =
-sessionData.sessionId;
+    const sessionData =
+    sessionSnap.data();
 
 
-if (!currentSessionId) {
-
-throw new Error(
-"Current session ID is missing."
-);
-
-}
+    currentSessionId =
+    sessionData.sessionId;
 
 
-if (
-sessionData.startedAt &&
-typeof sessionData.startedAt.toDate ===
-"function"
-) {
+    if (!currentSessionId) {
 
-document.getElementById(
-"sessionInfo"
-).textContent =
-"Started: " +
-sessionData.startedAt
-.toDate()
-.toLocaleString();
+        throw new Error(
+            "Current session ID is missing."
+        );
 
-}
+    }
 
-else {
 
-document.getElementById(
-"sessionInfo"
-).textContent =
-"Current Safety Session: Active";
+    if (
+        sessionData.startedAt &&
+        typeof sessionData.startedAt.toDate ===
+        "function"
+    ) {
 
-}
+        document.getElementById(
+            "sessionInfo"
+        ).textContent =
+        "Started: " +
+        sessionData.startedAt
+        .toDate()
+        .toLocaleString();
+
+    }
+
+    else {
+
+        document.getElementById(
+            "sessionInfo"
+        ).textContent =
+        "Current Safety Session: Active";
+
+    }
 
 }
 
 
 /*
-Convert old and new status
-values to one standard value.
+Convert old and new status values
 */
+
 function normalizeStatus(status) {
 
+    if (!status) {
 
-if (!status) {
+        return "";
 
-return "";
-
-}
-
-
-const value =
-String(status)
-.trim()
-.toLowerCase();
+    }
 
 
-if (
-value === "safe" ||
-value === "all safe"
-) {
-
-return "safe";
-
-}
+    const value =
+    String(status)
+    .trim()
+    .toLowerCase();
 
 
-if (
-value === "missing"
-) {
+    if (
+        value === "safe" ||
+        value === "all safe"
+    ) {
 
-return "missing";
+        return "safe";
 
-}
-
-
-if (
-value === "unsafe" ||
-value === "not safe"
-) {
-
-return "unsafe";
-
-}
+    }
 
 
-return value;
+    if (
+        value === "missing"
+    ) {
+
+        return "missing";
+
+    }
+
+
+    if (
+        value === "unsafe" ||
+        value === "not safe"
+    ) {
+
+        return "unsafe";
+
+    }
+
+
+    return value;
 
 }
 
 
 /*
-Listen to Firebase check-ins.
+Listen to Firebase check-ins
 */
+
 function listenToReports() {
 
-
-const reportsQuery =
-query(
-collection(db, "checkins"),
-orderBy("checkedAt", "desc")
-);
-
-
-onSnapshot(
-
-reportsQuery,
-
-function(snapshot) {
+    const reportsQuery =
+    query(
+        collection(db, "checkins"),
+        orderBy("checkedAt", "desc")
+    );
 
 
-allReports = [];
+    onSnapshot(
+
+        reportsQuery,
+
+        function(snapshot) {
+
+            allReports = [];
 
 
-snapshot.forEach(
-function(docSnapshot) {
+            snapshot.forEach(
+                function(docSnapshot) {
+
+                    const data =
+                    docSnapshot.data();
 
 
-const data =
-docSnapshot.data();
+                    if (
+                        data.sessionId &&
+                        data.sessionId ===
+                        currentSessionId
+                    ) {
+
+                        allReports.push({
+
+                            id:
+                            docSnapshot.id,
+
+                            ...data
+
+                        });
+
+                    }
+
+                }
+            );
 
 
-if (
-data.sessionId &&
-data.sessionId ===
-currentSessionId
-) {
+            updateReportDisplay();
+
+        },
 
 
-allReports.push({
+        function(error) {
 
-id:
-docSnapshot.id,
+            console.error(error);
 
-...data
+            showError(
+                "Unable to load reports. Please check Firestore permissions."
+            );
 
-});
+        }
 
-}
-
-});
-
-
-updateReportDisplay();
-
-
-},
-
-function(error) {
-
-console.error(error);
-
-showError(
-"Unable to load reports. Please check Firestore permissions."
-);
-
-}
-
-);
+    );
 
 }
 
 
 /*
-Update all report information.
+Update all report information
 */
+
 function updateReportDisplay() {
 
-
-const latestByZone = {};
-
-
-allReports.forEach(
-function(report) {
+    const latestByZone = {};
 
 
-if (
-!latestByZone[report.zone]
-) {
+    allReports.forEach(
+        function(report) {
 
-latestByZone[report.zone] =
-report;
+            if (
+                !latestByZone[report.zone]
+            ) {
 
-}
+                latestByZone[report.zone] =
+                report;
 
-});
+            }
 
-
-let safeCount = 0;
-
-let unsafeCount = 0;
-
-let missingCount = 0;
-
-let uncheckedCount = 0;
+        }
+    );
 
 
-zones.forEach(
-function(zone) {
+    let safeCount = 0;
+
+    let unsafeCount = 0;
+
+    let missingCount = 0;
+
+    let uncheckedCount = 0;
 
 
-const report =
-latestByZone[zone.name];
+    zones.forEach(
+        function(zone) {
+
+            const report =
+            latestByZone[zone.name];
 
 
-if (!report) {
+            if (!report) {
 
-uncheckedCount++;
+                uncheckedCount++;
 
-return;
+                return;
 
-}
-
-
-const status =
-normalizeStatus(report.status);
+            }
 
 
-if (status === "safe") {
-
-safeCount++;
-
-}
-
-else if (status === "unsafe") {
-
-unsafeCount++;
-
-}
-
-else if (status === "missing") {
-
-missingCount++;
-
-}
-
-else {
-
-uncheckedCount++;
-
-}
-
-});
+            const status =
+            normalizeStatus(report.status);
 
 
-document.getElementById(
-"safeCount"
-).textContent =
-safeCount;
+            if (status === "safe") {
+
+                safeCount++;
+
+            }
+
+            else if (status === "unsafe") {
+
+                unsafeCount++;
+
+            }
+
+            else if (status === "missing") {
+
+                missingCount++;
+
+            }
+
+            else {
+
+                uncheckedCount++;
+
+            }
+
+        }
+    );
 
 
-document.getElementById(
-"unsafeCount"
-).textContent =
-unsafeCount;
+    document.getElementById(
+        "safeCount"
+    ).textContent =
+    safeCount;
 
 
-document.getElementById(
-"missingCount"
-).textContent =
-missingCount;
+    document.getElementById(
+        "unsafeCount"
+    ).textContent =
+    unsafeCount;
 
 
-document.getElementById(
-"uncheckedCount"
-).textContent =
-uncheckedCount;
+    document.getElementById(
+        "missingCount"
+    ).textContent =
+    missingCount;
 
 
-buildZoneTable(latestByZone);
+    document.getElementById(
+        "uncheckedCount"
+    ).textContent =
+    uncheckedCount;
 
-buildMissingReports();
 
-buildUnsafeReports();
+    buildZoneTable(latestByZone);
+
+    buildMissingReports();
+
+    buildUnsafeReports();
 
 }
 
 
 /*
-Build zone status table.
+Build zone status table
 */
+
 function buildZoneTable(latestByZone) {
 
-
-const tbody =
-document.getElementById(
-"zoneTableBody"
-);
-
-
-tbody.innerHTML = "";
+    const tbody =
+    document.getElementById(
+        "zoneTableBody"
+    );
 
 
-zones.forEach(
-function(zone) {
+    tbody.innerHTML = "";
 
 
-const report =
-latestByZone[zone.name];
+    zones.forEach(
+        function(zone) {
+
+            const report =
+            latestByZone[zone.name];
 
 
-const row =
-document.createElement("tr");
+            const row =
+            document.createElement("tr");
 
 
-let statusText =
-"Unchecked";
+            let statusText =
+            "Unchecked";
 
 
-let statusClass =
-"status-unchecked";
+            let statusClass =
+            "status-unchecked";
 
 
-let timeText =
-"-";
+            let timeText =
+            "-";
 
 
-if (report) {
+            if (report) {
+
+                const status =
+                normalizeStatus(
+                    report.status
+                );
 
 
-const status =
-normalizeStatus(
-report.status
-);
+                if (status === "safe") {
+
+                    statusText =
+                    "ALL SAFE";
+
+                    statusClass =
+                    "status-safe";
+
+                }
+
+                else if (status === "unsafe") {
+
+                    statusText =
+                    "NOT SAFE";
+
+                    statusClass =
+                    "status-unsafe";
+
+                }
+
+                else if (status === "missing") {
+
+                    statusText =
+                    "MISSING";
+
+                    statusClass =
+                    "status-missing";
+
+                }
 
 
-if (status === "safe") {
+                timeText =
+                formatTimestamp(
+                    report.checkedAt
+                );
 
-statusText =
-"ALL SAFE";
-
-statusClass =
-"status-safe";
-
-}
-
-else if (status === "unsafe") {
-
-statusText =
-"NOT SAFE";
-
-statusClass =
-"status-unsafe";
-
-}
-
-else if (status === "missing") {
-
-statusText =
-"MISSING";
-
-statusClass =
-"status-missing";
-
-}
+            }
 
 
-timeText =
-formatTimestamp(
-report.checkedAt
-);
-
-}
-
-
-const deputyLabel =
-zone.name ===
-"AG (Parents)"
-? "Location"
-: "Deputy";
+            const deputyLabel =
+            zone.name ===
+            "AG (Parents)"
+            ? "Location"
+            : "Deputy";
 
 
-const deputyValue =
-zone.deputy;
+            const deputyValue =
+            zone.deputy;
 
 
-row.innerHTML = `
+            row.innerHTML = `
 
 <td>
 ${escapeHtml(zone.name)}
@@ -1084,80 +1051,75 @@ ${escapeHtml(timeText)}
 `;
 
 
-tbody.appendChild(row);
+            tbody.appendChild(row);
+
+        }
+    );
 
 
-});
+    document.getElementById(
+        "zoneLoading"
+    ).style.display =
+    "none";
 
 
-document.getElementById(
-"zoneLoading"
-).style.display =
-"none";
-
-
-document.getElementById(
-"zoneTable"
-).style.display =
-"table";
+    document.getElementById(
+        "zoneTable"
+    ).style.display =
+    "table";
 
 }
 
 
 /*
-Build Missing reports.
-
-IMPORTANT:
-These field names match
-zone-checkin.html.
+Build Missing reports
 */
+
 function buildMissingReports() {
 
-
-const container =
-document.getElementById(
-"missingReports"
-);
-
-
-const reports =
-allReports.filter(
-function(report) {
-
-return normalizeStatus(
-report.status
-) === "missing";
-
-});
+    const container =
+    document.getElementById(
+        "missingReports"
+    );
 
 
-if (reports.length === 0) {
+    const reports =
+    allReports.filter(
+        function(report) {
+
+            return normalizeStatus(
+                report.status
+            ) === "missing";
+
+        }
+    );
 
 
-container.innerHTML =
-'<div class="loading">No missing reports.</div>';
+    if (reports.length === 0) {
 
-return;
+        container.innerHTML =
+        '<div class="loading">No missing reports.</div>';
 
-}
+        return;
 
-
-container.innerHTML = "";
-
-
-reports.forEach(
-function(report) {
+    }
 
 
-const div =
-document.createElement("div");
+    container.innerHTML = "";
 
 
-div.className =
-"missing-item";
+    reports.forEach(
+        function(report) {
+
+            const div =
+            document.createElement("div");
 
 
-div.innerHTML = `
+            div.className =
+            "missing-item";
+
+
+            div.innerHTML = `
 
 <strong>Zone:</strong>
 ${escapeHtml(report.zone)}
@@ -1166,103 +1128,99 @@ ${escapeHtml(report.zone)}
 
 <strong>Person:</strong>
 ${escapeHtml(
-report.personName || "-"
+    report.personName || "-"
 )}
 
 <br>
 
 <strong>Last Known Location:</strong>
 ${escapeHtml(
-report.lastLocation || "-"
+    report.lastLocation || "-"
 )}
 
 <br>
 
 <strong>Additional Details:</strong>
 ${escapeHtml(
-report.missingDetails || "-"
+    report.missingDetails || "-"
 )}
 
 <br><br>
 
 <strong>Checked By:</strong>
 ${escapeHtml(
-report.submittedBy || "-"
+    report.submittedBy || "-"
 )}
 
 <br>
 
 <strong>Time:</strong>
 ${escapeHtml(
-formatTimestamp(
-report.checkedAt
-)
+    formatTimestamp(
+        report.checkedAt
+    )
 )}
 
 `;
 
 
-container.appendChild(div);
+            container.appendChild(div);
 
-});
+        }
+    );
 
 }
 
 
 /*
-Build Unsafe reports.
-
-IMPORTANT:
-These field names match
-zone-checkin.html.
+Build Unsafe reports
 */
+
 function buildUnsafeReports() {
 
-
-const container =
-document.getElementById(
-"unsafeReports"
-);
-
-
-const reports =
-allReports.filter(
-function(report) {
-
-return normalizeStatus(
-report.status
-) === "unsafe";
-
-});
+    const container =
+    document.getElementById(
+        "unsafeReports"
+    );
 
 
-if (reports.length === 0) {
+    const reports =
+    allReports.filter(
+        function(report) {
+
+            return normalizeStatus(
+                report.status
+            ) === "unsafe";
+
+        }
+    );
 
 
-container.innerHTML =
-'<div class="loading">No safety concerns reported.</div>';
+    if (reports.length === 0) {
 
-return;
+        container.innerHTML =
+        '<div class="loading">No safety concerns reported.</div>';
 
-}
+        return;
 
-
-container.innerHTML = "";
-
-
-reports.forEach(
-function(report) {
+    }
 
 
-const div =
-document.createElement("div");
+    container.innerHTML = "";
 
 
-div.className =
-"report-item";
+    reports.forEach(
+        function(report) {
+
+            const div =
+            document.createElement("div");
 
 
-div.innerHTML = `
+            div.className =
+            "report-item";
+
+
+            div.innerHTML = `
 
 <strong>Zone:</strong>
 ${escapeHtml(report.zone)}
@@ -1271,268 +1229,268 @@ ${escapeHtml(report.zone)}
 
 <strong>Safety Concern:</strong>
 ${escapeHtml(
-report.safetyConcern || "-"
+    report.safetyConcern || "-"
 )}
 
 <br>
 
 <strong>Location:</strong>
 ${escapeHtml(
-report.issueLocation || "-"
+    report.issueLocation || "-"
 )}
 
 <br>
 
 <strong>Additional Details:</strong>
 ${escapeHtml(
-report.unsafeDetails || "-"
+    report.unsafeDetails || "-"
 )}
 
 <br>
 
 <strong>Immediate Assistance:</strong>
 ${escapeHtml(
-report.immediateAssistance || "-"
+    report.immediateAssistance || "-"
 )}
 
 <br><br>
 
 <strong>Checked By:</strong>
 ${escapeHtml(
-report.submittedBy || "-"
+    report.submittedBy || "-"
 )}
 
 <br>
 
 <strong>Time:</strong>
 ${escapeHtml(
-formatTimestamp(
-report.checkedAt
-)
+    formatTimestamp(
+        report.checkedAt
+    )
 )}
 
 `;
 
 
-container.appendChild(div);
+            container.appendChild(div);
 
-});
+        }
+    );
 
 }
 
 
 /*
 Convert Firebase timestamp
-to readable date/time.
 */
+
 function formatTimestamp(timestamp) {
 
+    if (
+        timestamp &&
+        typeof timestamp.toDate ===
+        "function"
+    ) {
 
-if (
-timestamp &&
-typeof timestamp.toDate ===
-"function"
-) {
+        return timestamp
+        .toDate()
+        .toLocaleString();
 
-return timestamp
-.toDate()
-.toLocaleString();
-
-}
+    }
 
 
-return "Pending";
+    return "Pending";
 
 }
 
 
 /*
-Protect HTML output.
+Protect HTML output
 */
+
 function escapeHtml(value) {
 
+    if (
+        value === null ||
+        value === undefined
+    ) {
 
-if (
-value === null ||
-value === undefined
-) {
+        return "";
 
-return "";
-
-}
+    }
 
 
-return String(value)
+    return String(value)
 
-.replace(
-/&/g,
-"&amp;"
-)
+    .replace(
+        /&/g,
+        "&amp;"
+    )
 
-.replace(
-/</g,
-"&lt;"
-)
+    .replace(
+        /</g,
+        "&lt;"
+    )
 
-.replace(
-/>/g,
-"&gt;"
-)
+    .replace(
+        />/g,
+        "&gt;"
+    )
 
-.replace(
-/"/g,
-"&quot;"
-)
+    .replace(
+        /"/g,
+        "&quot;"
+    )
 
-.replace(
-/'/g,
-"&#039;"
-);
+    .replace(
+        /'/g,
+        "&#039;"
+    );
 
 }
 
 
 /*
-Show Firebase error.
+Show Firebase error
 */
+
 function showError(message) {
 
-
-const box =
-document.getElementById(
-"errorBox"
-);
-
-
-box.textContent =
-message;
+    const box =
+    document.getElementById(
+        "errorBox"
+    );
 
 
-box.style.display =
-"block";
+    box.textContent =
+    message;
+
+
+    box.style.display =
+    "block";
 
 }
 
 
 /*
-Copy report.
+Copy report
 */
+
 window.copyReport =
 function() {
 
-
-const latestByZone = {};
-
-
-allReports.forEach(
-function(report) {
+    const latestByZone = {};
 
 
-if (
-!latestByZone[report.zone]
-) {
+    allReports.forEach(
+        function(report) {
 
-latestByZone[report.zone] =
-report;
+            if (
+                !latestByZone[report.zone]
+            ) {
 
-}
+                latestByZone[report.zone] =
+                report;
 
-});
+            }
 
-
-let text =
-"ZONE SAFETY REPORT\n\n";
-
-
-text +=
-"Safety Session: " +
-currentSessionId +
-"\n\n";
+        }
+    );
 
 
-zones.forEach(
-function(zone) {
+    let text =
+    "ZONE SAFETY REPORT\n\n";
 
 
-const report =
-latestByZone[zone.name];
+    text +=
+    "Safety Session: " +
+    currentSessionId +
+    "\n\n";
 
 
-let status =
-"UNCHECKED";
+    zones.forEach(
+        function(zone) {
+
+            const report =
+            latestByZone[zone.name];
 
 
-if (report) {
-
-const normalized =
-normalizeStatus(
-report.status
-);
+            let status =
+            "UNCHECKED";
 
 
-if (normalized === "safe") {
+            if (report) {
 
-status =
-"ALL SAFE";
-
-}
-
-else if (
-normalized === "unsafe"
-) {
-
-status =
-"NOT SAFE";
-
-}
-
-else if (
-normalized === "missing"
-) {
-
-status =
-"MISSING";
-
-}
-
-}
+                const normalized =
+                normalizeStatus(
+                    report.status
+                );
 
 
-text +=
-zone.name +
-" - " +
-status +
-"\n";
+                if (normalized === "safe") {
 
-});
+                    status =
+                    "ALL SAFE";
+
+                }
+
+                else if (
+                    normalized === "unsafe"
+                ) {
+
+                    status =
+                    "NOT SAFE";
+
+                }
+
+                else if (
+                    normalized === "missing"
+                ) {
+
+                    status =
+                    "MISSING";
+
+                }
+
+            }
 
 
-navigator.clipboard
-.writeText(text)
+            text +=
+            zone.name +
+            " - " +
+            status +
+            "\n";
 
-.then(
-function() {
+        }
+    );
 
-alert(
-"Report copied to clipboard."
-);
 
-})
+    navigator.clipboard
+    .writeText(text)
 
-.catch(
-function() {
+    .then(
+        function() {
 
-alert(
-"Unable to copy the report."
-);
+            alert(
+                "Report copied to clipboard."
+            );
 
-});
+        }
+    )
+
+    .catch(
+        function() {
+
+            alert(
+                "Unable to copy the report."
+            );
+
+        }
+    );
 
 };
-
 
 </script>
 
 </body>
 </html>
-```
