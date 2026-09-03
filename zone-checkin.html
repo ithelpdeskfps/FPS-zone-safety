@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -230,32 +229,28 @@
 
       <div id="zonePeople" class="zone-people"></div>
 
-      <div id="loginStatus" class="loading">
-        Checking login...
+      <div id="systemStatus" class="loading">
+        Loading safety session...
       </div>
 
       <div class="status-buttons">
 
         <button id="safeButton"
-                class="status-button safe-button"
-                disabled>
+                class="status-button safe-button">
           ALL SAFE
         </button>
 
         <button id="missingButton"
-                class="status-button missing-button"
-                disabled>
+                class="status-button missing-button">
           MISSING
         </button>
 
         <button id="unsafeButton"
-                class="status-button unsafe-button"
-                disabled>
+                class="status-button unsafe-button">
           NOT SAFE
         </button>
 
       </div>
-
 
       <!-- MISSING FORM -->
 
@@ -267,24 +262,30 @@
           Person's Name
         </label>
 
-        <input type="text"
-               id="personName"
-               placeholder="Enter person's name">
+        <input
+          type="text"
+          id="personName"
+          placeholder="Enter person's name"
+        >
 
         <label for="lastLocation">
           Last Known Location
         </label>
 
-        <input type="text"
-               id="lastLocation"
-               placeholder="Example: Classroom C2">
+        <input
+          type="text"
+          id="lastLocation"
+          placeholder="Example: Classroom C2"
+        >
 
         <label for="missingDetails">
           Additional Details
         </label>
 
-        <textarea id="missingDetails"
-                  placeholder="Enter any additional information"></textarea>
+        <textarea
+          id="missingDetails"
+          placeholder="Enter any additional information"
+        ></textarea>
 
         <button id="saveMissingButton"
                 class="save-button">
@@ -298,7 +299,6 @@
 
       </div>
 
-
       <!-- NOT SAFE FORM -->
 
       <div id="unsafeForm" class="form-box unsafe-form">
@@ -309,24 +309,30 @@
           What is the safety concern?
         </label>
 
-        <input type="text"
-               id="safetyConcern"
-               placeholder="Example: Fire, smoke, damaged area">
+        <input
+          type="text"
+          id="safetyConcern"
+          placeholder="Example: Fire, smoke, damaged area"
+        >
 
         <label for="issueLocation">
           Where is the issue?
         </label>
 
-        <input type="text"
-               id="issueLocation"
-               placeholder="Example: Corridor outside C2">
+        <input
+          type="text"
+          id="issueLocation"
+          placeholder="Example: Corridor outside C2"
+        >
 
         <label for="unsafeDetails">
           Additional Details
         </label>
 
-        <textarea id="unsafeDetails"
-                  placeholder="Enter any additional information"></textarea>
+        <textarea
+          id="unsafeDetails"
+          placeholder="Enter any additional information"
+        ></textarea>
 
         <label for="immediateAssistance">
           Is immediate assistance required?
@@ -360,9 +366,7 @@
 
       </div>
 
-
       <div id="result" class="result"></div>
-
 
       <a href="zones.html"
          class="back-button">
@@ -382,7 +386,6 @@
       initializeApp
     } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 
-
     import {
       getFirestore,
       collection,
@@ -391,14 +394,6 @@
       doc,
       getDoc
     } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
-
-
-    import {
-      getAuth,
-      setPersistence,
-      browserLocalPersistence,
-      onAuthStateChanged
-    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
 
     /* FIREBASE CONFIG */
@@ -437,12 +432,8 @@
     const db =
       getFirestore(app);
 
-    const auth =
-      getAuth(app);
-
 
     let currentSessionId = null;
-    let loggedInUser = null;
 
 
     /* ZONE ASSIGNMENTS */
@@ -502,6 +493,11 @@
       ).textContent =
         "Zone Not Found";
 
+      document.getElementById(
+        "systemStatus"
+      ).textContent =
+        "Invalid zone.";
+
     } else {
 
       document.getElementById(
@@ -544,30 +540,18 @@
     const result =
       document.getElementById("result");
 
-    const loginStatus =
-      document.getElementById("loginStatus");
+    const systemStatus =
+      document.getElementById("systemStatus");
 
 
-    /* ENABLE BUTTONS */
+    /* DISABLE BUTTONS UNTIL SESSION IS LOADED */
 
-    function enableButtons() {
-
-      safeButton.disabled = false;
-
-      missingButton.disabled = false;
-
-      unsafeButton.disabled = false;
-
-      loginStatus.textContent =
-        "Logged in successfully.";
-
-      loginStatus.style.color =
-        "#166534";
-
-    }
+    safeButton.disabled = true;
+    missingButton.disabled = true;
+    unsafeButton.disabled = true;
 
 
-    /* GET CURRENT SESSION */
+    /* GET CURRENT SAFETY SESSION */
 
     async function getCurrentSession() {
 
@@ -613,6 +597,52 @@
     }
 
 
+    /* LOAD SESSION */
+
+    async function initialisePage() {
+
+      try {
+
+        await getCurrentSession();
+
+        systemStatus.textContent =
+          "Safety session active.";
+
+        systemStatus.style.color =
+          "#166534";
+
+        safeButton.disabled = false;
+        missingButton.disabled = false;
+        unsafeButton.disabled = false;
+
+      }
+
+      catch (error) {
+
+        console.error(
+          "Session loading error:",
+          error
+        );
+
+        systemStatus.textContent =
+          error.message;
+
+        systemStatus.style.color =
+          "#dc2626";
+
+        safeButton.disabled = true;
+        missingButton.disabled = true;
+        unsafeButton.disabled = true;
+
+        alert(
+          "No active safety session found. Please return to the Dashboard and click START NEW SAFETY SESSION."
+        );
+
+      }
+
+    }
+
+
     /* SHOW RESULT */
 
     function showResult(message, type) {
@@ -642,17 +672,6 @@
     /* SAVE SIMPLE STATUS */
 
     async function saveStatus(status) {
-
-      if (!loggedInUser) {
-
-        alert(
-          "Login session is not ready. Please wait a moment and try again."
-        );
-
-        return;
-
-      }
-
 
       try {
 
@@ -687,7 +706,7 @@
               serverTimestamp(),
 
             submittedBy:
-              loggedInUser.email || ""
+              "Anonymous"
 
           }
 
@@ -776,17 +795,6 @@
         "click",
         async function() {
 
-          if (!loggedInUser) {
-
-            alert(
-              "Login session is not ready. Please wait a moment and try again."
-            );
-
-            return;
-
-          }
-
-
           try {
 
             await getCurrentSession();
@@ -861,7 +869,7 @@
                   serverTimestamp(),
 
                 submittedBy:
-                  loggedInUser.email || ""
+                  "Anonymous"
 
               }
 
@@ -960,17 +968,6 @@
         "click",
         async function() {
 
-          if (!loggedInUser) {
-
-            alert(
-              "Login session is not ready. Please wait a moment and try again."
-            );
-
-            return;
-
-          }
-
-
           try {
 
             await getCurrentSession();
@@ -1058,7 +1055,7 @@
                   serverTimestamp(),
 
                 submittedBy:
-                  loggedInUser.email || ""
+                  "Anonymous"
 
               }
 
@@ -1130,170 +1127,11 @@
       );
 
 
-    /*
-      FIREBASE AUTHENTICATION
+    /* START PAGE */
 
-      IMPORTANT:
-      We explicitly use browserLocalPersistence,
-      matching the working login.html.
-    */
-
-    async function initialiseAuthentication() {
-
-      try {
-
-        loginStatus.textContent =
-          "Restoring login session...";
-
-        loginStatus.style.color =
-          "#64748b";
-
-
-        /*
-          Make this page use the same
-          browser-local Firebase persistence
-          as login.html.
-        */
-
-        await setPersistence(
-          auth,
-          browserLocalPersistence
-        );
-
-
-        /*
-          Wait for Firebase to restore the
-          existing authentication state.
-        */
-
-        onAuthStateChanged(
-          auth,
-          async function(user) {
-
-            console.log(
-              "Firebase authentication state:",
-              user ? user.email : "No user"
-            );
-
-
-            if (user) {
-
-              loggedInUser =
-                user;
-
-
-              loginStatus.textContent =
-                "Logged in as " +
-                (user.email || "user") +
-                ".";
-
-              loginStatus.style.color =
-                "#166534";
-
-
-              enableButtons();
-
-
-              try {
-
-                await getCurrentSession();
-
-              }
-
-              catch (error) {
-
-                console.error(
-                  "Session loading error:",
-                  error
-                );
-
-                loginStatus.textContent =
-                  "Logged in, but no active safety session.";
-
-                loginStatus.style.color =
-                  "#dc2626";
-
-                alert(
-                  "No active safety session found. Please return to the Dashboard and click START NEW SAFETY SESSION."
-                );
-
-              }
-
-              return;
-
-            }
-
-
-            /*
-              No user after Firebase has finished
-              restoring the authentication state.
-            */
-
-            loggedInUser =
-              null;
-
-            safeButton.disabled =
-              true;
-
-            missingButton.disabled =
-              true;
-
-            unsafeButton.disabled =
-              true;
-
-
-            loginStatus.textContent =
-              "No active login session.";
-
-            loginStatus.style.color =
-              "#dc2626";
-
-
-            setTimeout(
-              function() {
-
-                if (!loggedInUser) {
-
-                  loginStatus.innerHTML =
-                    'Login required. <a href="login.html">Click here to login</a>';
-
-                }
-
-              },
-              2000
-            );
-
-          }
-        );
-
-      }
-
-      catch (error) {
-
-        console.error(
-          "Authentication initialization error:",
-          error
-        );
-
-        loginStatus.textContent =
-          "Unable to restore login session.";
-
-        loginStatus.style.color =
-          "#dc2626";
-
-      }
-
-    }
-
-
-    /*
-      START AUTHENTICATION
-    */
-
-    initialiseAuthentication();
+    initialisePage();
 
   </script>
 
 </body>
 </html>
-```
