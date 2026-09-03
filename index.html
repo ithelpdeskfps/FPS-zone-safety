@@ -1,14 +1,11 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Zone Safety Dashboard</title>
 
   <style>
-
     body {
       font-family: Arial, sans-serif;
       background: #f4f6f8;
@@ -100,6 +97,11 @@
 
     .new-session-button:hover {
       opacity: 0.9;
+    }
+
+    .new-session-button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
     }
 
     /* SUMMARY */
@@ -337,9 +339,7 @@
   </style>
 </head>
 
-
 <body>
-
 
   <div class="header">
 
@@ -564,6 +564,7 @@
       initializeApp
     } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 
+
     import {
       getFirestore,
       collection,
@@ -576,16 +577,15 @@
       serverTimestamp
     } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-    import {
-      getAuth,
-      onAuthStateChanged
-    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
+    /*
+      FIREBASE CONFIG
+    */
 
     const firebaseConfig = {
 
       apiKey:
-        "AIzaSyB0--wrOqeid_iVGJkqDwJAWBefPyI4HPw",
+        "AIzaSyB0--wrOqeid_iVGJkqDwJAWBefPyI4HPQw",
 
       authDomain:
         "fps-zone-safety.firebaseapp.com",
@@ -611,15 +611,17 @@
     const app =
       initializeApp(firebaseConfig);
 
+
     const db =
       getFirestore(app);
-
-    const auth =
-      getAuth(app);
 
 
     let currentSessionId = null;
 
+
+    /*
+      ZONE ASSIGNMENTS
+    */
 
     const zones = [
 
@@ -730,26 +732,11 @@
 
 
     /*
-      LOGIN CHECK
+      START DASHBOARD DIRECTLY
+      NO LOGIN REQUIRED
     */
 
-    onAuthStateChanged(
-      auth,
-      async function(user) {
-
-        if (!user) {
-
-          window.location.href =
-            "login.html";
-
-          return;
-
-        }
-
-        await startDashboard();
-
-      }
-    );
+    startDashboard();
 
 
     /*
@@ -758,11 +745,29 @@
 
     async function startDashboard() {
 
-      createZoneCards();
+      try {
 
-      await loadCurrentSession();
+        createZoneCards();
 
-      listenToCurrentSession();
+        await loadCurrentSession();
+
+        listenToCurrentSession();
+
+      }
+
+      catch (error) {
+
+        console.error(
+          "Dashboard startup error:",
+          error
+        );
+
+        document.getElementById(
+          "lastUpdated"
+        ).textContent =
+          "Unable to connect to Firebase.";
+
+      }
 
     }
 
@@ -779,6 +784,7 @@
           "system",
           "currentSession"
         );
+
 
       const sessionSnap =
         await getDoc(sessionRef);
@@ -912,7 +918,9 @@
               "START NEW SAFETY SESSION";
 
 
-          } catch (error) {
+          }
+
+          catch (error) {
 
             console.error(error);
 
@@ -992,6 +1000,7 @@
 
       onSnapshot(
         reportsQuery,
+
         function(snapshot) {
 
           Object.keys(
@@ -1025,6 +1034,11 @@
 
               }
 
+
+              /*
+                Keep the latest check-in
+                for each zone.
+              */
 
               if (
                 !latestByZone[data.zone]
@@ -1088,6 +1102,14 @@
             );
 
 
+          const statusId =
+            "status-" +
+            zone.name.replace(
+              /[^a-zA-Z0-9]/g,
+              "-"
+            );
+
+
           card.innerHTML = `
 
             <div class="zone-name">
@@ -1107,10 +1129,7 @@
             </div>
 
             <div
-              id="status-${zone.name.replace(
-                /[^a-zA-Z0-9]/g,
-                "-"
-              )}"
+              id="${statusId}"
               class="zone-status status-unchecked">
 
               UNCHECKED
@@ -1192,9 +1211,21 @@
           covered++;
 
 
+          /*
+            Normalize status values.
+          */
+
+          const rawStatus =
+            String(
+              report.status || ""
+            )
+            .trim()
+            .toLowerCase();
+
+
           if (
-            report.status ===
-            "ALL SAFE"
+            rawStatus === "all safe" ||
+            rawStatus === "safe"
           ) {
 
             safe++;
@@ -1208,8 +1239,8 @@
           }
 
           else if (
-            report.status ===
-            "NOT SAFE"
+            rawStatus === "not safe" ||
+            rawStatus === "unsafe"
           ) {
 
             unsafe++;
@@ -1223,8 +1254,7 @@
           }
 
           else if (
-            report.status ===
-            "MISSING"
+            rawStatus === "missing"
           ) {
 
             missing++;
@@ -1313,4 +1343,3 @@
 
 </body>
 </html>
-```
