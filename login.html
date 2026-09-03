@@ -1,19 +1,13 @@
 ```html
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Zone Safety Login</title>
 
   <style>
-
     body {
       font-family: Arial, sans-serif;
       background: #f4f6f8;
@@ -64,11 +58,6 @@
       font-size: 15px;
     }
 
-    input:focus {
-      outline: none;
-      border-color: #17365d;
-    }
-
     button {
       width: 100%;
       margin-top: 22px;
@@ -82,10 +71,6 @@
       cursor: pointer;
     }
 
-    button:hover {
-      opacity: 0.9;
-    }
-
     button:disabled {
       opacity: 0.6;
       cursor: not-allowed;
@@ -97,11 +82,8 @@
       font-size: 14px;
       min-height: 20px;
     }
-
   </style>
-
 </head>
-
 
 <body>
 
@@ -109,45 +91,33 @@
 
     <div class="login-card">
 
-      <h1>
-        Zone Safety
-      </h1>
+      <h1>Zone Safety</h1>
 
       <div class="subtitle">
         Please sign in to continue
       </div>
 
-
-      <label for="email">
-        Email
-      </label>
+      <label for="email">Email</label>
 
       <input
         type="email"
         id="email"
         placeholder="Enter your email"
-        autocomplete="username">
+        autocomplete="username"
+      >
 
-
-      <label for="password">
-        Password
-      </label>
+      <label for="password">Password</label>
 
       <input
         type="password"
         id="password"
         placeholder="Enter your password"
-        autocomplete="current-password">
+        autocomplete="current-password"
+      >
 
-
-      <button
-        id="loginButton"
-        onclick="login()">
-
+      <button id="loginButton">
         LOGIN
-
       </button>
-
 
       <div id="message"></div>
 
@@ -156,91 +126,72 @@
   </div>
 
 
-  <!-- FIREBASE -->
-
   <script type="module">
 
-    import {
-      initializeApp
-    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-
+    import { initializeApp }
+      from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 
     import {
       getAuth,
       setPersistence,
       browserLocalPersistence,
       signInWithEmailAndPassword
-    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+    }
+      from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
 
-    /* FIREBASE CONFIG */
-
+    // Firebase configuration
     const firebaseConfig = {
 
-      apiKey:
-        "AIzaSyB0--wrOqeid_iVGJkqDwJAWBefPyI4HPQw",
+      apiKey: "AIzaSyB0--wrOqeid_iVGJkqDwJAWBefPyI4HPw",
 
-      authDomain:
-        "fps-zone-safety.firebaseapp.com",
+      authDomain: "fps-zone-safety.firebaseapp.com",
 
-      projectId:
-        "fps-zone-safety",
+      projectId: "fps-zone-safety",
 
-      storageBucket:
-        "fps-zone-safety.firebasestorage.app",
+      storageBucket: "fps-zone-safety.firebasestorage.app",
 
-      messagingSenderId:
-        "96363004027",
+      messagingSenderId: "96363004027",
 
-      appId:
-        "1:96363004027:web:101c3b8ba1fde53655e2de",
+      appId: "1:96363004027:web:101c3b8ba1fde53655e2de",
 
-      measurementId:
-        "G-WEK1MZ48M2"
+      measurementId: "G-WEK1MZ48M2"
 
     };
 
 
-    /* INITIALIZE FIREBASE */
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
 
-    const app =
-      initializeApp(firebaseConfig);
-
-
-    const auth =
-      getAuth(app);
+    // Initialize Authentication
+    const auth = getAuth(app);
 
 
-    /* LOGIN */
+    const emailInput =
+      document.getElementById("email");
 
-    window.login = async function() {
+    const passwordInput =
+      document.getElementById("password");
+
+    const loginButton =
+      document.getElementById("loginButton");
+
+    const message =
+      document.getElementById("message");
+
+
+    async function login() {
 
       const email =
-        document
-          .getElementById("email")
-          .value
-          .trim();
-
+        emailInput.value.trim();
 
       const password =
-        document
-          .getElementById("password")
-          .value;
-
-
-      const message =
-        document.getElementById("message");
-
-
-      const button =
-        document.getElementById("loginButton");
+        passwordInput.value;
 
 
       message.textContent = "";
 
-
-      message.style.color =
-        "#dc2626";
+      message.style.color = "#dc2626";
 
 
       if (!email || !password) {
@@ -253,29 +204,22 @@
       }
 
 
-      button.disabled = true;
+      loginButton.disabled = true;
 
-      button.textContent =
-        "LOGGING IN...";
+      loginButton.textContent = "LOGGING IN...";
 
 
       try {
 
-        /*
-          Keep Firebase login active
-          between pages.
-        */
-
+        // Keep the login session when moving
+        // from login.html to the other pages.
         await setPersistence(
           auth,
           browserLocalPersistence
         );
 
 
-        /*
-          Sign in.
-        */
-
+        // Firebase Email/Password login
         await signInWithEmailAndPassword(
           auth,
           email,
@@ -283,33 +227,22 @@
         );
 
 
-        message.style.color =
-          "#166534";
-
+        message.style.color = "#166534";
 
         message.textContent =
           "Login successful. Opening dashboard...";
 
 
-        /*
-          Give Firebase time to save
-          the login session.
-        */
+        // Give Firebase a moment to save
+        // the authentication session.
+        setTimeout(function() {
 
-        setTimeout(
-          function() {
+          window.location.replace("index.html");
 
-            window.location.href =
-              "index.html";
-
-          },
-          500
-        );
+        }, 500);
 
 
-      }
-
-      catch (error) {
+      } catch (error) {
 
         console.error(
           "Firebase login error:",
@@ -317,64 +250,46 @@
         );
 
 
-        message.style.color =
-          "#dc2626";
+        message.style.color = "#dc2626";
 
 
-        /*
-          Show the actual Firebase
-          error temporarily so we can
-          identify the problem if needed.
-        */
-
-        if (error.code) {
-
-          message.textContent =
-            "Login failed: " +
-            error.code;
-
-        }
-
-        else {
-
-          message.textContent =
-            "Login failed. Please check your email and password.";
-
-        }
+        // Show the actual Firebase error
+        // so we know exactly what is happening.
+        message.textContent =
+          "Login failed: " +
+          (error.code || error.message);
 
 
-        button.disabled = false;
+        loginButton.disabled = false;
 
-        button.textContent =
-          "LOGIN";
+        loginButton.textContent = "LOGIN";
 
       }
 
-    };
+    }
 
 
-    /*
-      Press ENTER to login.
-    */
+    loginButton.addEventListener(
+      "click",
+      login
+    );
 
-    document
-      .getElementById("password")
-      .addEventListener(
-        "keydown",
-        function(event) {
 
-          if (event.key === "Enter") {
+    passwordInput.addEventListener(
+      "keydown",
+      function(event) {
 
-            window.login();
+        if (event.key === "Enter") {
 
-          }
+          login();
 
         }
-      );
+
+      }
+    );
 
   </script>
 
 </body>
-
 </html>
 ```
