@@ -4,7 +4,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Zone Safety Login</title>
 
   <style>
@@ -32,7 +31,6 @@
       text-align: center;
       color: #17365d;
       margin-top: 0;
-      margin-bottom: 10px;
     }
 
     .subtitle {
@@ -73,7 +71,6 @@
 
     button:disabled {
       opacity: 0.6;
-      cursor: not-allowed;
     }
 
     #message {
@@ -87,208 +84,198 @@
 
 <body>
 
-  <div class="container">
+<div class="container">
+  <div class="login-card">
 
-    <div class="login-card">
+    <h1>Zone Safety</h1>
 
-      <h1>Zone Safety</h1>
-
-      <div class="subtitle">
-        Please sign in to continue
-      </div>
-
-      <label for="email">Email</label>
-
-      <input
-        type="email"
-        id="email"
-        placeholder="Enter your email"
-        autocomplete="username"
-      >
-
-      <label for="password">Password</label>
-
-      <input
-        type="password"
-        id="password"
-        placeholder="Enter your password"
-        autocomplete="current-password"
-      >
-
-      <button id="loginButton">
-        LOGIN
-      </button>
-
-      <div id="message"></div>
-
+    <div class="subtitle">
+      Please sign in to continue
     </div>
 
+    <label for="email">Email</label>
+    <input
+      type="email"
+      id="email"
+      placeholder="Enter your email"
+      autocomplete="username">
+
+    <label for="password">Password</label>
+    <input
+      type="password"
+      id="password"
+      placeholder="Enter your password"
+      autocomplete="current-password">
+
+    <button id="loginButton">LOGIN</button>
+
+    <div id="message"></div>
+
   </div>
+</div>
 
 
-  <script type="module">
+<script type="module">
 
-    import { initializeApp }
-      from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 
-    import {
-      getAuth,
-      setPersistence,
-      browserLocalPersistence,
-      signInWithEmailAndPassword
-    }
-      from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-
-
-    // Firebase configuration
-    const firebaseConfig = {
-
-      apiKey: "AIzaSyB0--wrOqeid_iVGJkqDwJAWBefPyI4HPw",
-
-      authDomain: "fps-zone-safety.firebaseapp.com",
-
-      projectId: "fps-zone-safety",
-
-      storageBucket: "fps-zone-safety.firebasestorage.app",
-
-      messagingSenderId: "96363004027",
-
-      appId: "1:96363004027:web:101c3b8ba1fde53655e2de",
-
-      measurementId: "G-WEK1MZ48M2"
-
-    };
+import {
+  getAuth,
+  setPersistence,
+  browserLocalPersistence,
+  signInWithEmailAndPassword
+}
+from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
 
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
+const firebaseConfig = {
 
-    // Initialize Authentication
-    const auth = getAuth(app);
+  apiKey:
+    "AIzaSyB0--wrOqeid_iVGJkqDwJAWBefPyI4HPQw",
 
+  authDomain:
+    "fps-zone-safety.firebaseapp.com",
 
-    const emailInput =
-      document.getElementById("email");
+  projectId:
+    "fps-zone-safety",
 
-    const passwordInput =
-      document.getElementById("password");
+  storageBucket:
+    "fps-zone-safety.firebasestorage.app",
 
-    const loginButton =
-      document.getElementById("loginButton");
+  messagingSenderId:
+    "96363004027",
 
-    const message =
-      document.getElementById("message");
+  appId:
+    "1:96363004027:web:101c3b8ba1fde53655e2de",
 
+  measurementId:
+    "G-WEK1MZ48M2"
 
-    async function login() {
-
-      const email =
-        emailInput.value.trim();
-
-      const password =
-        passwordInput.value;
+};
 
 
-      message.textContent = "";
+const app = initializeApp(firebaseConfig);
 
-      message.style.color = "#dc2626";
+const auth = getAuth(app);
 
+const emailInput =
+  document.getElementById("email");
 
-      if (!email || !password) {
+const passwordInput =
+  document.getElementById("password");
 
-        message.textContent =
-          "Please enter your email and password.";
+const loginButton =
+  document.getElementById("loginButton");
 
-        return;
-
-      }
-
-
-      loginButton.disabled = true;
-
-      loginButton.textContent = "LOGGING IN...";
+const message =
+  document.getElementById("message");
 
 
-      try {
+async function login() {
 
-        // Keep the login session when moving
-        // from login.html to the other pages.
-        await setPersistence(
-          auth,
-          browserLocalPersistence
-        );
+  const email =
+    emailInput.value.trim();
 
-
-        // Firebase Email/Password login
-        await signInWithEmailAndPassword(
-          auth,
-          email,
-          password
-        );
+  const password =
+    passwordInput.value;
 
 
-        message.style.color = "#166534";
+  message.textContent = "";
 
-        message.textContent =
-          "Login successful. Opening dashboard...";
+  if (!email || !password) {
 
+    message.textContent =
+      "Please enter your email and password.";
 
-        // Give Firebase a moment to save
-        // the authentication session.
-        setTimeout(function() {
-
-          window.location.replace("index.html");
-
-        }, 500);
+    return;
+  }
 
 
-      } catch (error) {
+  loginButton.disabled = true;
 
-        console.error(
-          "Firebase login error:",
-          error
-        );
+  loginButton.textContent =
+    "LOGGING IN...";
 
 
-        message.style.color = "#dc2626";
+  try {
 
+    /*
+      IMPORTANT:
+      Save Firebase authentication locally
+      so all pages on this GitHub site can
+      use the same login session.
+    */
 
-        // Show the actual Firebase error
-        // so we know exactly what is happening.
-        message.textContent =
-          "Login failed: " +
-          (error.code || error.message);
-
-
-        loginButton.disabled = false;
-
-        loginButton.textContent = "LOGIN";
-
-      }
-
-    }
-
-
-    loginButton.addEventListener(
-      "click",
-      login
+    await setPersistence(
+      auth,
+      browserLocalPersistence
     );
 
 
-    passwordInput.addEventListener(
-      "keydown",
-      function(event) {
-
-        if (event.key === "Enter") {
-
-          login();
-
-        }
-
-      }
+    await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
     );
 
-  </script>
+
+    message.style.color =
+      "#166534";
+
+    message.textContent =
+      "Login successful. Opening dashboard...";
+
+
+    setTimeout(function() {
+
+      window.location.replace("index.html");
+
+    }, 500);
+
+
+  } catch (error) {
+
+    console.error(
+      "Firebase login error:",
+      error
+    );
+
+    message.style.color =
+      "#dc2626";
+
+    message.textContent =
+      "Login failed: " +
+      (error.code || error.message);
+
+    loginButton.disabled = false;
+
+    loginButton.textContent =
+      "LOGIN";
+
+  }
+
+}
+
+
+loginButton.addEventListener(
+  "click",
+  login
+);
+
+
+passwordInput.addEventListener(
+  "keydown",
+  function(event) {
+
+    if (event.key === "Enter") {
+      login();
+    }
+
+  }
+);
+
+</script>
 
 </body>
 </html>
